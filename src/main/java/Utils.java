@@ -2,11 +2,7 @@
  * Created by m-yamamt on 2017/03/04.
  */
 public class Utils {
-    /**
-     * チートイツのシャンテン数を計算する
-     * @param tehai
-     * @return チートイツのシャンテン数
-     */
+
     public static int computeTiitoituSyanten(int[] tehai) {
         int toitu = 0;
         int syurui = 0;
@@ -21,5 +17,20 @@ public class Utils {
 
         if (syurui < 7) syantenTiitoi += 7 - syurui;
         return syantenTiitoi;
+    }
+
+    public static int computeKokusiSyanten(int[] tehai) {
+        int kokusiToitu = 0;
+        int syantenKokusi = 13;
+
+        for (int i = 0; i < 34; i++) {
+            if (i % 9 == 0 || i % 9 == 8 || i >= 27) {
+                if (tehai[i] >= 1) syantenKokusi--;
+                if (tehai[i] >= 2) kokusiToitu = 1;
+            }
+        }
+
+        syantenKokusi -= kokusiToitu;
+        return syantenKokusi;
     }
 }
