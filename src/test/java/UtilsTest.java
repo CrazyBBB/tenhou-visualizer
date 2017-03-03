@@ -51,4 +51,32 @@ public class UtilsTest {
         int expected = 13;
         assertEquals(expected, Utils.computeKokusiSyanten(tehai));
     }
+
+    @Test
+    public void testComputeSyanten_13Menmachi() {
+        int[] tehai = {1, 1, 0, 0, 0, 0, 0, 0, 1,
+                1, 0, 0, 0, 0, 0, 0, 0, 1,
+                1, 0, 0, 0, 0, 0, 0, 0, 1,
+                1, 1, 1, 1, 1, 1, 1};
+        int expected = 0;
+        assertEquals(expected, Utils.computeSyanten(tehai));
+    }
+    @Test
+    public void testComputeSyanten_Agari() {
+        int[] tehai = {1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 2, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0};
+        int expected = -1;
+        assertEquals(expected, Utils.computeSyanten(tehai));
+    }
+    @Test
+    public void testComputeSyanten_Random1() {
+        int[] tehai = {1, 1, 0, 1, 0, 1, 2, 0, 0,
+                1, 0, 1, 2, 0, 0, 0, 0, 0,
+                0, 1, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 1, 1, 1};
+        int expected = 3;
+        assertEquals(expected, Utils.computeSyanten(tehai));
+    }
 }
