@@ -107,7 +107,7 @@ public class Utils {
         }
 
         if (mentu + kouho < 4) {
-            if (tehai[i] == 2) {
+            if (tehai[i] >= 2) {
                 kouho++;
                 tehai[i] -= 2;
                 taatuCut(i, tehai);
