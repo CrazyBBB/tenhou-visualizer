@@ -5,6 +5,7 @@ import java.util.ArrayList;
  */
 public class Scene {
     String[] players;
+    int[] point;
     ArrayList<Integer>[] tehai;
     ArrayList<Naki>[] naki;
     ArrayList<Integer>[] dahai;
@@ -16,6 +17,7 @@ public class Scene {
     int kyotaku;
 
     public Scene(String[] players,
+                 int[] point,
                  ArrayList<Integer>[] tehai,
                  ArrayList<Naki>[] naki,
                  ArrayList<Integer>[] dahai,
@@ -26,6 +28,7 @@ public class Scene {
                  int honba,
                  int kyotaku) {
         this.players = players;
+        this.point = point;
         this.tehai = tehai;
         this.naki = naki;
         this.dahai = dahai;
