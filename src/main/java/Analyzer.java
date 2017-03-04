@@ -13,7 +13,7 @@ public class Analyzer {
         ArrayList<Scene> oriScenes = new ArrayList<>();
 
         String[] players = new String[4];
-        int[] syanten = {13, 13, 13, 13};
+        int[] syanten = new int[4];
         int[][] tehai = new int[4][34];
 
         Element element = document.getDocumentElement();
