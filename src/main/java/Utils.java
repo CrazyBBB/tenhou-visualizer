@@ -148,9 +148,9 @@ public class Utils {
         taatuCut(i + 1, tehai);
     }
 
-    public static Document convertXmlFileToDocument(String xmlFile) throws ParserConfigurationException, IOException, SAXException {
+    public static Document convertXmlFileToDocument(String xmlFilePath) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(new FileInputStream(xmlFile));
+        return builder.parse(new FileInputStream(xmlFilePath));
     }
 }

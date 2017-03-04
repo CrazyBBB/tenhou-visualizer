@@ -2,6 +2,14 @@
  * Created by m-yamamt on 2017/03/04.
  */
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import static org.junit.Assert.*;
 
 public class UtilsTest {
@@ -78,5 +86,15 @@ public class UtilsTest {
                 0, 0, 0, 0, 1, 1, 1};
         int expected = 3;
         assertEquals(expected, Utils.computeSyanten(tehai));
+    }
+
+    @Test
+    public void testConvertXmlFileToDocument() throws IOException, SAXException, ParserConfigurationException {
+        String xmlFilePath = "./src/test/mjlog/test.mjlog";
+        Document document = Utils.convertXmlFileToDocument(xmlFilePath);
+        Element element = document.getDocumentElement();
+        String tagName = element.getTagName();
+        String expected = "mjloggm";
+        assertEquals(expected, tagName);
     }
 }
