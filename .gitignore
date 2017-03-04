@@ -6,3 +6,4 @@
 *.settings
 /bin
 .nb-gradle
+/.idea
