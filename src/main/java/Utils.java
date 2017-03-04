@@ -1,3 +1,12 @@
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 /**
  * Created by m-yamamt on 2017/03/04.
  */
@@ -137,5 +146,11 @@ public class Utils {
         }
 
         taatuCut(i + 1, tehai);
+    }
+
+    public static Document convertXmlFileToDocument(String xmlFile) throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        return builder.parse(new FileInputStream(xmlFile));
     }
 }
