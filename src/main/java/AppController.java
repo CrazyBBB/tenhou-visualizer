@@ -33,7 +33,7 @@ public class AppController implements Initializable {
     @FXML
     private Label label;
     @FXML
-    private ListView<String> listview;
+    private ListView<Scene> listview;
     @FXML
     private Canvas canvas;
 
@@ -57,7 +57,7 @@ public class AppController implements Initializable {
     @FXML
     public void onBtn2Clicked(ActionEvent e) {
         if (selectedFile != null) {
-            listview.getItems().add(selectedFile.getName());
+            listview.getItems().add(new Scene());
         } else {
             System.out.println("file is not valid");
         }
@@ -117,10 +117,12 @@ public class AppController implements Initializable {
         gc.setFill(Color.valueOf("#cccccc"));
         gc.fillRect(200, 200, 200, 200);
 
-        listview.getSelectionModel().selectedItemProperty().addListener(observable -> init());
+        listview.getSelectionModel().selectedItemProperty().addListener((obs, oldScene, newScene) -> {
+            init(newScene);
+        });
     }
 
-    private void init() {
+    private void init(Scene scene) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setFill(Color.GREEN);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());

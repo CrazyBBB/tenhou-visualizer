@@ -39,4 +39,14 @@ public class Scene {
         this.honba = honba;
         this.kyotaku = kyotaku;
     }
+
+    //TODO:消す
+    public Scene() {
+    }
+
+    @Override
+    public String toString() {
+        return "test"; //TODO:変更
+        // return String.join(",", players);
+    }
 }
