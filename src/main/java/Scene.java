@@ -4,6 +4,7 @@ import java.util.ArrayList;
  * Created by m-yamamt on 2017/03/04.
  */
 public class Scene {
+    int playerId;
     String[] players;
     int[] point;
     ArrayList<Integer>[] tehai;
@@ -16,7 +17,8 @@ public class Scene {
     int honba;
     int kyotaku;
 
-    public Scene(String[] players,
+    public Scene(int playerId,
+                 String[] players,
                  int[] point,
                  ArrayList<Integer>[] tehai,
                  ArrayList<Naki>[] naki,
@@ -27,6 +29,7 @@ public class Scene {
                  int kyoku,
                  int honba,
                  int kyotaku) {
+        this.playerId = playerId;
         this.players = players;
         this.point = point;
         this.tehai = tehai;
