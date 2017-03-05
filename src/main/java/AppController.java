@@ -46,7 +46,7 @@ public class AppController implements Initializable {
     @FXML
     public void onBtnClicked(ActionEvent e) {
         FileChooser fc = new FileChooser();
-        fc.setInitialDirectory(new File("./src"));
+        fc.setInitialDirectory(new File("."));
         selectedFile = fc.showOpenDialog(null);
 
         if (selectedFile != null) {
