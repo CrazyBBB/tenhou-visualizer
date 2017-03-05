@@ -87,14 +87,4 @@ public class UtilsTest {
         int expected = 3;
         assertEquals(expected, Utils.computeSyanten(tehai));
     }
-
-    @Test
-    public void testConvertXmlFileToDocument() throws IOException, SAXException, ParserConfigurationException {
-        String xmlFilePath = "./src/test/mjlog/test.mjlog";
-        Document document = Utils.convertXmlFileToDocument(xmlFilePath);
-        Element element = document.getDocumentElement();
-        String tagName = element.getTagName();
-        String expected = "mjloggm";
-        assertEquals(expected, tagName);
-    }
 }
