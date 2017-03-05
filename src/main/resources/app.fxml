@@ -8,7 +8,7 @@
 <AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AppController">
     <children>
         <Button fx:id="btn" layoutX="186.0" layoutY="28.0" mnemonicParsing="false" onAction="#onBtnClicked" text="ファイルを選択" />
-        <Button fx:id="btn2" layoutX="283.0" layoutY="28.0" mnemonicParsing="false" onAction="#onBtn2Clicked" text="解析" />
+        <Button fx:id="btn2" layoutX="300.0" layoutY="28.0" mnemonicParsing="false" onAction="#onBtn2Clicked" text="解析" />
         <ListView fx:id="listview" layoutX="34.0" layoutY="66.0" orientation="VERTICAL" prefHeight="600.0" prefWidth="300.0" />
         <Label fx:id="label" layoutX="34.0" layoutY="30.0" prefHeight="21.0" prefWidth="144.0" text="ファイルが選択されていません" />
         <Canvas fx:id="canvas" height="600.0" layoutX="359.0" layoutY="66.0" width="600.0" />
