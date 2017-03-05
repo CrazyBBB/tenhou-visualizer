@@ -22,13 +22,20 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
-    @FXML private Button btn;
-    @FXML private Button btn2;
-    @FXML private Button btn3;
-    @FXML private Button btn4;
-    @FXML private Label label;
-    @FXML private ListView<String> listview;
-    @FXML private Canvas canvas;
+    @FXML
+    private Button btn;
+    @FXML
+    private Button btn2;
+    @FXML
+    private Button btn3;
+    @FXML
+    private Button btn4;
+    @FXML
+    private Label label;
+    @FXML
+    private ListView<String> listview;
+    @FXML
+    private Canvas canvas;
 
     private File selectedFile;
     private GraphicsContext gc;
@@ -56,7 +63,7 @@ public class AppController implements Initializable {
         }
     }
 
-    private void draw(ActionEvent e) {
+    private void draw() {
         int x, y;
 
         x = 200;
@@ -91,7 +98,7 @@ public class AppController implements Initializable {
         return ret;
     }
 
-    private void rotate(ActionEvent e) {
+    private void rotate() {
         //gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         //gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.rotate(-90);
@@ -110,9 +117,20 @@ public class AppController implements Initializable {
         gc.setFill(Color.valueOf("#cccccc"));
         gc.fillRect(200, 200, 200, 200);
 
+        listview.getSelectionModel().selectedItemProperty().addListener(observable -> init());
+    }
+
+    private void init() {
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.setFill(Color.GREEN);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.setFill(Color.valueOf("#cccccc"));
+        gc.fillRect(200, 200, 200, 200);
+
         for (int i = 0; i < 3; i++) {
-            draw(new ActionEvent());
-            rotate(new ActionEvent());
+            draw();
+            rotate();
         }
+        rotate();
     }
 }
