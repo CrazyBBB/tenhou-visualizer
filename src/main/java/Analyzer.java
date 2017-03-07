@@ -53,10 +53,11 @@ public class Analyzer {
                     if (key.matches("hai\\d")) {
                         int playerId = Integer.parseInt(key.substring(3));
                         String value = attribute.getNodeValue();
+                        if ("".equals(value)) continue;
                         String[] hais = value.split(",");
 
                         for (int j = 0; j < 13; j++) {
-                            tehai[playerId][Integer.parseInt(hais[j])]++;
+                            tehai[playerId][Integer.parseInt(hais[j]) / 4]++;
                         }
                     }
                 }
@@ -69,7 +70,16 @@ public class Analyzer {
             } else {
 
             }
+
+            index++;
         }
+
+        //TODO:remove
+        for (int i = 0; i < 4; i++) {
+            System.out.print(players[i] + " ");
+        }
+        System.out.println();
+        System.out.flush();
 
         return oriScenes;
     }
