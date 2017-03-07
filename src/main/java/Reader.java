@@ -54,17 +54,4 @@ public class Reader {
         baos.close();
         return gunzipedIs;
     }
-
-    //TODO: remove
-    public static void main(String[] args) {
-        ArrayList<InputStream> list = Reader.unzip(new File("C:\\Users\\m-yamamt\\Downloads\\mjlog_pf3-20_n13.zip"));
-        for (InputStream is : list) {
-            try {
-                Document document = convertXmlFileToDocument(gunzip(is));
-                Analyzer.findOriScenes(document);
-            } catch (IOException | ParserConfigurationException | SAXException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }

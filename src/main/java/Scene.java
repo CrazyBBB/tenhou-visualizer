@@ -44,12 +44,13 @@ public class Scene {
     }
 
     //TODO:消す
-    public Scene() {
+    public Scene(String[] players) {
+        this.players = players;
     }
 
     @Override
     public String toString() {
-        return "test"; //TODO:変更
+        return String.join(",", players); //TODO:変更
         // return String.join(",", players);
     }
 }

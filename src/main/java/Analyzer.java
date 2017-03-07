@@ -75,11 +75,7 @@ public class Analyzer {
         }
 
         //TODO:remove
-        for (int i = 0; i < 4; i++) {
-            System.out.print(players[i] + " ");
-        }
-        System.out.println();
-        System.out.flush();
+        oriScenes.add(new Scene(players));
 
         return oriScenes;
     }

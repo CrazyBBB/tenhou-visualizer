@@ -13,8 +13,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,11 +60,16 @@ public class AppController implements Initializable {
     }
 
     @FXML
-    public void onBtn2Clicked(ActionEvent e) {
-        if (selectedFile != null) {
-            listview.getItems().add(new Scene());
-        } else {
+    public void onBtn2Clicked(ActionEvent e) throws IOException, ParserConfigurationException, SAXException {
+        if (selectedFile == null) {
             System.out.println("file is not valid");
+        }
+
+        ArrayList<InputStream> list = Reader.unzip(selectedFile);
+        for (InputStream is : list) {
+            Document document = Reader.convertXmlFileToDocument(Reader.gunzip(is));
+            ArrayList<Scene> scenes = Analyzer.findOriScenes(document);
+            for (Scene scene : scenes) listview.getItems().add(scene);
         }
     }
 
