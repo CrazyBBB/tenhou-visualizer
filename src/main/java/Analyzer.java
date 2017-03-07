@@ -15,6 +15,9 @@ public class Analyzer {
         String[] players = new String[4];
         int[] syanten = new int[4];
         int[][] tehai = new int[4][34];
+        int bakaze = 0;
+        int kyoku = -1;
+        int honba = 0;
 
         Element element = document.getDocumentElement();
         NodeList nodeList = element.getChildNodes();
@@ -59,8 +62,33 @@ public class Analyzer {
                         for (int j = 0; j < 13; j++) {
                             tehai[playerId][Integer.parseInt(hais[j]) / 4]++;
                         }
+                    } else if (key.equals("seed")) {
+                        String value = attribute.getNodeValue();
+                        String[] seedStr = value.split(",");
+                        int seed0 = Integer.valueOf(seedStr[0]);
+                        if (seed0 % 4 + 1 == kyoku) {
+                            honba++;
+                        } else {
+                            honba = 0;
+                        }
+                        bakaze = seed0 / 4;
+                        kyoku = seed0 % 4 + 1;
                     }
                 }
+
+                //TODO:remove
+                oriScenes.add(new Scene(0,
+                        players,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        bakaze,
+                        kyoku,
+                        honba,
+                        0));
             } else if ("AGARI".equals(nodeName)) {
 
             } else if ("RYUUKYOKU".equals(nodeName)) {
@@ -73,9 +101,6 @@ public class Analyzer {
 
             index++;
         }
-
-        //TODO:remove
-        oriScenes.add(new Scene(players));
 
         return oriScenes;
     }
