@@ -7,9 +7,9 @@
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="AppController" fx:id="root">
     <top>
         <MenuBar>
-            <Menu text="File">
-                <MenuItem text="Open..." onAction="#onBtnClicked"/>
-                <MenuItem text="Exit" onAction="#onExit"/>
+            <Menu text="ファイル">
+                <MenuItem text="開く..." onAction="#onBtnClicked"/>
+                <MenuItem text="終了" onAction="#onExit"/>
             </Menu>
         </MenuBar>
     </top>
