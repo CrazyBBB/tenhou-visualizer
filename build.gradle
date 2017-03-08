@@ -18,10 +18,10 @@ repositories {
 
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api 'org.apache.commons:commons-math3:3.6.1'
+    // api 'org.apache.commons:commons-math3:3.6.1'
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.google.guava:guava:20.0'
+    // implementation 'com.google.guava:guava:20.0'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
@@ -31,7 +31,7 @@ jar {
     manifest {
         attributes "Main-Class" : "App"
     }
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    // from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 def defaultEncoding = 'UTF-8'
