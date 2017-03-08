@@ -20,6 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -118,7 +119,11 @@ public class AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         for (int i = 0; i < 34; i++) {
-            images[i] = new Image("img/" + i + ".png");
+            try (InputStream is = getClass().getResourceAsStream("img/" + i + ".png")) {
+                images[i] = new Image(is);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         }
 
         gc = canvas.getGraphicsContext2D();
