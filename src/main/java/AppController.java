@@ -2,6 +2,7 @@
  * Created by m-yamamt on 2017/03/04.
  */
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import org.w3c.dom.Document;
@@ -20,7 +22,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,13 +30,7 @@ import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
     @FXML
-    private Button btn;
-    @FXML
-    private Button btn2;
-    @FXML
-    private Button btn3;
-    @FXML
-    private Button btn4;
+    private BorderPane root;
     @FXML
     private Label label;
     @FXML
@@ -50,27 +45,19 @@ public class AppController implements Initializable {
     private Random random = new Random();
 
     @FXML
-    public void onBtnClicked(ActionEvent e) {
+    public void onBtnClicked(ActionEvent e) throws IOException, ParserConfigurationException, SAXException {
         FileChooser fc = new FileChooser();
         fc.setInitialDirectory(new File("."));
-        selectedFile = fc.showOpenDialog(null);
+        selectedFile = fc.showOpenDialog(root.getScene().getWindow());
 
         if (selectedFile != null) {
             label.setText(selectedFile.toString());
-        }
-    }
-
-    @FXML
-    public void onBtn2Clicked(ActionEvent e) throws IOException, ParserConfigurationException, SAXException {
-        if (selectedFile == null) {
-            System.out.println("file is not valid");
-        }
-
-        ArrayList<InputStream> list = Reader.unzip(selectedFile);
-        for (InputStream is : list) {
-            Document document = Reader.convertXmlFileToDocument(Reader.gunzip(is));
-            ArrayList<Scene> scenes = Analyzer.findOriScenes(document);
-            for (Scene scene : scenes) listview.getItems().add(scene);
+            ArrayList<InputStream> list = Reader.unzip(selectedFile);
+            for (InputStream is : list) {
+                Document document = Reader.convertXmlFileToDocument(Reader.gunzip(is));
+                ArrayList<Scene> scenes = Analyzer.findOriScenes(document);
+                for (Scene scene : scenes) listview.getItems().add(scene);
+            }
         }
     }
 
@@ -119,11 +106,7 @@ public class AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         for (int i = 0; i < 34; i++) {
-            try (InputStream is = getClass().getResourceAsStream("img/" + i + ".png")) {
-                images[i] = new Image(is);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
+            images[i] = new Image("img/" + i + ".png");
         }
 
         gc = canvas.getGraphicsContext2D();
@@ -149,5 +132,11 @@ public class AppController implements Initializable {
             rotate();
         }
         rotate();
+    }
+
+    @FXML
+    public void onExit(ActionEvent actionEvent) {
+        Platform.exit();
+        System.exit(0);
     }
 }
