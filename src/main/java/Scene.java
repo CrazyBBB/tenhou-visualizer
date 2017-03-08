@@ -17,7 +17,7 @@ public class Scene {
     int honba;
     int kyotaku;
 
-    static String[] bakazeStr = {"“Œ", "“ì", "¼"};
+    static String[] bakazeStr = {"æ±", "å—", "è¥¿"};
 
     public Scene(int playerId,
                  String[] players,
@@ -47,10 +47,10 @@ public class Scene {
 
     @Override
     public String toString() {
-        String str = bakazeStr[bakaze] + kyoku + "‹Ç";
-        str += honba + "–{ê: ";
+        String str = bakazeStr[bakaze] + kyoku + "å±€";
+        str += honba + "æœ¬å ´: ";
         str += String.join(",", players);
-        return str; //TODO:•ÏX
+        return str; //TODO:å¤‰æ›´
         // return String.join(",", players);
     }
 }
