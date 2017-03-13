@@ -4,8 +4,10 @@ import java.util.ArrayList;
  * Created by m-yamamt on 2017/03/04.
  */
 public class Scene {
+    boolean isSanma;
     int playerId;
     String[] players;
+
     int[] point;
     ArrayList<Integer>[] tehai;
     ArrayList<Naki>[] naki;
@@ -17,20 +19,11 @@ public class Scene {
     int honba;
     int kyotaku;
 
-    static String[] bakazeStr = {"東", "南", "西"};
+    static final String[] bakazeStr = {"東", "南", "西"};
+    static final String[] maStr = {"三", "四"};
 
-    public Scene(int playerId,
-                 String[] players,
-                 int[] point,
-                 ArrayList<Integer>[] tehai,
-                 ArrayList<Naki>[] naki,
-                 ArrayList<Integer>[] dahai,
-                 ArrayList<Boolean>[] tedashi,
-                 int[] reach,
-                 int bakaze,
-                 int kyoku,
-                 int honba,
-                 int kyotaku) {
+    public Scene(boolean isSanma, int playerId, String[] players, int[] point, ArrayList<Integer>[] tehai, ArrayList<Naki>[] naki, ArrayList<Integer>[] dahai, ArrayList<Boolean>[] tedashi, int[] reach, int bakaze, int kyoku, int honba, int kyotaku) {
+        this.isSanma = isSanma;
         this.playerId = playerId;
         this.players = players;
         this.point = point;
@@ -47,7 +40,8 @@ public class Scene {
 
     @Override
     public String toString() {
-        String str = bakazeStr[bakaze] + kyoku + "局";
+        String str = "[" + maStr[isSanma ? 0 : 1] + "]";
+        str += bakazeStr[bakaze] + kyoku + "局";
         str += honba + "本場: ";
         str += String.join(",", players);
         return str; //TODO:変更

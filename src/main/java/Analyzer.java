@@ -13,6 +13,8 @@ public class Analyzer {
         ArrayList<Scene> oriScenes = new ArrayList<>();
 
         String[] players = new String[4];
+        boolean isSanma = false;
+
         int[] syanten = new int[4];
         int[][] tehai = new int[4][34];
         int bakaze = 0;
@@ -31,7 +33,9 @@ public class Analyzer {
             if ("SHUFFLE".equals(nodeName)) {
 
             } else if ("GO".equals(nodeName)) {
-
+                Node typeNode = node.getAttributes().getNamedItem("type");
+                int type = Integer.parseInt(typeNode.getNodeValue());
+                isSanma = (type & 0x10) != 0;
             } else if ("UN".equals(nodeName)) {
                 NamedNodeMap attributes = node.getAttributes();
                 for (int i = 0; i < attributes.getLength(); i++) {
@@ -77,7 +81,8 @@ public class Analyzer {
                 }
 
                 //TODO:remove
-                oriScenes.add(new Scene(0,
+                oriScenes.add(new Scene(isSanma,
+                        0,
                         players,
                         null,
                         null,
