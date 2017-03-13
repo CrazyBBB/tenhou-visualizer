@@ -10,9 +10,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-/**
- * Created by m-yamamt on 2017/03/05.
- */
 public class Reader {
 
     public static Document convertXmlFileToDocument(InputStream is) throws ParserConfigurationException, IOException, SAXException {

@@ -5,9 +5,6 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/**
- * Created by m-yamamt on 2017/03/04.
- */
 public class Analyzer {
     public static ArrayList<Scene> findOriScenes(Document document) throws IOException {
         ArrayList<Scene> oriScenes = new ArrayList<>();

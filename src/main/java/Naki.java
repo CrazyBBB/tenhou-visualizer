@@ -1,6 +1,3 @@
-/**
- * Created by m-yamamt on 2017/03/04.
- */
 public class Naki {
     int[] hai;
     boolean isAnkan;

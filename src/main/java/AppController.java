@@ -1,7 +1,3 @@
-/**
- * Created by m-yamamt on 2017/03/04.
- */
-
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

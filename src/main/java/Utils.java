@@ -7,9 +7,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-/**
- * Created by m-yamamt on 2017/03/04.
- */
 public class Utils {
 
     public static int computeSyanten(int[] tehai) {

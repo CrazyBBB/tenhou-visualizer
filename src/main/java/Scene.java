@@ -1,8 +1,5 @@
 import java.util.ArrayList;
 
-/**
- * Created by m-yamamt on 2017/03/04.
- */
 public class Scene {
     boolean isSanma;
     int playerId;
