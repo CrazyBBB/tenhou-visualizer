@@ -88,7 +88,7 @@ public class Analyzer {
                 oriScenes.add(new Scene(isSanma,
                         0,
                         players,
-                        point,
+                        point.clone(),
                         null,
                         null,
                         null,
