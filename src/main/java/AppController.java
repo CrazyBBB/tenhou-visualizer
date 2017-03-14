@@ -112,7 +112,7 @@ public class AppController implements Initializable {
         gc.setFill(Color.valueOf("#cccccc"));
         gc.fillRect(200, 200, 200, 200);
 
-        gc.setFont(Font.font(20));
+        gc.setFont(Font.font("MS Mincho", 20));
 
         listview.getSelectionModel().selectedItemProperty().addListener((obs, oldScene, newScene) -> {
             init(newScene);
