@@ -18,6 +18,7 @@ public class App extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("天鳳牌譜解析ツール");
+        stage.setResizable(false);
         stage.show();
     }
 }
