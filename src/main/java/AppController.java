@@ -48,9 +48,9 @@ public class AppController implements Initializable {
 
         if (selectedFile != null) {
             label.setText(selectedFile.toString());
-            ArrayList<InputStream> list = Reader.unzip(selectedFile);
-            for (InputStream is : list) {
-                Document document = Reader.convertXmlFileToDocument(Reader.gunzip(is));
+            ArrayList<byte[]> list = Reader.unzip(selectedFile);
+            for (byte[] xml : list) {
+                Document document = Reader.convertXmlFileToDocument(Reader.gunzip(xml));
                 ArrayList<Scene> scenes = Analyzer.findOriScenes(document);
                 for (Scene scene : scenes) listview.getItems().add(scene);
             }

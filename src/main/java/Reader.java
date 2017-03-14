@@ -12,43 +12,44 @@ import java.util.zip.ZipInputStream;
 
 public class Reader {
 
-    public static Document convertXmlFileToDocument(InputStream is) throws ParserConfigurationException, IOException, SAXException {
+    public static Document convertXmlFileToDocument(byte[] xml) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(is);
+        InputStream is = new ByteArrayInputStream(xml);
+        Document document = builder.parse(is);
+        is.close();
+        return document;
     }
 
-    public static ArrayList<InputStream> unzip(File file) {
-        ArrayList<InputStream> list = new ArrayList<>();
-        try  {
-            FileInputStream fis = new FileInputStream(file);
-            ZipInputStream zis = new ZipInputStream(fis);
-            ZipEntry entry = null;
-            while ((entry = zis.getNextEntry()) != null) {
-                int size = (int) entry.getSize();
-                byte[] buf = new byte[size];
-                zis.read(buf);
-                list.add(new ByteArrayInputStream(buf));
-            }
-            zis.close();
-            fis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static ArrayList<byte[]> unzip(File file) throws IOException {
+        ArrayList<byte[]> list = new ArrayList<>();
+        FileInputStream fis = new FileInputStream(file);
+        ZipInputStream zis = new ZipInputStream(fis);
+        ZipEntry entry = null;
+        while ((entry = zis.getNextEntry()) != null) {
+            int size = (int) entry.getSize();
+            byte[] buf = new byte[size];
+            zis.read(buf);
+            list.add(buf);
         }
+        zis.close();
+        fis.close();
         return list;
     }
 
-    public static InputStream gunzip(InputStream is) throws IOException {
+    public static byte[] gunzip(byte[] str) throws IOException {
+        InputStream is = new ByteArrayInputStream(str);
         GZIPInputStream gis = new GZIPInputStream(is);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        int len;
         byte[] buf = new byte[1024];
+        int len;
         while ((len = gis.read(buf)) > 0) {
             baos.write(buf, 0, len);
         }
-        InputStream gunzipedIs = new ByteArrayInputStream(baos.toByteArray());
+        byte[] ba = baos.toByteArray();
+        is.close();
         gis.close();
         baos.close();
-        return gunzipedIs;
+        return ba;
     }
 }
