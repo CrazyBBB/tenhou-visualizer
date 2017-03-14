@@ -12,6 +12,7 @@ public class Analyzer {
         String[] players = new String[4];
         boolean isSanma = false;
 
+        int[] point = new int[4];
         int[] syanten = new int[4];
         int[][] tehai = new int[4][34];
         int bakaze = 0;
@@ -54,14 +55,11 @@ public class Analyzer {
                 for (int i = 0; i < attributes.getLength(); i++) {
                     Node attribute = attributes.item(i);
                     String key = attribute.getNodeName();
-                    if (key.matches("hai\\d")) {
-                        int playerId = Integer.parseInt(key.substring(3));
+                    if (key.equals("ten")) {
                         String value = attribute.getNodeValue();
-                        if ("".equals(value)) continue;
-                        String[] hais = value.split(",");
-
-                        for (int j = 0; j < 13; j++) {
-                            tehai[playerId][Integer.parseInt(hais[j]) / 4]++;
+                        String[] pointStr = value.split(",");
+                        for (int j = 0; j < 4; j++) {
+                            point[j] = Integer.parseInt(pointStr[j]) * 100;
                         }
                     } else if (key.equals("seed")) {
                         String value = attribute.getNodeValue();
@@ -74,6 +72,15 @@ public class Analyzer {
                         }
                         bakaze = seed0 / 4;
                         kyoku = seed0 % 4 + 1;
+                    } else if (key.matches("hai\\d")) {
+                        int playerId = Integer.parseInt(key.substring(3));
+                        String value = attribute.getNodeValue();
+                        if ("".equals(value)) continue;
+                        String[] hais = value.split(",");
+
+                        for (int j = 0; j < 13; j++) {
+                            tehai[playerId][Integer.parseInt(hais[j]) / 4]++;
+                        }
                     }
                 }
 
@@ -81,7 +88,7 @@ public class Analyzer {
                 oriScenes.add(new Scene(isSanma,
                         0,
                         players,
-                        null,
+                        point,
                         null,
                         null,
                         null,

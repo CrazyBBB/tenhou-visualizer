@@ -37,11 +37,18 @@ public class Scene {
 
     @Override
     public String toString() {
-        String str = "[" + maStr[isSanma ? 0 : 1] + "]";
-        str += bakazeStr[bakaze] + kyoku + "局";
-        str += honba + "本場: ";
-        str += String.join(",", players);
-        return str; //TODO:変更
+        StringBuilder sb = new StringBuilder();
+        sb.append("[").append(maStr[isSanma ? 0 : 1]).append("]");
+        sb.append(bakazeStr[bakaze]).append(kyoku).append("局");
+        sb.append(honba).append("本場: ");
+
+        int n = isSanma ? 3 : 4;
+        for (int i = 0; i < n; i++) {
+            if (i > 0) sb.append(",");
+            sb.append(players[i]).append("(").append(point[i]).append(")");
+        }
+
+        return sb.toString(); //TODO:変更
         // return String.join(",", players);
     }
 }
