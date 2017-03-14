@@ -44,7 +44,7 @@ public class Scene {
 
         int n = isSanma ? 3 : 4;
         for (int i = 0; i < n; i++) {
-            if (i > 0) sb.append(",");
+            if (i > 0) sb.append(", ");
             sb.append(players[i]).append("(").append(point[i]).append(")");
         }
 

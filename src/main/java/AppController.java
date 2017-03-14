@@ -117,6 +117,8 @@ public class AppController implements Initializable {
     }
 
     private void init(Scene scene) {
+        label.setText(scene.toString());
+
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setFill(Color.GREEN);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
