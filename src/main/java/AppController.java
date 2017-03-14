@@ -10,6 +10,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -111,6 +112,8 @@ public class AppController implements Initializable {
         gc.setFill(Color.valueOf("#cccccc"));
         gc.fillRect(200, 200, 200, 200);
 
+        gc.setFont(Font.font(20));
+
         listview.getSelectionModel().selectedItemProperty().addListener((obs, oldScene, newScene) -> {
             init(newScene);
         });
@@ -125,7 +128,10 @@ public class AppController implements Initializable {
         gc.setFill(Color.valueOf("#cccccc"));
         gc.fillRect(200, 200, 200, 200);
 
+        gc.setFill(Color.BLACK);
         for (int i = 0; i < 3; i++) {
+            gc.fillText(scene.dan[i] + " R" + scene.rate[i], 200, 380);
+            gc.fillText(scene.players[i], 200, 400);
             draw();
             rotate();
         }

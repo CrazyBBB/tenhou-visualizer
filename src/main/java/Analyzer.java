@@ -6,11 +6,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Analyzer {
+
+    static final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級", "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
+
     public static ArrayList<Scene> findOriScenes(Document document) throws IOException {
         ArrayList<Scene> oriScenes = new ArrayList<>();
 
         String[] players = new String[4];
         boolean isSanma = false;
+        String[] dan = new String[4];
+        int[] rate = new int[4];
 
         int[] point = new int[4];
         int[] syanten = new int[4];
@@ -39,7 +44,17 @@ public class Analyzer {
                 for (int i = 0; i < attributes.getLength(); i++) {
                     Node attribute = attributes.item(i);
                     String key = attribute.getNodeName();
-                    if (key.matches("n\\d")) {
+                    if (key.equals("dan")) {
+                        String[] tmp = attribute.getNodeValue().split(",");
+                        for (int j = 0; j < 4; j++) {
+                            dan[j] = danStr[Integer.valueOf(tmp[j])];
+                        }
+                    } else if (key.equals("rate")) {
+                        String[] tmp = attribute.getNodeValue().split(",");
+                        for (int j = 0; j < 4; j++) {
+                            rate[j] = Float.valueOf(tmp[j]).intValue();
+                        }
+                    } else if (key.matches("n\\d")) {
                         String name = URLDecoder.decode(attribute.getNodeValue(), "UTF-8");
                         players[Integer.parseInt(key.substring(1))] = name;
                     }
@@ -88,6 +103,8 @@ public class Analyzer {
                 oriScenes.add(new Scene(isSanma,
                         0,
                         players,
+                        dan,
+                        rate,
                         point.clone(),
                         null,
                         null,

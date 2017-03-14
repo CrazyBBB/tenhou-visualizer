@@ -4,6 +4,8 @@ public class Scene {
     boolean isSanma;
     int playerId;
     String[] players;
+    String[] dan;
+    int[] rate;
 
     int[] point;
     ArrayList<Integer>[] tehai;
@@ -19,10 +21,12 @@ public class Scene {
     static final String[] bakazeStr = {"東", "南", "西"};
     static final String[] maStr = {"三", "四"};
 
-    public Scene(boolean isSanma, int playerId, String[] players, int[] point, ArrayList<Integer>[] tehai, ArrayList<Naki>[] naki, ArrayList<Integer>[] dahai, ArrayList<Boolean>[] tedashi, int[] reach, int bakaze, int kyoku, int honba, int kyotaku) {
+    public Scene(boolean isSanma, int playerId, String[] players, String[] dan, int[] rate, int[] point, ArrayList<Integer>[] tehai, ArrayList<Naki>[] naki, ArrayList<Integer>[] dahai, ArrayList<Boolean>[] tedashi, int[] reach, int bakaze, int kyoku, int honba, int kyotaku) {
         this.isSanma = isSanma;
         this.playerId = playerId;
         this.players = players;
+        this.dan = dan;
+        this.rate = rate;
         this.point = point;
         this.tehai = tehai;
         this.naki = naki;
