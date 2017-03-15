@@ -24,6 +24,7 @@ public class Analyzer {
     static TreeSet<Integer>[] stehai = new TreeSet[4];
     static ArrayList<Integer>[] dahai = new ArrayList[4];
     static ArrayList<Boolean>[] tedashi = new ArrayList[4];
+    static int[] reach = new int[4];
     static int bakaze = 0;
     static int kyoku = -1;
     static int honba = 0;
@@ -66,7 +67,7 @@ public class Analyzer {
                         null,
                         dahai.clone(),
                         tedashi.clone(),
-                        null,
+                        reach.clone(),
                         bakaze,
                         kyoku,
                         honba,
@@ -77,6 +78,8 @@ public class Analyzer {
                 analyzeT(nodeName);
             } else if (nodeName.matches("[D-G]\\d+")) {
                 analyzeD(nodeName);
+            } else if ("REACH".equals(nodeName)) {
+                analyzeREACH(node);
             }
 
             index++;
@@ -120,6 +123,7 @@ public class Analyzer {
             dahai[i] = new ArrayList<>();
             tedashi[i] = new ArrayList<>();
         }
+        Arrays.fill(reach, -1);
 
         NamedNodeMap attributes = node.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
@@ -176,5 +180,11 @@ public class Analyzer {
 
     private static void analyzeN() {
         prev = -1;
+    }
+
+    private static void analyzeREACH(Node node) {
+        Node whoNode = node.getAttributes().getNamedItem("who");
+        int who = Integer.parseInt(whoNode.getNodeValue());
+        reach[who] = dahai[who].size();
     }
 }

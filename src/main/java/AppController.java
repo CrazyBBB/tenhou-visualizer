@@ -77,6 +77,7 @@ public class AppController implements Initializable {
         int y = 400;
         int i = 0;
         for (int hai : scene.dahai[playerId]) {
+            if (i == scene.reach[playerId]) x += 13;
             gc.drawImage(images[hai / 4], x, y);
 
             if (i % 6 == 5) {
