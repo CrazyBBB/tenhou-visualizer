@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class Scene {
     boolean isSanma;
@@ -8,7 +9,7 @@ public class Scene {
     int[] rate;
 
     int[] point;
-    ArrayList<Integer>[] tehai;
+    TreeSet<Integer>[] stehai;
     ArrayList<Naki>[] naki;
     ArrayList<Integer>[] dahai;
     ArrayList<Boolean>[] tedashi;
@@ -21,14 +22,14 @@ public class Scene {
     static final String[] bakazeStr = {"東", "南", "西"};
     static final String[] maStr = {"三", "四"};
 
-    public Scene(boolean isSanma, int playerId, String[] players, String[] dan, int[] rate, int[] point, ArrayList<Integer>[] tehai, ArrayList<Naki>[] naki, ArrayList<Integer>[] dahai, ArrayList<Boolean>[] tedashi, int[] reach, int bakaze, int kyoku, int honba, int kyotaku) {
+    public Scene(boolean isSanma, int playerId, String[] players, String[] dan, int[] rate, int[] point, TreeSet<Integer>[] stehai, ArrayList<Naki>[] naki, ArrayList<Integer>[] dahai, ArrayList<Boolean>[] tedashi, int[] reach, int bakaze, int kyoku, int honba, int kyotaku) {
         this.isSanma = isSanma;
         this.playerId = playerId;
         this.players = players;
         this.dan = dan;
         this.rate = rate;
         this.point = point;
-        this.tehai = tehai;
+        this.stehai = stehai;
         this.naki = naki;
         this.dahai = dahai;
         this.tedashi = tedashi;

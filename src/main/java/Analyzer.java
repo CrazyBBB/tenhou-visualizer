@@ -1,28 +1,32 @@
 import org.w3c.dom.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.TreeSet;
 
 public class Analyzer {
 
     static final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級", "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
 
+    static ArrayList<Scene> oriScenes = new ArrayList<>();
+
+    static String[] players = new String[4];
+    static boolean isSanma = false;
+    static String[] dan = new String[4];
+    static int[] rate = new int[4];
+
+    static int[] point = new int[4];
+    static int[] syanten = new int[4];
+    static int[][] tehai = new int[4][34];
+    static TreeSet<Integer>[] stehai = new TreeSet[4];
+    static int bakaze = 0;
+    static int kyoku = -1;
+    static int honba = 0;
+
     public static ArrayList<Scene> findOriScenes(Document document) throws IOException {
-        ArrayList<Scene> oriScenes = new ArrayList<>();
-
-        String[] players = new String[4];
-        boolean isSanma = false;
-        String[] dan = new String[4];
-        int[] rate = new int[4];
-
-        int[] point = new int[4];
-        int[] syanten = new int[4];
-        int[][] tehai = new int[4][34];
-        int bakaze = 0;
-        int kyoku = -1;
-        int honba = 0;
 
         Element element = document.getDocumentElement();
         NodeList nodeList = element.getChildNodes();
@@ -36,85 +40,13 @@ public class Analyzer {
             if ("SHUFFLE".equals(nodeName)) {
 
             } else if ("GO".equals(nodeName)) {
-                Node typeNode = node.getAttributes().getNamedItem("type");
-                int type = Integer.parseInt(typeNode.getNodeValue());
-                isSanma = (type & 0x10) != 0;
+                analyzeGO(node);
             } else if ("UN".equals(nodeName)) {
-                NamedNodeMap attributes = node.getAttributes();
-                for (int i = 0; i < attributes.getLength(); i++) {
-                    Node attribute = attributes.item(i);
-                    String key = attribute.getNodeName();
-                    if (key.equals("dan")) {
-                        String[] tmp = attribute.getNodeValue().split(",");
-                        for (int j = 0; j < 4; j++) {
-                            dan[j] = danStr[Integer.valueOf(tmp[j])];
-                        }
-                    } else if (key.equals("rate")) {
-                        String[] tmp = attribute.getNodeValue().split(",");
-                        for (int j = 0; j < 4; j++) {
-                            rate[j] = Float.valueOf(tmp[j]).intValue();
-                        }
-                    } else if (key.matches("n\\d")) {
-                        String name = URLDecoder.decode(attribute.getNodeValue(), "UTF-8");
-                        players[Integer.parseInt(key.substring(1))] = name;
-                    }
-                }
+                analyzeUN(node);
             } else if ("TAIKYOKU".equals(nodeName)) {
 
             } else if ("INIT".equals(nodeName)) {
-                for (int i = 0; i < 4; i++) {
-                    Arrays.fill(tehai[i], 0);
-                }
-
-                NamedNodeMap attributes = node.getAttributes();
-                for (int i = 0; i < attributes.getLength(); i++) {
-                    Node attribute = attributes.item(i);
-                    String key = attribute.getNodeName();
-                    if (key.equals("ten")) {
-                        String value = attribute.getNodeValue();
-                        String[] pointStr = value.split(",");
-                        for (int j = 0; j < 4; j++) {
-                            point[j] = Integer.parseInt(pointStr[j]) * 100;
-                        }
-                    } else if (key.equals("seed")) {
-                        String value = attribute.getNodeValue();
-                        String[] seedStr = value.split(",");
-                        int seed0 = Integer.valueOf(seedStr[0]);
-                        if (seed0 % 4 + 1 == kyoku) {
-                            honba++;
-                        } else {
-                            honba = 0;
-                        }
-                        bakaze = seed0 / 4;
-                        kyoku = seed0 % 4 + 1;
-                    } else if (key.matches("hai\\d")) {
-                        int playerId = Integer.parseInt(key.substring(3));
-                        String value = attribute.getNodeValue();
-                        if ("".equals(value)) continue;
-                        String[] hais = value.split(",");
-
-                        for (int j = 0; j < 13; j++) {
-                            tehai[playerId][Integer.parseInt(hais[j]) / 4]++;
-                        }
-                    }
-                }
-
-                //TODO:remove
-                oriScenes.add(new Scene(isSanma,
-                        0,
-                        players,
-                        dan,
-                        rate,
-                        point.clone(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        bakaze,
-                        kyoku,
-                        honba,
-                        0));
+                analyzeINIT(node);
             } else if ("AGARI".equals(nodeName)) {
 
             } else if ("RYUUKYOKU".equals(nodeName)) {
@@ -129,5 +61,92 @@ public class Analyzer {
         }
 
         return oriScenes;
+    }
+
+    private static void analyzeGO(Node node) {
+        Node typeNode = node.getAttributes().getNamedItem("type");
+        int type = Integer.parseInt(typeNode.getNodeValue());
+        isSanma = (type & 0x10) != 0;
+    }
+
+    private static void analyzeUN(Node node) throws IOException {
+        NamedNodeMap attributes = node.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            Node attribute = attributes.item(i);
+            String key = attribute.getNodeName();
+            if (key.equals("dan")) {
+                String[] tmp = attribute.getNodeValue().split(",");
+                for (int j = 0; j < 4; j++) {
+                    dan[j] = danStr[Integer.valueOf(tmp[j])];
+                }
+            } else if (key.equals("rate")) {
+                String[] tmp = attribute.getNodeValue().split(",");
+                for (int j = 0; j < 4; j++) {
+                    rate[j] = Float.valueOf(tmp[j]).intValue();
+                }
+            } else if (key.matches("n\\d")) {
+                String name = URLDecoder.decode(attribute.getNodeValue(), "UTF-8");
+                players[Integer.parseInt(key.substring(1))] = name;
+            }
+        }
+    }
+
+    private static void analyzeINIT(Node node) {
+        for (int i = 0; i < 4; i++) {
+            Arrays.fill(tehai[i], 0);
+            stehai[i] = new TreeSet<>();
+        }
+
+        NamedNodeMap attributes = node.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            Node attribute = attributes.item(i);
+            String key = attribute.getNodeName();
+            if (key.equals("ten")) {
+                String value = attribute.getNodeValue();
+                String[] pointStr = value.split(",");
+                for (int j = 0; j < 4; j++) {
+                    point[j] = Integer.parseInt(pointStr[j]) * 100;
+                }
+            } else if (key.equals("seed")) {
+                String value = attribute.getNodeValue();
+                String[] seedStr = value.split(",");
+                int seed0 = Integer.valueOf(seedStr[0]);
+                if (seed0 % 4 + 1 == kyoku) {
+                    honba++;
+                } else {
+                    honba = 0;
+                }
+                bakaze = seed0 / 4;
+                kyoku = seed0 % 4 + 1;
+            } else if (key.matches("hai\\d")) {
+                int playerId = Integer.parseInt(key.substring(3));
+                String value = attribute.getNodeValue();
+                if ("".equals(value)) continue;
+                String[] hais = value.split(",");
+
+                for (int j = 0; j < 13; j++) {
+                    int hai = Integer.parseInt(hais[j]);
+                    stehai[playerId].add(hai);
+                    tehai[playerId][hai / 4]++;
+                }
+            }
+        }
+
+        //TODO:remove
+        oriScenes.add(new Scene(isSanma,
+                0,
+                players,
+                dan,
+                rate,
+                point.clone(),
+                stehai.clone(),
+                null,
+                null,
+                null,
+                null,
+                bakaze,
+                kyoku,
+                honba,
+                0));
     }
 }

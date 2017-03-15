@@ -58,11 +58,23 @@ public class AppController implements Initializable {
         }
     }
 
-    private void draw() {
-        int x, y;
+    private void draw(Scene scene, int playerId) {
+        drawTehai(scene, playerId);
+        drawDahai(scene);
+    }
 
-        x = 200;
-        y = 400;
+    private void drawTehai(Scene scene, int playerId) {
+        int x = 70;
+        int y = 555;
+        for (int hai : scene.stehai[playerId]) {
+            gc.drawImage(images[hai / 4], x, y);
+            x += 32;
+        }
+    }
+
+    private void drawDahai(Scene scene) {
+        int x = 200;
+        int y = 400;
         for (int i = 0; i < 15; i++) {
             gc.drawImage(images[getId()], x, y);
 
@@ -72,18 +84,6 @@ public class AppController implements Initializable {
             } else {
                 x += 32;
             }
-        }
-
-        x = 70;
-        y = 555;
-        ArrayList<Integer> list = new ArrayList<>();
-        for (int i = 0; i < 13; i++) {
-            list.add(getId());
-        }
-        Collections.sort(list);
-        for (int i = 0; i < 13; i++) {
-            gc.drawImage(images[list.get(i)], x, y);
-            x += 32;
         }
     }
 
@@ -132,7 +132,7 @@ public class AppController implements Initializable {
         for (int i = 0; i < 3; i++) {
             gc.fillText(scene.dan[i] + " R" + scene.rate[i], 200, 380);
             gc.fillText(scene.players[i], 200, 400);
-            draw();
+            draw(scene, i);
             rotate();
         }
         rotate();
