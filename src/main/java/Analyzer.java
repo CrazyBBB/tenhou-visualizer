@@ -22,9 +22,13 @@ public class Analyzer {
     static int[] syanten = new int[4];
     static int[][] tehai = new int[4][34];
     static TreeSet<Integer>[] stehai = new TreeSet[4];
+    static ArrayList<Integer>[] dahai = new ArrayList[4];
+    static ArrayList<Boolean>[] tedashi = new ArrayList[4];
     static int bakaze = 0;
     static int kyoku = -1;
     static int honba = 0;
+
+    static int prev = -1;
 
     public static ArrayList<Scene> findOriScenes(Document document) throws IOException {
 
@@ -38,23 +42,41 @@ public class Analyzer {
             String nodeName = node.getNodeName();
 
             if ("SHUFFLE".equals(nodeName)) {
-
+                // nop
             } else if ("GO".equals(nodeName)) {
                 analyzeGO(node);
             } else if ("UN".equals(nodeName)) {
                 analyzeUN(node);
             } else if ("TAIKYOKU".equals(nodeName)) {
-
+                // nop
             } else if ("INIT".equals(nodeName)) {
                 analyzeINIT(node);
-            } else if ("AGARI".equals(nodeName)) {
-
-            } else if ("RYUUKYOKU".equals(nodeName)) {
-
+//            } else if ("AGARI".equals(nodeName)) { TODO
+//
+//            } else if ("RYUUKYOKU".equals(nodeName)) {
+            } else if ("AGARI".equals(nodeName) || "RYUUKYOKU".equals(nodeName)) {
+                //TODO:remove
+                oriScenes.add(new Scene(isSanma,
+                        0,
+                        players.clone(),
+                        dan.clone(),
+                        rate.clone(),
+                        point.clone(),
+                        stehai.clone(),
+                        null,
+                        dahai.clone(),
+                        tedashi.clone(),
+                        null,
+                        bakaze,
+                        kyoku,
+                        honba,
+                        0));
             } else if ("N".equals(nodeName)) {
-
-            } else {
-
+                analyzeN();
+            } else if (nodeName.matches("[T-W]\\d+")) {
+                analyzeT(nodeName);
+            } else if (nodeName.matches("[D-G]\\d+")) {
+                analyzeD(nodeName);
             }
 
             index++;
@@ -95,6 +117,8 @@ public class Analyzer {
         for (int i = 0; i < 4; i++) {
             Arrays.fill(tehai[i], 0);
             stehai[i] = new TreeSet<>();
+            dahai[i] = new ArrayList<>();
+            tedashi[i] = new ArrayList<>();
         }
 
         NamedNodeMap attributes = node.getAttributes();
@@ -131,22 +155,26 @@ public class Analyzer {
                 }
             }
         }
+    }
 
-        //TODO:remove
-        oriScenes.add(new Scene(isSanma,
-                0,
-                players.clone(),
-                dan.clone(),
-                rate.clone(),
-                point.clone(),
-                stehai.clone(),
-                null,
-                null,
-                null,
-                null,
-                bakaze,
-                kyoku,
-                honba,
-                0));
+    private static void analyzeT(String nodeName) {
+        int playerId = nodeName.charAt(0) - 'T';
+        int hai = Integer.parseInt(nodeName.substring(1));
+        stehai[playerId].add(hai);
+        tehai[playerId][hai / 4]++;
+        prev = hai;
+    }
+
+    private static void analyzeD(String nodeName) {
+        int playerId = nodeName.charAt(0) - 'D';
+        int hai = Integer.parseInt(nodeName.substring(1));
+        stehai[playerId].remove(hai);
+        tehai[playerId][hai / 4]--;
+        dahai[playerId].add(hai);
+        tedashi[playerId].add(prev != hai);
+    }
+
+    private static void analyzeN() {
+        prev = -1;
     }
 }

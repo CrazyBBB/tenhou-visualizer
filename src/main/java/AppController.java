@@ -60,7 +60,7 @@ public class AppController implements Initializable {
 
     private void draw(Scene scene, int playerId) {
         drawTehai(scene, playerId);
-        drawDahai(scene);
+        drawDahai(scene, playerId);
     }
 
     private void drawTehai(Scene scene, int playerId) {
@@ -72,11 +72,12 @@ public class AppController implements Initializable {
         }
     }
 
-    private void drawDahai(Scene scene) {
+    private void drawDahai(Scene scene, int playerId) {
         int x = 200;
         int y = 400;
-        for (int i = 0; i < 15; i++) {
-            gc.drawImage(images[getId()], x, y);
+        int i = 0;
+        for (int hai : scene.dahai[playerId]) {
+            gc.drawImage(images[hai / 4], x, y);
 
             if (i % 6 == 5) {
                 x = 200;
@@ -84,6 +85,8 @@ public class AppController implements Initializable {
             } else {
                 x += 32;
             }
+
+            i++;
         }
     }
 
