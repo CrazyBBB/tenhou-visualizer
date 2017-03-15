@@ -135,9 +135,9 @@ public class Analyzer {
         //TODO:remove
         oriScenes.add(new Scene(isSanma,
                 0,
-                players,
-                dan,
-                rate,
+                players.clone(),
+                dan.clone(),
+                rate.clone(),
                 point.clone(),
                 stehai.clone(),
                 null,

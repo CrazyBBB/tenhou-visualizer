@@ -112,8 +112,6 @@ public class AppController implements Initializable {
         gc.setFill(Color.valueOf("#cccccc"));
         gc.fillRect(200, 200, 200, 200);
 
-        gc.setFont(Font.font("MS Mincho", 20));
-
         listview.getSelectionModel().selectedItemProperty().addListener((obs, oldScene, newScene) -> {
             init(newScene);
         });
@@ -130,7 +128,14 @@ public class AppController implements Initializable {
 
         gc.setFill(Color.BLACK);
         for (int i = 0; i < 3; i++) {
-            gc.fillText(scene.dan[i] + " R" + scene.rate[i], 200, 380);
+            gc.setFill(Color.RED);
+            gc.setFont(Font.font(20));
+            gc.fillText(scene.getZikaze(i) + " " + String.valueOf(scene.point[i]), 200, 360);
+
+            gc.setFill(Color.BLACK);
+            gc.fillText(scene.dan[i] + "R" + scene.rate[i], 200, 380);
+
+            gc.setFont(Font.font("MS Mincho", 20));
             gc.fillText(scene.players[i], 200, 400);
             draw(scene, i);
             rotate();

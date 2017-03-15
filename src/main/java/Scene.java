@@ -19,7 +19,7 @@ public class Scene {
     int honba;
     int kyotaku;
 
-    static final String[] bakazeStr = {"東", "南", "西"};
+    static final String[] bakazeStr = {"東", "南", "西", "北"};
     static final String[] maStr = {"三", "四"};
 
     public Scene(boolean isSanma, int playerId, String[] players, String[] dan, int[] rate, int[] point, TreeSet<Integer>[] stehai, ArrayList<Naki>[] naki, ArrayList<Integer>[] dahai, ArrayList<Boolean>[] tedashi, int[] reach, int bakaze, int kyoku, int honba, int kyotaku) {
@@ -38,6 +38,11 @@ public class Scene {
         this.kyoku = kyoku;
         this.honba = honba;
         this.kyotaku = kyotaku;
+    }
+
+    public String getZikaze(int playerId) {
+        int n = isSanma ? 3 : 4;
+        return bakazeStr[(playerId - kyoku + 1 + n) % n];
     }
 
     @Override
