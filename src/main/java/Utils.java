@@ -1,10 +1,12 @@
 public class Utils {
 
-    public static int computeSyanten(int[] tehai) {
+    public static int computeSyanten(int[] tehai, int naki) {
         int tmp = 13;
-        tmp = Math.min(tmp, computeKokusiSyanten(tehai));
-        tmp = Math.min(tmp, computeTiitoituSyanten(tehai));
-        tmp = Math.min(tmp, computeNormalSyanten(tehai));
+        if (naki == 0) {
+            tmp = Math.min(tmp, computeKokusiSyanten(tehai));
+            tmp = Math.min(tmp, computeTiitoituSyanten(tehai));
+        }
+        tmp = Math.min(tmp, computeNormalSyanten(tehai, naki));
 
         return tmp;
     }
@@ -45,8 +47,8 @@ public class Utils {
     static int kouho;
     static int syantenNormal;
 
-    public static int computeNormalSyanten(int[] tehai) {
-        mentu = 0;
+    public static int computeNormalSyanten(int[] tehai, int naki) {
+        mentu = naki;
         toitu = 0;
         kouho = 0;
         syantenNormal = 13;
