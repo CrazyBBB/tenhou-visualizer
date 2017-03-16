@@ -221,7 +221,34 @@ public class Analyzer {
                 }
             }
         } else if ((m >> 3 & 1) == 1) {
+            int unused = (m >> 5) & 3;
+            int t = (m >> 9) & 127;
+            int r = t % 3;
 
+            t /= 3;
+            t *= 4;
+
+            int[] h = new int[3];
+            int idx = 0;
+            for (int i = 0; i < 4; i++) {
+                if (i != unused) {
+                    h[idx++] = t + i;
+                }
+            }
+
+            int[] hai = new int[3];
+            for (int i = 0; i < 3; i++) {
+                hai[(3 - kui + i) % 3] = h[(r + i) % 3];
+            }
+
+            naki[who].add(new Naki(hai, 0, 3 - kui));
+
+            for (int i = 0; i < 3; i++) {
+                if (i != r) {
+                    tehai[who][h[i] / 4]--;
+                    stehai[who].remove(h[i]);
+                }
+            }
         } else if ((m >> 4 & 1) == 1) {
 
         } else if ((m >> 5 & 1) == 1) {

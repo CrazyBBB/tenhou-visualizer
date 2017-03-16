@@ -109,7 +109,7 @@ public class AppController implements Initializable {
         }
 
         for (Naki naki : scene.naki[playerId]) {
-            if (naki.type == 0) {
+            if (naki.type == 0 || naki.type == 1) {
                 for (int i = 2; i >= 0; i--) {
                     if (i == naki.nakiIdx) {
                         x -= 45;
