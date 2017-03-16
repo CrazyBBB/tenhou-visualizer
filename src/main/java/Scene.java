@@ -19,11 +19,12 @@ public class Scene {
     int kyoku;
     int honba;
     int kyotaku;
+    ArrayList<Integer> dora;
 
     static final String[] bakazeStr = {"東", "南", "西", "北"};
     static final String[] maStr = {"三", "四"};
 
-    public Scene(boolean isSanma, int playerId, String[] players, String[] dan, int[] rate, int[] point, TreeSet<Integer>[] stehai, ArrayList<Naki>[] naki, ArrayList<Integer>[] dahai, ArrayList<Boolean>[] tedashi, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku) {
+    public Scene(boolean isSanma, int playerId, String[] players, String[] dan, int[] rate, int[] point, TreeSet<Integer>[] stehai, ArrayList<Naki>[] naki, ArrayList<Integer>[] dahai, ArrayList<Boolean>[] tedashi, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora) {
         this.isSanma = isSanma;
         this.playerId = playerId;
         this.players = players;
@@ -40,6 +41,7 @@ public class Scene {
         this.kyoku = kyoku;
         this.honba = honba;
         this.kyotaku = kyotaku;
+        this.dora = dora;
     }
 
     public String getZikaze(int playerId) {
@@ -62,5 +64,14 @@ public class Scene {
 
         return sb.toString(); //TODO:変更
         // return String.join(",", players);
+    }
+
+
+    public String getBaStr() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(bakazeStr[bakaze]).append(kyoku).append("局");
+        sb.append(honba).append("本場");
+
+        return sb.toString();
     }
 }

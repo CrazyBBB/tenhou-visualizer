@@ -30,6 +30,7 @@ public class Analyzer {
     static int bakaze = 0;
     static int kyoku = -1;
     static int honba = 0;
+    static ArrayList<Integer> dora;
 
     static int prev = -1;
 
@@ -74,7 +75,8 @@ public class Analyzer {
                         bakaze,
                         kyoku,
                         honba,
-                        0));
+                        0,
+                        new ArrayList<>(dora)));
             } else if ("N".equals(nodeName)) {
                 analyzeN(node);
             } else if (nodeName.matches("[T-W]\\d+")) {
@@ -83,6 +85,8 @@ public class Analyzer {
                 analyzeD(nodeName);
             } else if ("REACH".equals(nodeName)) {
                 analyzeREACH(node);
+            } else if ("DORA".equals(nodeName)) {
+                analyzeDORA(node);
             }
 
             index++;
@@ -129,6 +133,7 @@ public class Analyzer {
         }
         Arrays.fill(reach, -1);
         Arrays.fill(kita, 0);
+        dora = new ArrayList<>();
 
         NamedNodeMap attributes = node.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
@@ -151,6 +156,9 @@ public class Analyzer {
                 }
                 bakaze = seed0 / 4;
                 kyoku = seed0 % 4 + 1;
+
+                int seed5 = Integer.valueOf(seedStr[5]);
+                dora.add(seed5);
             } else if (key.matches("hai\\d")) {
                 int playerId = Integer.parseInt(key.substring(3));
                 String value = attribute.getNodeValue();
@@ -284,5 +292,11 @@ public class Analyzer {
         Node whoNode = node.getAttributes().getNamedItem("who");
         int who = Integer.parseInt(whoNode.getNodeValue());
         reach[who] = dahai[who].size();
+    }
+
+    private static void analyzeDORA(Node node) {
+        Node haiNode = node.getAttributes().getNamedItem("hai");
+        int hai = Integer.parseInt(haiNode.getNodeValue());
+        dora.add(hai);
     }
 }

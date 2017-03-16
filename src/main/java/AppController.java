@@ -192,6 +192,19 @@ public class AppController implements Initializable {
         gc.fillRect(200, 200, 200, 200);
 
         gc.setFill(Color.BLACK);
+        gc.setFont(Font.font("MS Mincho", 24));
+        gc.fillText(scene.getBaStr(), 240, 290);
+
+        gc.drawImage(imgUra, 240, 300, 20, 29);
+        for (int i = 0; i < 4; i++) {
+            if (i < scene.dora.size()) {
+                gc.drawImage(getImage(scene.dora.get(i), true, true), 260 + 20 * i, 300, 20, 29);
+            } else {
+                gc.drawImage(imgUra, 260 + 20 * i, 300, 20, 29);
+            }
+        }
+        gc.drawImage(imgUra, 340, 300, 20, 29);
+
         for (int i = 0; i < 4; i++) {
             if (i == 3 && scene.isSanma) {
                 rotate();
