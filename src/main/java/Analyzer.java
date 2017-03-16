@@ -25,6 +25,7 @@ public class Analyzer {
     static ArrayList<Integer>[] dahai = new ArrayList[4];
     static ArrayList<Boolean>[] tedashi = new ArrayList[4];
     static int[] reach = new int[4];
+    static int[] kita = new int[4];
     static int bakaze = 0;
     static int kyoku = -1;
     static int honba = 0;
@@ -68,12 +69,13 @@ public class Analyzer {
                         dahai.clone(),
                         tedashi.clone(),
                         reach.clone(),
+                        kita.clone(),
                         bakaze,
                         kyoku,
                         honba,
                         0));
             } else if ("N".equals(nodeName)) {
-                analyzeN();
+                analyzeN(node);
             } else if (nodeName.matches("[T-W]\\d+")) {
                 analyzeT(nodeName);
             } else if (nodeName.matches("[D-G]\\d+")) {
@@ -124,6 +126,7 @@ public class Analyzer {
             tedashi[i] = new ArrayList<>();
         }
         Arrays.fill(reach, -1);
+        Arrays.fill(kita, 0);
 
         NamedNodeMap attributes = node.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
@@ -178,7 +181,22 @@ public class Analyzer {
         tedashi[playerId].add(prev != hai);
     }
 
-    private static void analyzeN() {
+    private static void analyzeN(Node node) {
+        Node mNode = node.getAttributes().getNamedItem("m");
+        int m = Integer.parseInt(mNode.getNodeValue());
+        if ((m >> 5 & 1) == 1) {
+            Node whoNode = node.getAttributes().getNamedItem("who");
+            int who = Integer.parseInt(whoNode.getNodeValue());
+            kita[who]++;
+
+            tehai[who][30]--;
+            for (int i = 120; i <= 123 ; i++) {
+                if (stehai[who].contains(i)) {
+                    stehai[who].remove(i);
+                    break;
+                }
+            }
+        }
         prev = -1;
     }
 

@@ -61,6 +61,7 @@ public class AppController implements Initializable {
     private void draw(Scene scene, int playerId) {
         drawTehai(scene, playerId);
         drawDahai(scene, playerId);
+        drawNaki(scene, playerId);
     }
 
     private void drawTehai(Scene scene, int playerId) {
@@ -94,6 +95,21 @@ public class AppController implements Initializable {
             }
 
             i++;
+        }
+    }
+
+    private void drawNaki(Scene scene, int playerId) {
+        int x = 600 - 32;
+        int y = 555;
+
+        int nOfKita = scene.kita[playerId];
+        if (nOfKita > 0) {
+            gc.drawImage(img_nt[30], x, y);
+            gc.setFill(Color.WHITE);
+            gc.setFont(Font.font(15));
+            gc.fillText("×" + nOfKita, 577, 555);
+
+            x -= 32;
         }
     }
 
