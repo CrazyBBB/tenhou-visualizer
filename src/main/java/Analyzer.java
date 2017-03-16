@@ -24,6 +24,7 @@ public class Analyzer {
     static TreeSet<Integer>[] stehai = new TreeSet[4];
     static ArrayList<Integer>[] dahai = new ArrayList[4];
     static ArrayList<Boolean>[] tedashi = new ArrayList[4];
+    static ArrayList<Naki>[] naki = new ArrayList[4];
     static int[] reach = new int[4];
     static int[] kita = new int[4];
     static int bakaze = 0;
@@ -65,7 +66,7 @@ public class Analyzer {
                         rate.clone(),
                         point.clone(),
                         stehai.clone(),
-                        null,
+                        naki.clone(),
                         dahai.clone(),
                         tedashi.clone(),
                         reach.clone(),
@@ -124,6 +125,7 @@ public class Analyzer {
             stehai[i] = new TreeSet<>();
             dahai[i] = new ArrayList<>();
             tedashi[i] = new ArrayList<>();
+            naki[i] = new ArrayList<>();
         }
         Arrays.fill(reach, -1);
         Arrays.fill(kita, 0);
@@ -184,9 +186,45 @@ public class Analyzer {
     private static void analyzeN(Node node) {
         Node mNode = node.getAttributes().getNamedItem("m");
         int m = Integer.parseInt(mNode.getNodeValue());
-        if ((m >> 2 & 15) == 8) {
-            Node whoNode = node.getAttributes().getNamedItem("who");
-            int who = Integer.parseInt(whoNode.getNodeValue());
+        Node whoNode = node.getAttributes().getNamedItem("who");
+        int who = Integer.parseInt(whoNode.getNodeValue());
+
+        int kui = m & 3;
+        if ((m >> 2 & 1) == 1) {
+            int t = (m >> 10) & 63;
+            int r = t % 3;
+
+            t /= 3;
+            t = t / 7 * 9 + t % 7;
+            t *= 4;
+
+            int[] h = new int[3];
+            h[0] = t + 4 * 0 + ((m >> 3) & 3);
+            h[1] = t + 4 * 1 + ((m >> 5) & 3);
+            h[2] = t + 4 * 2 + ((m >> 7) & 3);
+
+            int[] hai = null;
+            if (r == 0) {
+                hai = new int[]{h[0], h[1], h[2]};
+            } else if (r == 1) {
+                hai = new int[]{h[1], h[0], h[2]};
+            } else if (r == 2) {
+                hai = new int[]{h[2], h[0], h[1]};
+            }
+
+            naki[who].add(new Naki(hai, 0, 3 - kui));
+
+            for (int i = 0; i < 3; i++) {
+                if (i != 3 - kui) {
+                    tehai[who][h[i] / 4]--;
+                    stehai[who].remove(h[i]);
+                }
+            }
+        } else if ((m >> 3 & 1) == 1) {
+
+        } else if ((m >> 4 & 1) == 1) {
+
+        } else if ((m >> 5 & 1) == 1) {
             kita[who]++;
 
             tehai[who][30]--;

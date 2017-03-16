@@ -1,13 +1,11 @@
 public class Naki {
     int[] hai;
-    boolean isAnkan;
+    int type; // 0: チー, 1: ポン, 2: 暗カン, 3: 明カン, 4: 加カン
     int nakiIdx;
-    int from;
 
-    public Naki(int[] hai, boolean isAnkan, int nakiIdx, int from) {
+    public Naki(int[] hai, int type, int nakiIdx) {
         this.hai = hai;
-        this.isAnkan = isAnkan;
+        this.type = type;
         this.nakiIdx = nakiIdx;
-        this.from = from;
     }
 }

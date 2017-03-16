@@ -95,17 +95,31 @@ public class AppController implements Initializable {
     }
 
     private void drawNaki(Scene scene, int playerId) {
-        int x = 600 - 32;
+        int x = 600;
         int y = 555;
 
         int nOfKita = scene.kita[playerId];
         if (nOfKita > 0) {
+            x -= 32;
+
             gc.drawImage(img_nt[30], x, y);
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(15));
             gc.fillText("×" + nOfKita, 577, 555);
+        }
 
-            x -= 32;
+        for (Naki naki : scene.naki[playerId]) {
+            if (naki.type == 0) {
+                for (int i = 2; i >= 0; i--) {
+                    if (i == naki.nakiIdx) {
+                        x -= 45;
+                        gc.drawImage(getImage(naki.hai[i], true, false), x, y + 13);
+                    } else {
+                        x -= 32;
+                        gc.drawImage(getImage(naki.hai[i], true, true), x, y);
+                    }
+                }
+            }
         }
     }
 
