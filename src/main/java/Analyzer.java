@@ -184,7 +184,7 @@ public class Analyzer {
     private static void analyzeN(Node node) {
         Node mNode = node.getAttributes().getNamedItem("m");
         int m = Integer.parseInt(mNode.getNodeValue());
-        if ((m >> 5 & 1) == 1) {
+        if ((m >> 2 & 15) == 8) {
             Node whoNode = node.getAttributes().getNamedItem("who");
             int who = Integer.parseInt(whoNode.getNodeValue());
             kita[who]++;
