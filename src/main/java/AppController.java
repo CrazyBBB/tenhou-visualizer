@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -18,10 +17,8 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -38,7 +35,10 @@ public class AppController implements Initializable {
     private File selectedFile;
     private GraphicsContext gc;
 
-    private Image[] images = new Image[34];
+    private Image[] img_nt = new Image[34];
+    private Image[] img_ny = new Image[34];
+    private Image[] img_dt = new Image[34];
+    private Image[] img_dy = new Image[34];
     private Random random = new Random();
 
     @FXML
@@ -67,7 +67,7 @@ public class AppController implements Initializable {
         int x = 70;
         int y = 555;
         for (int hai : scene.stehai[playerId]) {
-            gc.drawImage(images[hai / 4], x, y);
+            gc.drawImage(img_nt[hai / 4], x, y);
             x += 32;
         }
     }
@@ -77,14 +77,20 @@ public class AppController implements Initializable {
         int y = 400;
         int i = 0;
         for (int hai : scene.dahai[playerId]) {
-            if (i == scene.reach[playerId]) x += 13;
-            gc.drawImage(images[hai / 4], x, y);
+            if (i == scene.reach[playerId]) {
+                Image image = scene.tedashi[playerId].get(i) ? img_ny[hai / 4] : img_dy[hai / 4];
+                gc.drawImage(image, x, y + 13);
+                x += 45;
+            } else {
+                Image image = scene.tedashi[playerId].get(i) ? img_nt[hai / 4] : img_dt[hai / 4];
+                gc.drawImage(image, x, y);
+                x += 32;
+            }
 
-            if (i % 6 == 5) {
+
+            if (i == 5 || i == 11) {
                 x = 200;
                 y += 45;
-            } else {
-                x += 32;
             }
 
             i++;
@@ -107,7 +113,10 @@ public class AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         for (int i = 0; i < 34; i++) {
-            images[i] = new Image("img/" + i + ".png");
+            img_nt[i] = new Image("img_nt/" + i + ".png");
+            img_ny[i] = new Image("img_ny/" + i + ".png");
+            img_dt[i] = new Image("img_dt/" + i + ".png");
+            img_dy[i] = new Image("img_dy/" + i + ".png");
         }
 
         gc = canvas.getGraphicsContext2D();
@@ -133,13 +142,13 @@ public class AppController implements Initializable {
         gc.setFill(Color.BLACK);
         for (int i = 0; i < 3; i++) {
             gc.setFill(Color.RED);
-            gc.setFont(Font.font(20));
-            gc.fillText(scene.getZikaze(i) + " " + String.valueOf(scene.point[i]), 200, 360);
+            gc.setFont(Font.font(15));
+            gc.fillText(scene.getZikaze(i) + " " + String.valueOf(scene.point[i]), 200, 370);
 
             gc.setFill(Color.BLACK);
-            gc.fillText(scene.dan[i] + "R" + scene.rate[i], 200, 380);
+            gc.fillText(scene.dan[i] + "R" + scene.rate[i], 200, 385);
 
-            gc.setFont(Font.font("MS Mincho", 20));
+            gc.setFont(Font.font("MS Mincho", 15));
             gc.fillText(scene.players[i], 200, 400);
             draw(scene, i);
             rotate();
