@@ -223,7 +223,7 @@ public class Analyzer {
             naki[who].add(new Naki(hai, 0, 3 - kui));
 
             for (int i = 0; i < 3; i++) {
-                if (i != 3 - kui) {
+                if (i != r) {
                     tehai[who][h[i] / 4]--;
                     stehai[who].remove(h[i]);
                 }
