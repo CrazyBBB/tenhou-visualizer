@@ -241,7 +241,7 @@ public class Analyzer {
                 hai[(3 - kui + i) % 3] = h[(r + i) % 3];
             }
 
-            naki[who].add(new Naki(hai, 0, 3 - kui));
+            naki[who].add(new Naki(hai, 1, 3 - kui));
 
             for (int i = 0; i < 3; i++) {
                 if (i != r) {
@@ -261,6 +261,21 @@ public class Analyzer {
                     break;
                 }
             }
+        } else if (kui == 0) {
+            int t = (m >> 8) & 255;
+
+            t = t / 4 * 4;
+
+            int[] hai = {t + 1, t, t + 2, t + 3};
+
+            naki[who].add(new Naki(hai, 2, -1));
+
+            for (int i = 0; i < 4; i++) {
+                tehai[who][hai[i] / 4]--;
+                stehai[who].remove(hai[i]);
+            }
+        } else {
+
         }
         prev = -1;
     }

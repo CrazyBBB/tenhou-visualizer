@@ -38,6 +38,7 @@ public class AppController implements Initializable {
     private Image[] img_ny = new Image[37];
     private Image[] img_dt = new Image[37];
     private Image[] img_dy = new Image[37];
+    private Image imgUra;
 
     @FXML
     public void onBtnClicked(ActionEvent e) throws IOException, ParserConfigurationException, SAXException {
@@ -119,6 +120,15 @@ public class AppController implements Initializable {
                         gc.drawImage(getImage(naki.hai[i], true, true), x, y);
                     }
                 }
+            } else if (naki.type == 2) {
+                for (int i = 3; i >= 0; i--) {
+                    x -= 32;
+                    if (i == 0 || i == 3) {
+                        gc.drawImage(imgUra, x, y);
+                    } else {
+                        gc.drawImage(getImage(naki.hai[i], true, true), x, y);
+                    }
+                }
             }
         }
     }
@@ -159,6 +169,7 @@ public class AppController implements Initializable {
             img_dt[i] = new Image("img_dt/" + i + ".png");
             img_dy[i] = new Image("img_dy/" + i + ".png");
         }
+        imgUra = new Image("img_nt/ura.png");
 
         gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.GREEN);
