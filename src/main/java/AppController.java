@@ -156,7 +156,11 @@ public class AppController implements Initializable {
         gc.fillRect(200, 200, 200, 200);
 
         gc.setFill(Color.BLACK);
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
+            if (i == 3 && scene.isSanma) {
+                rotate();
+                break;
+            }
             gc.setFill(Color.RED);
             gc.setFont(Font.font(15));
             gc.fillText(scene.getZikaze(i) + " " + String.valueOf(scene.point[i]), 200, 370);
@@ -169,7 +173,6 @@ public class AppController implements Initializable {
             draw(scene, i);
             rotate();
         }
-        rotate();
     }
 
     @FXML
