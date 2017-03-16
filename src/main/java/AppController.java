@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
@@ -35,11 +34,10 @@ public class AppController implements Initializable {
     private File selectedFile;
     private GraphicsContext gc;
 
-    private Image[] img_nt = new Image[34];
-    private Image[] img_ny = new Image[34];
-    private Image[] img_dt = new Image[34];
-    private Image[] img_dy = new Image[34];
-    private Random random = new Random();
+    private Image[] img_nt = new Image[37];
+    private Image[] img_ny = new Image[37];
+    private Image[] img_dt = new Image[37];
+    private Image[] img_dy = new Image[37];
 
     @FXML
     public void onBtnClicked(ActionEvent e) throws IOException, ParserConfigurationException, SAXException {
@@ -68,7 +66,7 @@ public class AppController implements Initializable {
         int x = 70;
         int y = 555;
         for (int hai : scene.stehai[playerId]) {
-            gc.drawImage(img_nt[hai / 4], x, y);
+            gc.drawImage(getImage(hai, true, true), x, y);
             x += 32;
         }
     }
@@ -79,12 +77,10 @@ public class AppController implements Initializable {
         int i = 0;
         for (int hai : scene.dahai[playerId]) {
             if (i == scene.reach[playerId]) {
-                Image image = scene.tedashi[playerId].get(i) ? img_ny[hai / 4] : img_dy[hai / 4];
-                gc.drawImage(image, x, y + 13);
+                gc.drawImage(getImage(hai, scene.tedashi[playerId].get(i), false), x, y + 13);
                 x += 45;
             } else {
-                Image image = scene.tedashi[playerId].get(i) ? img_nt[hai / 4] : img_dt[hai / 4];
-                gc.drawImage(image, x, y);
+                gc.drawImage(getImage(hai, scene.tedashi[playerId].get(i), true), x, y);
                 x += 32;
             }
 
@@ -113,22 +109,37 @@ public class AppController implements Initializable {
         }
     }
 
-    private int getId() {
-        int ret = 1;
-        while (ret >= 1 && ret <= 7) ret = random.nextInt(34);
-        return ret;
+    private Image getImage(int hai, boolean normal, boolean tate) {
+        int haiId;
+        if (hai == 16 || hai == 52 || hai == 88) {
+            haiId = (hai - 16) / 36 + 34;
+        } else {
+            haiId = hai / 4;
+        }
+
+        if (normal) {
+            if (tate) {
+                return img_nt[haiId];
+            } else {
+                return img_ny[haiId];
+            }
+        } else {
+            if (tate) {
+                return img_dt[haiId];
+            } else {
+                return img_dy[haiId];
+            }
+        }
     }
 
     private void rotate() {
-        //gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        //gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.rotate(-90);
         gc.translate(-600, 0);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        for (int i = 0; i < 34; i++) {
+        for (int i = 0; i < 37; i++) {
             img_nt[i] = new Image("img_nt/" + i + ".png");
             img_ny[i] = new Image("img_ny/" + i + ".png");
             img_dt[i] = new Image("img_dt/" + i + ".png");
