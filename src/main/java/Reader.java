@@ -28,6 +28,7 @@ public class Reader {
         ZipEntry entry = null;
         while ((entry = zis.getNextEntry()) != null) {
             int size = (int) entry.getSize();
+            if (size < 0) continue;
             byte[] buf = new byte[size];
             zis.read(buf);
             list.add(buf);
@@ -39,17 +40,22 @@ public class Reader {
 
     public static byte[] gunzip(byte[] str) throws IOException {
         InputStream is = new ByteArrayInputStream(str);
-        GZIPInputStream gis = new GZIPInputStream(is);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = gis.read(buf)) > 0) {
-            baos.write(buf, 0, len);
+        byte[] ba = null;
+        try {
+            GZIPInputStream gis = new GZIPInputStream(is);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = gis.read(buf)) > 0) {
+                baos.write(buf, 0, len);
+            }
+            ba = baos.toByteArray();
+            baos.close();
+            gis.close();
+        } catch (EOFException e) {
+            // nop
         }
-        byte[] ba = baos.toByteArray();
         is.close();
-        gis.close();
-        baos.close();
         return ba;
     }
 }
