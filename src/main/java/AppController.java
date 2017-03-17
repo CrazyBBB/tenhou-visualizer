@@ -214,13 +214,13 @@ public class AppController implements Initializable {
             }
             gc.setFill(Color.RED);
             gc.setFont(Font.font(15));
-            gc.fillText(scene.getZikaze(i) + " " + String.valueOf(scene.point[i]), 200, 370);
+            gc.fillText(scene.getZikaze(i) + " " + String.valueOf(scene.point[i]), 200, 368);
 
             gc.setFill(Color.BLACK);
-            gc.fillText(scene.dan[i] + "R" + scene.rate[i], 200, 385);
+            gc.fillText(scene.dan[i] + "R" + scene.rate[i], 200, 383);
 
             gc.setFont(Font.font("MS Mincho", 15));
-            gc.fillText(scene.players[i], 200, 400);
+            gc.fillText(scene.players[i], 200, 398);
             draw(scene, i);
             rotate();
         }
