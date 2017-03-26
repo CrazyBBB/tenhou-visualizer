@@ -305,7 +305,7 @@ public class Analyzer {
         }
 
         oriScenes.add(new Scene(isSanma,
-                0,
+                1,
                 players.clone(),
                 dan.clone(),
                 rate.clone(),

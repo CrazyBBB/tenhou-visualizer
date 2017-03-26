@@ -193,6 +193,24 @@ public class AppController implements Initializable {
         gc.setFill(Color.valueOf("#cccccc"));
         gc.fillRect(200, 200, 200, 200);
 
+        for (int i = 0; i < 4; i++) {
+            int drawnPlayerId = (i + scene.playerId) % 4;
+
+            if (drawnPlayerId != 3 || !scene.isSanma) {
+                gc.setFill(Color.RED);
+                gc.setFont(Font.font(15));
+                gc.fillText(scene.getZikaze(drawnPlayerId) + " " + String.valueOf(scene.point[drawnPlayerId]), 200, 368);
+
+                gc.setFill(Color.BLACK);
+                gc.fillText(scene.dan[drawnPlayerId] + "R" + scene.rate[drawnPlayerId], 200, 383);
+
+                gc.setFont(Font.font("MS Mincho", 15));
+                gc.fillText(scene.players[drawnPlayerId], 200, 398);
+                draw(scene, drawnPlayerId);
+            }
+            rotate();
+        }
+
         gc.setFill(Color.BLACK);
         gc.setFont(Font.font("MS Mincho", 24));
         gc.fillText(scene.getBaStr(), 240, 290);
@@ -206,24 +224,6 @@ public class AppController implements Initializable {
             }
         }
         gc.drawImage(imgUra, 340, 300, 20, 29);
-
-        for (int i = 0; i < 4; i++) {
-            if (i == 3 && scene.isSanma) {
-                rotate();
-                break;
-            }
-            gc.setFill(Color.RED);
-            gc.setFont(Font.font(15));
-            gc.fillText(scene.getZikaze(i) + " " + String.valueOf(scene.point[i]), 200, 368);
-
-            gc.setFill(Color.BLACK);
-            gc.fillText(scene.dan[i] + "R" + scene.rate[i], 200, 383);
-
-            gc.setFont(Font.font("MS Mincho", 15));
-            gc.fillText(scene.players[i], 200, 398);
-            draw(scene, i);
-            rotate();
-        }
     }
 
     @FXML
