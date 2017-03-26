@@ -53,7 +53,8 @@ public class AppController implements Initializable {
                 byte[] gunzipedXml = Reader.gunzip(xml);
                 if (gunzipedXml == null) continue;
                 Document document = Reader.convertXmlFileToDocument(gunzipedXml);
-                ArrayList<Scene> scenes = Analyzer.findOriScenes(document);
+                Analyzer analyzer = new Analyzer();
+                ArrayList<Scene> scenes = analyzer.findOriScenes(document);
                 for (Scene scene : scenes) listview.getItems().add(scene);
             }
         }

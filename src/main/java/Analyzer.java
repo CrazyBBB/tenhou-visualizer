@@ -9,32 +9,31 @@ import java.util.TreeSet;
 
 public class Analyzer {
 
-    static final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級", "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
+    final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級", "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
 
-    static ArrayList<Scene> oriScenes = new ArrayList<>();
+    ArrayList<Scene> oriScenes = new ArrayList<>();
 
-    static String[] players = new String[4];
-    static boolean isSanma = false;
-    static String[] dan = new String[4];
-    static int[] rate = new int[4];
+    String[] players = new String[4];
+    boolean isSanma = false;
+    String[] dan = new String[4];
+    int[] rate = new int[4];
 
-    static int[] point = new int[4];
-    static int[] syanten = new int[4];
-    static int[][] tehai = new int[4][34];
-    static TreeSet<Integer>[] stehai = new TreeSet[4];
-    static ArrayList<Integer>[] dahai = new ArrayList[4];
-    static ArrayList<Boolean>[] tedashi = new ArrayList[4];
-    static ArrayList<Naki>[] naki = new ArrayList[4];
-    static int[] reach = new int[4];
-    static int[] kita = new int[4];
-    static int bakaze = 0;
-    static int kyoku = -1;
-    static int honba = 0;
-    static ArrayList<Integer> dora;
+    int[] point = new int[4];
+    int[][] tehai = new int[4][34];
+    TreeSet<Integer>[] stehai = new TreeSet[4];
+    ArrayList<Integer>[] dahai = new ArrayList[4];
+    ArrayList<Boolean>[] tedashi = new ArrayList[4];
+    ArrayList<Naki>[] naki = new ArrayList[4];
+    int[] reach = new int[4];
+    int[] kita = new int[4];
+    int bakaze = 0;
+    int kyoku = -1;
+    int honba = 0;
+    ArrayList<Integer> dora;
 
-    static int prev = -1;
+    int prev = -1;
 
-    public static ArrayList<Scene> findOriScenes(Document document) throws IOException {
+    public ArrayList<Scene> findOriScenes(Document document) throws IOException {
 
         Element element = document.getDocumentElement();
         NodeList nodeList = element.getChildNodes();
@@ -55,12 +54,10 @@ public class Analyzer {
                 // nop
             } else if ("INIT".equals(nodeName)) {
                 analyzeINIT(node);
-                saveScene(); //TODO
-//            } else if ("AGARI".equals(nodeName)) { TODO
-//
-//            } else if ("RYUUKYOKU".equals(nodeName)) {
-            } else if ("AGARI".equals(nodeName) || "RYUUKYOKU".equals(nodeName)) {
-                saveScene(); //TODO
+            } else if ("AGARI".equals(nodeName)) {
+
+            } else if ("RYUUKYOKU".equals(nodeName)) {
+
             } else if ("N".equals(nodeName)) {
                 analyzeN(node);
             } else if (nodeName.matches("[T-W]\\d+")) {
@@ -79,13 +76,13 @@ public class Analyzer {
         return oriScenes;
     }
 
-    private static void analyzeGO(Node node) {
+    private void analyzeGO(Node node) {
         Node typeNode = node.getAttributes().getNamedItem("type");
         int type = Integer.parseInt(typeNode.getNodeValue());
         isSanma = (type & 0x10) != 0;
     }
 
-    private static void analyzeUN(Node node) throws IOException {
+    private void analyzeUN(Node node) throws IOException {
         NamedNodeMap attributes = node.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
             Node attribute = attributes.item(i);
@@ -107,7 +104,7 @@ public class Analyzer {
         }
     }
 
-    private static void analyzeINIT(Node node) {
+    private void analyzeINIT(Node node) {
         for (int i = 0; i < 4; i++) {
             Arrays.fill(tehai[i], 0);
             stehai[i] = new TreeSet<>();
@@ -158,7 +155,7 @@ public class Analyzer {
         }
     }
 
-    private static void analyzeT(String nodeName) {
+    private void analyzeT(String nodeName) {
         int playerId = nodeName.charAt(0) - 'T';
         int hai = Integer.parseInt(nodeName.substring(1));
         stehai[playerId].add(hai);
@@ -166,16 +163,23 @@ public class Analyzer {
         prev = hai;
     }
 
-    private static void analyzeD(String nodeName) {
+    private void analyzeD(String nodeName) {
         int playerId = nodeName.charAt(0) - 'D';
+        int beforeSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
+
         int hai = Integer.parseInt(nodeName.substring(1));
         stehai[playerId].remove(hai);
         tehai[playerId][hai / 4]--;
         dahai[playerId].add(hai);
         tedashi[playerId].add(prev != hai);
+
+        int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
+        if (beforeSyanten < afterSyanten) {
+            saveScene(playerId);
+        }
     }
 
-    private static void analyzeN(Node node) {
+    private void analyzeN(Node node) {
         Node mNode = node.getAttributes().getNamedItem("m");
         int m = Integer.parseInt(mNode.getNodeValue());
         Node whoNode = node.getAttributes().getNamedItem("who");
@@ -272,7 +276,7 @@ public class Analyzer {
         prev = -1;
     }
 
-    private static void analyzeREACH(Node node) {
+    private void analyzeREACH(Node node) {
         Node stepNode = node.getAttributes().getNamedItem("step");
         int step = Integer.parseInt(stepNode.getNodeValue());
 
@@ -285,13 +289,13 @@ public class Analyzer {
         }
     }
 
-    private static void analyzeDORA(Node node) {
+    private void analyzeDORA(Node node) {
         Node haiNode = node.getAttributes().getNamedItem("hai");
         int hai = Integer.parseInt(haiNode.getNodeValue());
         dora.add(hai);
     }
 
-    private static void saveScene() {
+    private void saveScene(int playerId) {
         TreeSet<Integer>[] tmpStehai = new TreeSet[4];
         ArrayList<Integer>[] tmpDahai = new ArrayList[4];
         ArrayList<Boolean>[] tmpTedashi = new ArrayList[4];
@@ -305,7 +309,7 @@ public class Analyzer {
         }
 
         oriScenes.add(new Scene(isSanma,
-                1,
+                playerId,
                 players.clone(),
                 dan.clone(),
                 rate.clone(),
