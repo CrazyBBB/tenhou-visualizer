@@ -31,6 +31,8 @@ public class Analyzer {
     int honba = 0;
     ArrayList<Integer> dora;
 
+    boolean[] saved = new boolean[4];
+
     int prev = -1;
 
     public ArrayList<Scene> findOriScenes(Document document) throws IOException {
@@ -114,6 +116,7 @@ public class Analyzer {
         }
         Arrays.fill(reach, -1);
         Arrays.fill(kita, 0);
+        Arrays.fill(saved, false);
         dora = new ArrayList<>();
 
         NamedNodeMap attributes = node.getAttributes();
@@ -174,8 +177,9 @@ public class Analyzer {
         tedashi[playerId].add(prev != hai);
 
         int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
-        if (beforeSyanten < afterSyanten) {
+        if (!saved[playerId] && beforeSyanten < afterSyanten) {
             saveScene(playerId);
+            saved[playerId] = true;
         }
     }
 
