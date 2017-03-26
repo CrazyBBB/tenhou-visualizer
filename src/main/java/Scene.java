@@ -53,17 +53,13 @@ public class Scene {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[").append(maStr[isSanma ? 0 : 1]).append("]");
-        sb.append(bakazeStr[bakaze]).append(kyoku).append("局");
-        sb.append(honba).append("本場: ");
+        sb.append(players[playerId]).append(dan[playerId]);
+        sb.append("(").append(point[playerId]).append("点, ");
+        sb.append(bakazeStr[bakaze]).append(kyoku).append("-");
+        sb.append(honba).append("局");
+        sb.append(dahai[playerId].size()).append("巡目)");
 
-        int n = isSanma ? 3 : 4;
-        for (int i = 0; i < n; i++) {
-            if (i > 0) sb.append(", ");
-            sb.append(players[i]).append("(").append(point[i]).append(")");
-        }
-
-        return sb.toString(); //TODO:変更
-        // return String.join(",", players);
+        return sb.toString();
     }
 
 
