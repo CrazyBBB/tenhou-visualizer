@@ -273,9 +273,16 @@ public class Analyzer {
     }
 
     private static void analyzeREACH(Node node) {
+        Node stepNode = node.getAttributes().getNamedItem("step");
+        int step = Integer.parseInt(stepNode.getNodeValue());
+
         Node whoNode = node.getAttributes().getNamedItem("who");
         int who = Integer.parseInt(whoNode.getNodeValue());
-        reach[who] = dahai[who].size();
+        if (step == 1) {
+            reach[who] = dahai[who].size();
+        } else {
+            point[who] -= 1000;
+        }
     }
 
     private static void analyzeDORA(Node node) {
