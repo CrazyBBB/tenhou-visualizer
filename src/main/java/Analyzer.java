@@ -55,28 +55,12 @@ public class Analyzer {
                 // nop
             } else if ("INIT".equals(nodeName)) {
                 analyzeINIT(node);
+                saveScene(); //TODO
 //            } else if ("AGARI".equals(nodeName)) { TODO
 //
 //            } else if ("RYUUKYOKU".equals(nodeName)) {
             } else if ("AGARI".equals(nodeName) || "RYUUKYOKU".equals(nodeName)) {
-                //TODO:remove
-                oriScenes.add(new Scene(isSanma,
-                        0,
-                        players.clone(),
-                        dan.clone(),
-                        rate.clone(),
-                        point.clone(),
-                        stehai.clone(),
-                        naki.clone(),
-                        dahai.clone(),
-                        tedashi.clone(),
-                        reach.clone(),
-                        kita.clone(),
-                        bakaze,
-                        kyoku,
-                        honba,
-                        0,
-                        new ArrayList<>(dora)));
+                saveScene(); //TODO
             } else if ("N".equals(nodeName)) {
                 analyzeN(node);
             } else if (nodeName.matches("[T-W]\\d+")) {
@@ -298,5 +282,37 @@ public class Analyzer {
         Node haiNode = node.getAttributes().getNamedItem("hai");
         int hai = Integer.parseInt(haiNode.getNodeValue());
         dora.add(hai);
+    }
+
+    private static void saveScene() {
+        TreeSet<Integer>[] tmpStehai = new TreeSet[4];
+        ArrayList<Integer>[] tmpDahai = new ArrayList[4];
+        ArrayList<Boolean>[] tmpTedashi = new ArrayList[4];
+        ArrayList<Naki>[] tmpNaki = new ArrayList[4];
+
+        for (int i = 0; i < 4; i++) {
+            tmpStehai[i] = new TreeSet<>(stehai[i]);
+            tmpDahai[i] = new ArrayList<>(dahai[i]);
+            tmpTedashi[i] = new ArrayList<>(tedashi[i]);
+            tmpNaki[i] = new ArrayList<>(naki[i]);
+        }
+
+        oriScenes.add(new Scene(isSanma,
+                0,
+                players.clone(),
+                dan.clone(),
+                rate.clone(),
+                point.clone(),
+                tmpStehai,
+                tmpNaki,
+                tmpDahai,
+                tmpTedashi,
+                reach.clone(),
+                kita.clone(),
+                bakaze,
+                kyoku,
+                honba,
+                0,
+                new ArrayList<>(dora)));
     }
 }
