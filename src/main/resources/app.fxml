@@ -21,7 +21,7 @@
     </center>
     <bottom>
         <ToolBar>
-            <Label fx:id="label" text="ファイルが選択されていません"/>
+            <Label fx:id="label" text="解析には数分かかることがあります"/>
         </ToolBar>
     </bottom>
 </BorderPane>
