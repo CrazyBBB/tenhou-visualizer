@@ -1,13 +1,13 @@
-import org.w3c.dom.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
 
-public class Analyzer {
+public class Analyzer extends DefaultHandler {
 
     final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級", "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
 
@@ -35,78 +35,68 @@ public class Analyzer {
 
     int prev = -1;
 
-    public ArrayList<Scene> findOriScenes(Document document) throws IOException {
-
-        Element element = document.getDocumentElement();
-        NodeList nodeList = element.getChildNodes();
-        int len = nodeList.getLength();
-        int index = 0;
-
-        while (index < len) {
-            Node node = nodeList.item(index);
-            String nodeName = node.getNodeName();
-
-            if ("SHUFFLE".equals(nodeName)) {
-                // nop
-            } else if ("GO".equals(nodeName)) {
-                analyzeGO(node);
-            } else if ("UN".equals(nodeName)) {
-                analyzeUN(node);
-            } else if ("TAIKYOKU".equals(nodeName)) {
-                // nop
-            } else if ("INIT".equals(nodeName)) {
-                analyzeINIT(node);
-            } else if ("AGARI".equals(nodeName)) {
-
-            } else if ("RYUUKYOKU".equals(nodeName)) {
-
-            } else if ("N".equals(nodeName)) {
-                analyzeN(node);
-            } else if (nodeName.matches("[T-W]\\d+")) {
-                analyzeT(nodeName);
-            } else if (nodeName.matches("[D-G]\\d+")) {
-                analyzeD(nodeName);
-            } else if ("REACH".equals(nodeName)) {
-                analyzeREACH(node);
-            } else if ("DORA".equals(nodeName)) {
-                analyzeDORA(node);
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        if ("SHUFFLE".equals(qName)) {
+            // nop
+        } else if ("GO".equals(qName)) {
+            analyzeGO(attributes);
+        } else if ("UN".equals(qName)) {
+            try {
+                analyzeUN(attributes);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        } else if ("TAIKYOKU".equals(qName)) {
+            // nop
+        } else if ("INIT".equals(qName)) {
+            analyzeINIT(attributes);
+        } else if ("AGARI".equals(qName)) {
 
-            index++;
+        } else if ("RYUUKYOKU".equals(qName)) {
+
+        } else if ("N".equals(qName)) {
+            analyzeN(attributes);
+        } else if (qName.matches("[T-W]\\d+")) {
+            analyzeT(qName);
+        } else if (qName.matches("[D-G]\\d+")) {
+            analyzeD(qName);
+        } else if ("REACH".equals(qName)) {
+            analyzeREACH(attributes);
+        } else if ("DORA".equals(qName)) {
+            analyzeDORA(attributes);
         }
-
-        return oriScenes;
     }
 
-    private void analyzeGO(Node node) {
-        Node typeNode = node.getAttributes().getNamedItem("type");
-        int type = Integer.parseInt(typeNode.getNodeValue());
+    private void analyzeGO(Attributes attributes) {
+        int type = Integer.parseInt(attributes.getValue("type"));
         isSanma = (type & 0x10) != 0;
     }
 
-    private void analyzeUN(Node node) throws IOException {
-        NamedNodeMap attributes = node.getAttributes();
-        for (int i = 0; i < attributes.getLength(); i++) {
-            Node attribute = attributes.item(i);
-            String key = attribute.getNodeName();
-            if (key.equals("dan")) {
-                String[] tmp = attribute.getNodeValue().split(",");
-                for (int j = 0; j < 4; j++) {
-                    dan[j] = danStr[Integer.valueOf(tmp[j])];
-                }
-            } else if (key.equals("rate")) {
-                String[] tmp = attribute.getNodeValue().split(",");
-                for (int j = 0; j < 4; j++) {
-                    rate[j] = Float.valueOf(tmp[j]).intValue();
-                }
-            } else if (key.matches("n\\d")) {
-                String name = URLDecoder.decode(attribute.getNodeValue(), "UTF-8");
-                players[Integer.parseInt(key.substring(1))] = name;
+    private void analyzeUN(Attributes attributes) throws IOException {
+        String danCsv = attributes.getValue("dan");
+
+        // 復帰時のUN要素でない
+        if (danCsv != null) {
+            String[] splitedDanCsv = danCsv.split(",");
+            for (int j = 0; j < 4; j++) {
+                dan[j] = danStr[Integer.valueOf(splitedDanCsv[j])];
+            }
+
+            String rateCsv = attributes.getValue("rate");
+            String[] splitedRateCsv = rateCsv.split(",");
+            for (int j = 0; j < 4; j++) {
+                rate[j] = Float.valueOf(splitedRateCsv[j]).intValue();
+            }
+
+            for (int i = 0; i < 4; i++) {
+                String name = URLDecoder.decode(attributes.getValue("n" + i), "UTF-8");
+                players[i] = name;
             }
         }
     }
 
-    private void analyzeINIT(Node node) {
+    private void analyzeINIT(Attributes attributes) {
         for (int i = 0; i < 4; i++) {
             Arrays.fill(tehai[i], 0);
             stehai[i] = new TreeSet<>();
@@ -119,58 +109,51 @@ public class Analyzer {
         Arrays.fill(saved, false);
         dora = new ArrayList<>();
 
-        NamedNodeMap attributes = node.getAttributes();
-        for (int i = 0; i < attributes.getLength(); i++) {
-            Node attribute = attributes.item(i);
-            String key = attribute.getNodeName();
-            if (key.equals("ten")) {
-                String value = attribute.getNodeValue();
-                String[] pointStr = value.split(",");
-                for (int j = 0; j < 4; j++) {
-                    point[j] = Integer.parseInt(pointStr[j]) * 100;
-                }
-            } else if (key.equals("seed")) {
-                String value = attribute.getNodeValue();
-                String[] seedStr = value.split(",");
-                int seed0 = Integer.valueOf(seedStr[0]);
-                if (seed0 % 4 + 1 == kyoku) {
-                    honba++;
-                } else {
-                    honba = 0;
-                }
-                bakaze = seed0 / 4;
-                kyoku = seed0 % 4 + 1;
+        String tenCsv = attributes.getValue("ten");
+        String[] splitedTenCsv = tenCsv.split(",");
+        for (int j = 0; j < 4; j++) {
+            point[j] = Integer.valueOf(splitedTenCsv[j]) * 100;
+        }
 
-                int seed5 = Integer.valueOf(seedStr[5]);
-                dora.add(seed5);
-            } else if (key.matches("hai\\d")) {
-                int playerId = Integer.parseInt(key.substring(3));
-                String value = attribute.getNodeValue();
-                if ("".equals(value)) continue;
-                String[] hais = value.split(",");
+        String seedCsv = attributes.getValue("seed");
+        String[] splitedSeedCsv = seedCsv.split(",");
+        int seed0 = Integer.valueOf(splitedSeedCsv[0]);
+        if (seed0 % 4 + 1 == kyoku) {
+            honba++;
+        } else {
+            honba = 0;
+        }
+        bakaze = seed0 / 4;
+        kyoku = seed0 % 4 + 1;
+        int seed5 = Integer.valueOf(splitedSeedCsv[5]);
+        dora.add(seed5);
 
-                for (int j = 0; j < 13; j++) {
-                    int hai = Integer.parseInt(hais[j]);
-                    stehai[playerId].add(hai);
-                    tehai[playerId][hai / 4]++;
-                }
+        for (int i = 0; i < 4; i++) {
+            String haiCsv = attributes.getValue("hai" + i);
+            if ("".equals(haiCsv)) continue;
+
+            String[] splitedHaiCsv = haiCsv.split(",");
+            for (int j = 0; j < 13; j++) {
+                int hai = Integer.parseInt(splitedHaiCsv[j]);
+                stehai[i].add(hai);
+                tehai[i][hai / 4]++;
             }
         }
     }
 
-    private void analyzeT(String nodeName) {
-        int playerId = nodeName.charAt(0) - 'T';
-        int hai = Integer.parseInt(nodeName.substring(1));
+    private void analyzeT(String qName) {
+        int playerId = qName.charAt(0) - 'T';
+        int hai = Integer.parseInt(qName.substring(1));
         stehai[playerId].add(hai);
         tehai[playerId][hai / 4]++;
         prev = hai;
     }
 
-    private void analyzeD(String nodeName) {
-        int playerId = nodeName.charAt(0) - 'D';
+    private void analyzeD(String qName) {
+        int playerId = qName.charAt(0) - 'D';
         int beforeSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
 
-        int hai = Integer.parseInt(nodeName.substring(1));
+        int hai = Integer.parseInt(qName.substring(1));
         stehai[playerId].remove(hai);
         tehai[playerId][hai / 4]--;
         dahai[playerId].add(hai);
@@ -183,11 +166,9 @@ public class Analyzer {
         }
     }
 
-    private void analyzeN(Node node) {
-        Node mNode = node.getAttributes().getNamedItem("m");
-        int m = Integer.parseInt(mNode.getNodeValue());
-        Node whoNode = node.getAttributes().getNamedItem("who");
-        int who = Integer.parseInt(whoNode.getNodeValue());
+    private void analyzeN(Attributes attributes) {
+        int m = Integer.parseInt(attributes.getValue("m"));
+        int who = Integer.parseInt(attributes.getValue("who"));
 
         int kui = m & 3;
         if ((m >> 2 & 1) == 1) {
@@ -280,12 +261,9 @@ public class Analyzer {
         prev = -1;
     }
 
-    private void analyzeREACH(Node node) {
-        Node stepNode = node.getAttributes().getNamedItem("step");
-        int step = Integer.parseInt(stepNode.getNodeValue());
-
-        Node whoNode = node.getAttributes().getNamedItem("who");
-        int who = Integer.parseInt(whoNode.getNodeValue());
+    private void analyzeREACH(Attributes attributes) {
+        int step = Integer.parseInt(attributes.getValue("step"));
+        int who = Integer.parseInt(attributes.getValue("who"));
         if (step == 1) {
             reach[who] = dahai[who].size();
         } else {
@@ -293,9 +271,8 @@ public class Analyzer {
         }
     }
 
-    private void analyzeDORA(Node node) {
-        Node haiNode = node.getAttributes().getNamedItem("hai");
-        int hai = Integer.parseInt(haiNode.getNodeValue());
+    private void analyzeDORA(Attributes attributes) {
+        int hai = Integer.parseInt(attributes.getValue("hai"));
         dora.add(hai);
     }
 
@@ -329,5 +306,9 @@ public class Analyzer {
                 honba,
                 0,
                 new ArrayList<>(dora)));
+    }
+
+    public ArrayList<Scene> getOriScenes() {
+        return oriScenes;
     }
 }

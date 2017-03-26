@@ -15,6 +15,9 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -52,9 +55,11 @@ public class AppController implements Initializable {
             for (byte[] xml : list) {
                 byte[] gunzipedXml = Reader.gunzip(xml);
                 if (gunzipedXml == null) continue;
-                Document document = Reader.convertXmlFileToDocument(gunzipedXml);
+                SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+                SAXParser saxParser = saxParserFactory.newSAXParser();
                 Analyzer analyzer = new Analyzer();
-                ArrayList<Scene> scenes = analyzer.findOriScenes(document);
+                saxParser.parse(new ByteArrayInputStream(gunzipedXml), analyzer);
+                ArrayList<Scene> scenes = analyzer.getOriScenes();
                 for (Scene scene : scenes) listview.getItems().add(scene);
             }
         }

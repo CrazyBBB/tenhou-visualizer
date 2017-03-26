@@ -1,9 +1,3 @@
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.zip.GZIPInputStream;
@@ -11,15 +5,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class Reader {
-
-    public static Document convertXmlFileToDocument(byte[] xml) throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        InputStream is = new ByteArrayInputStream(xml);
-        Document document = builder.parse(is);
-        is.close();
-        return document;
-    }
 
     public static ArrayList<byte[]> unzip(File file) throws IOException {
         ArrayList<byte[]> list = new ArrayList<>();
