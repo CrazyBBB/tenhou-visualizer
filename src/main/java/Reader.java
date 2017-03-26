@@ -52,7 +52,7 @@ public class Reader {
             ba = baos.toByteArray();
             baos.close();
             gis.close();
-        } catch (EOFException e) {
+        } catch (IOException e) {
             // nop
         }
         is.close();
