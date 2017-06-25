@@ -35,6 +35,12 @@ public class Analyzer extends DefaultHandler {
 
     int prev = -1;
 
+    int position;
+
+    public Analyzer(int position) {
+        this.position = position;
+    }
+
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         if ("SHUFFLE".equals(qName)) {
@@ -160,7 +166,7 @@ public class Analyzer extends DefaultHandler {
         tedashi[playerId].add(prev != hai);
 
         int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
-        if (!saved[playerId] && beforeSyanten < afterSyanten) {
+        if (playerId == position && !saved[playerId] && beforeSyanten < afterSyanten) {
             saveScene(playerId);
             saved[playerId] = true;
         }

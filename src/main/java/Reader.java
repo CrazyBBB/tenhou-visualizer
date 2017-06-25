@@ -6,8 +6,8 @@ import java.util.zip.ZipInputStream;
 
 public class Reader {
 
-    public static ArrayList<byte[]> unzip(File file) throws IOException {
-        ArrayList<byte[]> list = new ArrayList<>();
+    public static ArrayList<MjlogFile> unzip(File file) throws IOException {
+        ArrayList<MjlogFile> list = new ArrayList<>();
         FileInputStream fis = new FileInputStream(file);
         ZipInputStream zis = new ZipInputStream(fis);
         ZipEntry entry = null;
@@ -16,7 +16,13 @@ public class Reader {
             if (size < 0) continue;
             byte[] buf = new byte[size];
             zis.read(buf);
-            list.add(buf);
+
+            String path = entry.toString();
+            //                                                         *
+            // ex) mjlog_pf3-20_n14/2017010818gm-00b9-0000-bcbde0df&tw=0.mjlog
+            int position = path.charAt(path.length() - 7) - '0';
+
+            list.add(new MjlogFile(buf, position));
         }
         zis.close();
         fis.close();

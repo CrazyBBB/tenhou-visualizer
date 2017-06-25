@@ -50,13 +50,13 @@ public class AppController implements Initializable {
 
         if (selectedFile != null) {
             label.setText(selectedFile.toString());
-            ArrayList<byte[]> list = Reader.unzip(selectedFile);
-            for (byte[] xml : list) {
-                byte[] gunzipedXml = Reader.gunzip(xml);
+            ArrayList<MjlogFile> list = Reader.unzip(selectedFile);
+            for (MjlogFile mjlogFile : list) {
+                byte[] gunzipedXml = Reader.gunzip(mjlogFile.getXml());
                 if (gunzipedXml == null) continue;
                 SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
                 SAXParser saxParser = saxParserFactory.newSAXParser();
-                Analyzer analyzer = new Analyzer();
+                Analyzer analyzer = new Analyzer(mjlogFile.getPosition());
                 saxParser.parse(new ByteArrayInputStream(gunzipedXml), analyzer);
                 ArrayList<Scene> scenes = analyzer.getOriScenes();
                 for (Scene scene : scenes) listview.getItems().add(scene);
