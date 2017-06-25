@@ -1,4 +1,4 @@
-# tenhou-visualizer
+# Tenhou Visualizer
 
 [ダウンロード](https://github.com/CrazyBBB/tenhou-visualizer/releases/download/v0.1/tenhouvisualizer.jar)
 
@@ -6,7 +6,7 @@
 
 - 天鳳の牌譜から特定の場面を抽出するツール
 - 現在はシャンテン数が後退した場面抽出のみ
-- 実行するにはJavaの実行環境が必要です
+- 実行するにはJavaの実行環境が必要
 
 ## 使い方
 
