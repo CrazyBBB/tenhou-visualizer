@@ -2,13 +2,7 @@
  * Created by m-yamamt on 2017/03/04.
  */
 import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.InputStream;
+import tenhouvisualizer.Utils;
 
 import static org.junit.Assert.*;
 
