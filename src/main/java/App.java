@@ -17,7 +17,7 @@ public class App extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("app.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("天鳳牌譜解析ツール");
+        stage.setTitle("Tenhou Visualizer");
         stage.setResizable(false);
         stage.show();
     }
