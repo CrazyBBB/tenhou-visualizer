@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tenhodownloader.DownloaderController"
+            prefHeight="400.0" prefWidth="600.0">
+    <top>
+        <VBox>
+            <MenuBar>
+                <Menu text="File" />
+            </MenuBar>
+            <ToolBar>
+                <Button text="Download Index" onAction="#downloadIndex" />
+                <Button text="Download Mjlog" onAction="#downloadMjlog" />
+            </ToolBar>
+        </VBox>
+    </top>
+    <center>
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" />
+                <ColumnConstraints hgrow="ALWAYS" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="ALWAYS" />
+            </rowConstraints>
+            <TabPane GridPane.columnIndex="0">
+                <Tab text="Current Year" closable="false">
+                    <ListView fx:id="listView" />
+                </Tab>
+            </TabPane>
+            <TableView GridPane.columnIndex="1" fx:id="tableView" >
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" sortable="false" editable="false" />
+                    <TableColumn fx:id="playersColumn" text="Players" sortable="false" editable="false" />
+                </columns>
+            </TableView>
+        </GridPane>
+    </center>
+</BorderPane>

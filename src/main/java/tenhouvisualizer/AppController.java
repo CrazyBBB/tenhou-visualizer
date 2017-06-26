@@ -37,15 +37,17 @@ public class AppController implements Initializable {
     @FXML
     private BoardControl boardControl;
 
-    private File selectedFile;
+    private File lastSelectedFile = null;
 
     @FXML
     public void onBtnClicked(ActionEvent e) throws IOException, ParserConfigurationException, SAXException {
         FileChooser fc = new FileChooser();
-        fc.setInitialDirectory(new File("."));
-        selectedFile = fc.showOpenDialog(root.getScene().getWindow());
+        fc.setInitialDirectory(lastSelectedFile == null ? new File(".") : lastSelectedFile);
+        File selectedFile = fc.showOpenDialog(root.getScene().getWindow());
 
         if (selectedFile != null) {
+            lastSelectedFile = selectedFile;
+
             Task<List<Scene>> task = new AnalyzeTask(selectedFile, listView, label2);
             this.progressBar.progressProperty().bind(task.progressProperty());
             task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));
