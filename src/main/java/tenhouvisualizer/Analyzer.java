@@ -33,7 +33,7 @@ public class Analyzer extends DefaultHandler {
     int honba = 0;
     ArrayList<Integer> dora;
 
-    boolean[] saved = new boolean[4];
+    boolean saved = false;
 
     int prev = -1;
 
@@ -114,7 +114,7 @@ public class Analyzer extends DefaultHandler {
         }
         Arrays.fill(reach, -1);
         Arrays.fill(kita, 0);
-        Arrays.fill(saved, false);
+        saved = false;
         dora = new ArrayList<>();
 
         String tenCsv = attributes.getValue("ten");
@@ -159,7 +159,10 @@ public class Analyzer extends DefaultHandler {
 
     private void analyzeD(String qName) {
         int playerId = qName.charAt(0) - 'D';
-        int beforeSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
+        int beforeSyanten = 0;
+        if (playerId == position && !saved) {
+            beforeSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
+        }
 
         int hai = Integer.parseInt(qName.substring(1));
         stehai[playerId].remove(hai);
@@ -167,10 +170,12 @@ public class Analyzer extends DefaultHandler {
         dahai[playerId].add(hai);
         tedashi[playerId].add(prev != hai);
 
-        int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
-        if (playerId == position && !saved[playerId] && beforeSyanten < afterSyanten) {
-            saveScene(playerId);
-            saved[playerId] = true;
+        if (playerId == position && !saved) {
+            int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
+            if (beforeSyanten < afterSyanten) {
+                saveScene(playerId);
+                saved = true;
+            }
         }
     }
 

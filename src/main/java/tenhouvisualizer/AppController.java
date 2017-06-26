@@ -28,7 +28,9 @@ public class AppController implements Initializable {
     @FXML
     private Label label;
     @FXML
-    private ListView<Scene> listview;
+    private Label label2;
+    @FXML
+    private ListView<Scene> listView;
     @FXML
     private BoardControl boardControl;
 
@@ -41,11 +43,9 @@ public class AppController implements Initializable {
         selectedFile = fc.showOpenDialog(root.getScene().getWindow());
 
         if (selectedFile != null) {
-            Task<List<Scene>> task = new AnalyzeTask(selectedFile);
+            Task<List<Scene>> task = new AnalyzeTask(selectedFile, listView, label2);
             this.progressBar.progressProperty().bind(task.progressProperty());
             task.setOnSucceeded(a -> {
-                this.listview.getItems().clear();
-                this.listview.getItems().addAll(task.getValue());
                 this.openMenuItem.setDisable(false);
             });
             task.setOnRunning(a -> {
@@ -58,7 +58,7 @@ public class AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        listview.getSelectionModel().selectedItemProperty().addListener((obs, oldScene, newScene) -> {
+        listView.getSelectionModel().selectedItemProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 this.boardControl.drawScene(newScene);
                 this.label.setText(newScene.toString());

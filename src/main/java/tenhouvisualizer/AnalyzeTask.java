@@ -1,6 +1,9 @@
 package tenhouvisualizer;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -12,12 +15,17 @@ import java.util.Objects;
 
 public class AnalyzeTask extends Task<List<Scene>> {
     private final File selectedFile;
-    public AnalyzeTask(File selectedFile) {
+    private ListView<Scene> listView;
+    private Label label;
+    public AnalyzeTask(File selectedFile, ListView<Scene> listView, Label label) {
         this.selectedFile = Objects.requireNonNull(selectedFile);
+        this.listView = listView;
+        this.label = label;
     }
     @Override
     protected List<Scene> call() throws Exception {
-        List<Scene> result = new ArrayList<>();
+        Platform.runLater(() -> this.listView.getItems().clear());
+
         ArrayList<MjlogFile> list = Reader.unzip(selectedFile);
         long workDone = 0;
         long workMax = list.size();
@@ -29,10 +37,14 @@ public class AnalyzeTask extends Task<List<Scene>> {
             Analyzer analyzer = new Analyzer(mjlogFile.getPosition());
             saxParser.parse(new ByteArrayInputStream(gunzipedXml), analyzer);
             ArrayList<Scene> scenes = analyzer.getOriScenes();
-            result.addAll(scenes);
             workDone++;
+            final long tmp = workDone;
+            Platform.runLater(() -> {
+                listView.getItems().addAll(scenes);
+                label.setText(tmp + "/" + workMax);
+            });
             updateProgress(workDone, workMax);
         }
-        return result;
+        return null;
     }
 }
