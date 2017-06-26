@@ -13,8 +13,14 @@ public class BoardControl extends Canvas {
     private Image[] img_dt = new Image[37];
     private Image[] img_dy = new Image[37];
     private Image imgUra;
-    public void drawScene(Scene scene) {
-        init(scene);
+
+    void drawScene() {
+        initBase();
+    }
+
+    void drawScene(Scene scene) {
+        initBase();
+        initInfoAndHai(scene);
     }
 
     public BoardControl() {
@@ -33,15 +39,15 @@ public class BoardControl extends Canvas {
         gc.fillRect(200, 200, 200, 200);
     }
 
-    private void init(Scene scene) {
-        //label.setText(scene.toString());
-
+    private void initBase() {
         gc.clearRect(0, 0, this.getWidth(), this.getHeight());
         gc.setFill(javafx.scene.paint.Color.GREEN);
         gc.fillRect(0, 0, this.getWidth(), this.getHeight());
         gc.setFill(javafx.scene.paint.Color.valueOf("#cccccc"));
         gc.fillRect(200, 200, 200, 200);
+    }
 
+    private void initInfoAndHai(Scene scene) {
         for (int i = 0; i < 4; i++) {
             int drawnPlayerId = (i + scene.playerId) % 4;
 

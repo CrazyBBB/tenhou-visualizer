@@ -45,18 +45,15 @@ public class AppController implements Initializable {
         if (selectedFile != null) {
             Task<List<Scene>> task = new AnalyzeTask(selectedFile, listView, label2);
             this.progressBar.progressProperty().bind(task.progressProperty());
-            task.setOnSucceeded(a -> {
-                this.openMenuItem.setDisable(false);
-            });
-            task.setOnRunning(a -> {
-                this.openMenuItem.setDisable(true);
-            });
+            task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));
+            task.setOnRunning(a -> this.openMenuItem.setDisable(true));
             new Thread(task).start();
         }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        boardControl.drawScene();
 
         listView.getSelectionModel().selectedItemProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
