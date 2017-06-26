@@ -1,6 +1,9 @@
 package tenhouvisualizer;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -54,7 +57,10 @@ public class AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         boardControl.drawScene();
-
+//        this.label2.textProperty().bind(Bindings.concat(
+//                Bindings.convert(Bindings.size(this.listView.getItems())),
+//                new SimpleStringProperty("/"),
+//                new SimpleStringProperty("NaN")) );
         listView.getSelectionModel().selectedItemProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 this.boardControl.drawScene(newScene);
