@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.HBox?>
 <?import tenhouvisualizer.BoardControl?>
+<?import javafx.scene.layout.VBox?>
 <BorderPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="tenhouvisualizer.AppController" fx:id="root">
     <top>
@@ -19,13 +20,28 @@
         <ListView fx:id="listView"/>
     </left>
     <center>
-            <BoardControl fx:id="boardControl" height="600.0" width="600.0"/>
+        <BorderPane>
+            <center>
+                <ScrollPane fitToWidth="true" fitToHeight="true">
+                    <VBox alignment="CENTER">
+                        <HBox alignment="CENTER">
+                            <VBox>
+                                <BoardControl fx:id="boardControl" height="600.0" width="600.0"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                </ScrollPane>
+            </center>
+            <!--<bottom>-->
+                <!--<Button>aaa</Button>-->
+            <!--</bottom>-->
+        </BorderPane>
     </center>
     <bottom>
         <ToolBar>
             <Label fx:id="label" text="解析には数分かかることがあります"/>
             <Pane HBox.hgrow="ALWAYS"/>
-            <Label fx:id="label2" text=""/>
+            <Label fx:id="label2"/>
             <ProgressBar fx:id="progressBar" progress="0" />
         </ToolBar>
     </bottom>
