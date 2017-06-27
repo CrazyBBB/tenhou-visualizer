@@ -9,10 +9,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
+import tenhouvisualizer.App;
 
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Files;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -62,7 +62,7 @@ public class DownloaderController implements Initializable {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showSaveDialog(this.listView.getScene().getWindow());
         if (selectedFile != null) {
-            Main.databaseService.dump(selectedFile);
+            App.databaseService.dump(selectedFile);
         }
     }
 }

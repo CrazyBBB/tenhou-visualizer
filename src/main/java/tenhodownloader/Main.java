@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import tenhouvisualizer.App;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,12 +17,10 @@ public class Main extends Application {
         launch(args);
     }
 
-    public static DatabaseService databaseService;
-
     @Override
     public void start(Stage stage) throws IOException {
         try {
-            this.databaseService = new DatabaseService(new File("./tenhouvisualizer.sqlite"));
+            App.databaseService = new DatabaseService(new File("./tenhouvisualizer.sqlite"));
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -35,6 +34,6 @@ public class Main extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        this.databaseService.close();
+        App.databaseService.close();
     }
 }

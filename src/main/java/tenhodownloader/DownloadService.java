@@ -2,6 +2,7 @@ package tenhodownloader;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import tenhouvisualizer.App;
 
 import java.io.*;
 import java.net.URL;
@@ -18,18 +19,18 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 public class DownloadService {
-    public final ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
+    final ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
     private final Set<String> storedInfoSchemas = new HashSet<>();
 
-    public DownloadService() {
+    DownloadService() {
         try {
-            this.storedInfoSchemas.addAll(Main.databaseService.findAllMjlogIds());
+            this.storedInfoSchemas.addAll(App.databaseService.findAllMjlogIds());
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void download(LocalDate localDate) {
+    void download(LocalDate localDate) {
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
         String urlPrefix = "http://tenhou.net/sc/raw/dat/2017/scc";
         String urlPostfix = ".html.gz";
@@ -45,12 +46,13 @@ public class DownloadService {
                     if (!line.isEmpty()) {
                         String[] columns = line.split(" \\| ");
                         Matcher matcher = mjlogPattern.matcher(columns[3]);
-                        matcher.find();
-                        String mjlog = matcher.group(1);
-                        int time = Integer.parseInt(columns[1]);
-                        String taku = columns[2];
-                        String players = columns[4].substring(0, columns[4].length() - 4);
-                        infoSchemas.add(new InfoSchema(null, time, mjlog, mjlog, players));
+                        if (matcher.find()) {
+                            String mjlog = matcher.group(1);
+                            int time = Integer.parseInt(columns[1]);
+                            String taku = columns[2];
+                            String players = columns[4].substring(0, columns[4].length() - 4);
+                            infoSchemas.add(new InfoSchema(null, time, mjlog, mjlog, players));
+                        }
                     }
                 }
             }
@@ -72,13 +74,13 @@ public class DownloadService {
     }
 
 
-    public void downloadMjlogToDatabase(InfoSchema schema) {
+    void downloadMjlogToDatabase(InfoSchema schema) {
         try {
             URL url = new URL("http://tenhou.net/0/log/?" + schema.id);
             try (InputStream is = url.openStream();
             InputStreamReader isr = new InputStreamReader(is)) {
                 String content = consumeReader(isr);
-                Main.databaseService.saveMjlog(schema.id, content);
+                App.databaseService.saveMjlog(schema.id, content);
                 this.storedInfoSchemas.add(schema.id);
             }
         } catch (IOException | SQLException e) {
@@ -96,7 +98,7 @@ public class DownloadService {
         return sb.toString();
     }
 
-    public boolean isDownloaded(InfoSchema schema) {
+    boolean isDownloaded(InfoSchema schema) {
         return this.storedInfoSchemas.contains(schema.id);
     }
 }
