@@ -8,3 +8,4 @@ bin
 .nb-gradle
 .idea
 .DS_Store
+tenhouvisualizer.sqlite

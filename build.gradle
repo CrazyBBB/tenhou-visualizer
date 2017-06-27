@@ -23,6 +23,8 @@ dependencies {
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     // implementation 'com.google.guava:guava:20.0'
 
+    compile 'org.xerial:sqlite-jdbc:3.19.3'
+
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
@@ -31,7 +33,7 @@ jar {
     manifest {
         attributes "Main-Class" : "tenhouvisualizer.App"
     }
-    // from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 def defaultEncoding = 'UTF-8'

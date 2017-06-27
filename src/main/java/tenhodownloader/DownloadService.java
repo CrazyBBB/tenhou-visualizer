@@ -8,15 +8,26 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 public class DownloadService {
-    public final ObservableList<InfoSchema> list = FXCollections.observableArrayList();
+    public final ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
+    private final Set<String> storedInfoSchemas = new HashSet<>();
+
+    public DownloadService() {
+        try {
+            this.storedInfoSchemas.addAll(Main.databaseService.findAllMjlogIds());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void download(LocalDate localDate) {
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
@@ -39,7 +50,7 @@ public class DownloadService {
                         int time = Integer.parseInt(columns[1]);
                         String taku = columns[2];
                         String players = columns[4].substring(0, columns[4].length() - 4);
-                        list.add(new InfoSchema(null, time, mjlog, mjlog, players));
+                        infoSchemas.add(new InfoSchema(null, time, mjlog, mjlog, players));
                     }
                 }
             }
@@ -58,5 +69,34 @@ public class DownloadService {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+
+    public void downloadMjlogToDatabase(InfoSchema schema) {
+        try {
+            URL url = new URL("http://tenhou.net/0/log/?" + schema.id);
+            try (InputStream is = url.openStream();
+            InputStreamReader isr = new InputStreamReader(is)) {
+                String content = consumeReader(isr);
+                Main.databaseService.saveMjlog(schema.id, content);
+                this.storedInfoSchemas.add(schema.id);
+            }
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String consumeReader(InputStreamReader isr) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        char[] chars = new char[256];
+        int readSize;
+        while ((readSize = isr.read(chars)) > 0) {
+            sb.append(chars, 0, readSize);
+        }
+        return sb.toString();
+    }
+
+    public boolean isDownloaded(InfoSchema schema) {
+        return this.storedInfoSchemas.contains(schema.id);
     }
 }

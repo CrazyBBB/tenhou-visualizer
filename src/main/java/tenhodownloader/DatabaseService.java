@@ -1,0 +1,57 @@
+package tenhodownloader;
+
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.*;
+import java.util.HashSet;
+import java.util.Set;
+
+public class DatabaseService implements Closeable {
+    private final Connection connection;
+    private final PreparedStatement insertMjlogStatement;
+    private final PreparedStatement findAllMjlogStatement;
+    public DatabaseService(File file) throws ClassNotFoundException, SQLException {
+        Class.forName("org.sqlite.JDBC");
+        this.connection = DriverManager.getConnection("jdbc:sqlite:" + (file == null ? "" : file));
+        initialize();
+        this.insertMjlogStatement = connection.prepareStatement("INSERT INTO MJLOG VALUES(?, ?);");
+        this.findAllMjlogStatement = connection.prepareStatement("SELECT id FROM MJLOG;");
+    }
+
+    private void initialize() throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS MJLOG(id TEXT PRIMARY KEY, content text);";
+        Statement statement = this.connection.createStatement();
+        statement.execute(sql);
+    }
+
+    public void saveMjlog(String id, String content) throws SQLException {
+        this.insertMjlogStatement.setString(1, id);
+        this.insertMjlogStatement.setString(2, content);
+        this.insertMjlogStatement.executeUpdate();
+    }
+
+    public Set<String> findAllMjlogIds() throws SQLException {
+        ResultSet rs = this.findAllMjlogStatement.executeQuery();
+        Set<String> result = new HashSet<>();
+        while (rs.next()) {
+            result.add(rs.getString(1));
+        }
+        return result;
+    }
+
+    public void dump(File file) throws SQLException {
+        Statement statement = this.connection.createStatement();
+        statement.execute("backup to " + file);
+    }
+
+    @Override
+    public void close() throws IOException {
+        try {
+            this.connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

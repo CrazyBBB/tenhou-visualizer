@@ -10,6 +10,9 @@
         <VBox>
             <MenuBar>
                 <Menu text="File" />
+                <Menu text="Tools">
+                    <MenuItem text="Dump" onAction="#dump" />
+                </Menu>
             </MenuBar>
             <ToolBar>
                 <Button text="Download Index" onAction="#downloadIndex" />
@@ -33,10 +36,16 @@
             </TabPane>
             <TableView GridPane.columnIndex="1" fx:id="tableView" >
                 <columns>
+                    <TableColumn fx:id="downloadColumn" text="Store" sortable="false" editable="false" />
                     <TableColumn fx:id="idColumn" text="ID" sortable="false" editable="false" />
                     <TableColumn fx:id="playersColumn" text="Players" sortable="false" editable="false" />
                 </columns>
             </TableView>
         </GridPane>
     </center>
+    <bottom>
+        <ToolBar>
+            <Label fx:id="statusBarLabel" />
+        </ToolBar>
+    </bottom>
 </BorderPane>
