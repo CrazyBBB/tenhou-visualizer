@@ -1,8 +1,11 @@
 package tenhouvisualizer;
 
 import javafx.scene.canvas.*;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
-import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+
+import java.awt.*;
 
 
 public class BoardControl extends Canvas {
@@ -60,7 +63,7 @@ public class BoardControl extends Canvas {
                 gc.setFill(javafx.scene.paint.Color.BLACK);
                 gc.fillText(scene.dan[drawnPlayerId] + "R" + scene.rate[drawnPlayerId], 200, 383);
 
-                gc.setFont(javafx.scene.text.Font.font("MS Mincho", 15));
+                gc.setFont(javafx.scene.text.Font.font(15));
                 gc.fillText(scene.players[drawnPlayerId], 200, 398);
                 draw(scene, drawnPlayerId);
             }
@@ -68,7 +71,7 @@ public class BoardControl extends Canvas {
         }
 
         gc.setFill(javafx.scene.paint.Color.BLACK);
-        gc.setFont(javafx.scene.text.Font.font("MS Mincho", 24));
+        gc.setFont(javafx.scene.text.Font.font(24));
         gc.fillText(scene.getBaStr(), 240, 290);
 
         gc.drawImage(imgUra, 240, 300, 20, 29);
