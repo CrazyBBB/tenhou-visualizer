@@ -25,12 +25,13 @@ public class BoardControl extends Canvas {
 
     public BoardControl() {
         for (int i = 0; i < 37; i++) {
-            img_nt[i] = new Image("/img_nt/" + i + ".png");
-            img_ny[i] = new Image("/img_ny/" + i + ".png");
-            img_dt[i] = new Image("/img_dt/" + i + ".png");
-            img_dy[i] = new Image("/img_dy/" + i + ".png");
+            Image[] images = Utils.manipulateHaiImage(BoardControl.class.getResourceAsStream("/img_s/" + i + ".png"));
+            img_nt[i] = images[0];
+            img_dt[i] = images[1];
+            img_ny[i] = images[2];
+            img_dy[i] = images[3];
         }
-        imgUra = new Image("/img_nt/ura.png");
+        imgUra = new Image("/img_s/ura.png");
 
         gc = this.getGraphicsContext2D();
         gc.setFill(Color.GREEN);
