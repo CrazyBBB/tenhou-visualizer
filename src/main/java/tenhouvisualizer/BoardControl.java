@@ -5,9 +5,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-import java.awt.*;
-
-
 public class BoardControl extends Canvas {
     private GraphicsContext gc;
 
@@ -161,7 +158,7 @@ public class BoardControl extends Canvas {
         }
     }
 
-    private javafx.scene.image.Image getImage(int hai, boolean normal, boolean tate) {
+    private Image getImage(int hai, boolean normal, boolean tate) {
         int haiId;
         if (hai == 16 || hai == 52 || hai == 88) {
             haiId = (hai - 16) / 36 + 34;
