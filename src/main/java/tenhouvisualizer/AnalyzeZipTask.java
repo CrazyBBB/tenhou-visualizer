@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AnalyzeTask extends Task<List<Scene>> {
+public class AnalyzeZipTask extends Task<List<Scene>> {
     private final File selectedFile;
     private ListView<Scene> listView;
     private Label label;
-    public AnalyzeTask(File selectedFile, ListView<Scene> listView, Label label) {
+    AnalyzeZipTask(File selectedFile, ListView<Scene> listView, Label label) {
         this.selectedFile = Objects.requireNonNull(selectedFile);
         this.listView = listView;
         this.label = label;

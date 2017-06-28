@@ -12,12 +12,14 @@ public class DatabaseService implements Closeable {
     private final Connection connection;
     private final PreparedStatement insertMjlogStatement;
     private final PreparedStatement findAllMjlogStatement;
+    private final PreparedStatement findAllMjlogContent;
     public DatabaseService(File file) throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + (file == null ? "" : file));
         initialize();
         this.insertMjlogStatement = connection.prepareStatement("INSERT INTO MJLOG VALUES(?, ?);");
         this.findAllMjlogStatement = connection.prepareStatement("SELECT id FROM MJLOG;");
+        this.findAllMjlogContent = connection.prepareStatement("SELECT content FROM MJLOG;");
     }
 
     private void initialize() throws SQLException {
@@ -26,13 +28,13 @@ public class DatabaseService implements Closeable {
         statement.execute(sql);
     }
 
-    public void saveMjlog(String id, String content) throws SQLException {
+    void saveMjlog(String id, String content) throws SQLException {
         this.insertMjlogStatement.setString(1, id);
         this.insertMjlogStatement.setString(2, content);
         this.insertMjlogStatement.executeUpdate();
     }
 
-    public Set<String> findAllMjlogIds() throws SQLException {
+    Set<String> findAllMjlogIds() throws SQLException {
         ResultSet rs = this.findAllMjlogStatement.executeQuery();
         Set<String> result = new HashSet<>();
         while (rs.next()) {
@@ -41,7 +43,16 @@ public class DatabaseService implements Closeable {
         return result;
     }
 
-    public void dump(File file) throws SQLException {
+    public Set<String> findAllMjlogContents() throws SQLException {
+        ResultSet rs = this.findAllMjlogContent.executeQuery();
+        Set<String> result = new HashSet<>();
+        while (rs.next()) {
+            result.add(rs.getString(1));
+        }
+        return result;
+    }
+
+    void dump(File file) throws SQLException {
         Statement statement = this.connection.createStatement();
         statement.execute("backup to " + file);
     }

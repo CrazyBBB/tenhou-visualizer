@@ -11,11 +11,14 @@
     <top>
         <MenuBar>
             <Menu text="ファイル">
-                <MenuItem fx:id="openMenuItem" text="開く..." onAction="#onBtnClicked"/>
                 <MenuItem text="終了" onAction="#onExit"/>
             </Menu>
-            <Menu text="ツール">
-                <MenuItem text="ダウンロード画面を開く" onAction="#openDownload"/>
+            <Menu text="解析">
+                <MenuItem fx:id="openMenuItem" text="ZIPを解析" onAction="#analyzeZIP"/>
+                <MenuItem text="データベースを解析" onAction="#analyzeDB"/>
+            </Menu>
+            <Menu text="データベース">
+                <MenuItem text="Webから牌譜をインポート" onAction="#openDownload"/>
             </Menu>
         </MenuBar>
     </top>

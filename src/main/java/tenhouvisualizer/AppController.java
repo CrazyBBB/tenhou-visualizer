@@ -41,7 +41,7 @@ public class AppController implements Initializable {
     private File lastSelectedFile = null;
 
     @FXML
-    public void onBtnClicked(ActionEvent e) throws IOException, ParserConfigurationException, SAXException {
+    public void analyzeZIP(ActionEvent e) throws IOException, ParserConfigurationException, SAXException {
         FileChooser fc = new FileChooser();
         fc.setInitialDirectory(lastSelectedFile == null ? new File(".") : lastSelectedFile);
         File selectedFile = fc.showOpenDialog(root.getScene().getWindow());
@@ -49,7 +49,7 @@ public class AppController implements Initializable {
         if (selectedFile != null) {
             lastSelectedFile = selectedFile;
 
-            Task<List<Scene>> task = new AnalyzeTask(selectedFile, listView, label2);
+            Task<List<Scene>> task = new AnalyzeZipTask(selectedFile, listView, label2);
             this.progressBar.progressProperty().bind(task.progressProperty());
             task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));
             task.setOnRunning(a -> this.openMenuItem.setDisable(true));
@@ -76,6 +76,15 @@ public class AppController implements Initializable {
     public void onExit(ActionEvent actionEvent) {
         Platform.exit();
         System.exit(0);
+    }
+
+    @FXML
+    public void analyzeDB(ActionEvent actionEvent) {
+        Task<List<Scene>> task = new AnalyzeDBTask(listView, label2);
+        this.progressBar.progressProperty().bind(task.progressProperty());
+        task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));
+        task.setOnRunning(a -> this.openMenuItem.setDisable(true));
+        new Thread(task).start();
     }
 
     @FXML

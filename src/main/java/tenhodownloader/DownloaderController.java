@@ -58,7 +58,7 @@ public class DownloaderController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Backup File");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("SQLite3 Files", "*.sqlite3"),
+                new FileChooser.ExtensionFilter("SQLite Files", "*.sqlite"),
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showSaveDialog(this.listView.getScene().getWindow());
         if (selectedFile != null) {
