@@ -27,6 +27,8 @@ public class DownloaderController implements Initializable {
     public TableColumn<InfoSchema, String> playersColumn;
     public TableColumn<InfoSchema, String> downloadColumn;
     public Label statusBarLabel;
+    public Tab currentYearTab;
+    public Tab currentWeekTab;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,16 +58,10 @@ public class DownloaderController implements Initializable {
     }
 
     public void downloadIndex(ActionEvent actionEvent) {
-        switch (tabPane.getSelectionModel().getSelectedIndex()) {
-        case 0:
-            if (dateListView.getSelectionModel().getSelectedItem() != null) {
-                this.service.downloadDate(dateListView.getSelectionModel().getSelectedItem());
-            }
-            break;
-        case 1:
-            if (hourListView.getSelectionModel().getSelectedItem() != null) {
-                this.service.downloadHour(hourListView.getSelectionModel().getSelectedItem());
-            }
+        if (tabPane.getSelectionModel().getSelectedItem() == currentYearTab) {
+            this.service.downloadDate(dateListView.getSelectionModel().getSelectedItem());
+        } else if (tabPane.getSelectionModel().getSelectedItem() == currentWeekTab) {
+            this.service.downloadHour(hourListView.getSelectionModel().getSelectedItem());
         }
     }
 

@@ -30,10 +30,10 @@
                 <RowConstraints vgrow="ALWAYS" />
             </rowConstraints>
             <TabPane fx:id="tabPane" GridPane.columnIndex="0">
-                <Tab text="Current Year" closable="false">
+                <Tab fx:id="currentYearTab" text="Current Year" closable="false">
                     <ListView fx:id="dateListView"/>
                 </Tab>
-                <Tab text="Current Week" closable="false">
+                <Tab fx:id="currentWeekTab" text="Current Week" closable="false">
                     <ListView fx:id="hourListView"/>
                 </Tab>
             </TabPane>
