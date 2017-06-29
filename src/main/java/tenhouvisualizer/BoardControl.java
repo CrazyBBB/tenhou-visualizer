@@ -92,7 +92,7 @@ public class BoardControl extends Canvas {
         int x = 70;
         int y = 555;
         for (int hai : scene.stehai[playerId]) {
-            gc.drawImage(getImage(hai, true, true), x, y);
+            gc.drawImage(getImage(hai, true, true), x, y, 32, 45);
             x += 32;
         }
     }
@@ -103,10 +103,10 @@ public class BoardControl extends Canvas {
         int i = 0;
         for (int hai : scene.dahai[playerId]) {
             if (i == scene.reach[playerId]) {
-                gc.drawImage(getImage(hai, scene.tedashi[playerId].get(i), false), x, y + 13);
+                gc.drawImage(getImage(hai, scene.tedashi[playerId].get(i), false), x, y + 13, 45, 32);
                 x += 45;
             } else {
-                gc.drawImage(getImage(hai, scene.tedashi[playerId].get(i), true), x, y);
+                gc.drawImage(getImage(hai, scene.tedashi[playerId].get(i), true), x, y, 32, 45);
                 x += 32;
             }
 
@@ -128,10 +128,10 @@ public class BoardControl extends Canvas {
         if (nOfKita > 0) {
             x -= 32;
 
-            gc.drawImage(img_nt[30], x, y);
+            gc.drawImage(img_nt[30], x, y, 32, 45);
             gc.setFill(javafx.scene.paint.Color.WHITE);
             gc.setFont(javafx.scene.text.Font.font(15));
-            gc.fillText("×" + nOfKita, 577, 555);
+            gc.fillText("×" + nOfKita, 577, 553);
         }
 
         for (Naki naki : scene.naki[playerId]) {
@@ -139,19 +139,19 @@ public class BoardControl extends Canvas {
                 for (int i = 2; i >= 0; i--) {
                     if (i == naki.nakiIdx) {
                         x -= 45;
-                        gc.drawImage(getImage(naki.hai[i], true, false), x, y + 13);
+                        gc.drawImage(getImage(naki.hai[i], true, false), x, y + 13, 45, 32);
                     } else {
                         x -= 32;
-                        gc.drawImage(getImage(naki.hai[i], true, true), x, y);
+                        gc.drawImage(getImage(naki.hai[i], true, true), x, y, 32, 45);
                     }
                 }
             } else if (naki.type == 2) {
                 for (int i = 3; i >= 0; i--) {
                     x -= 32;
                     if (i == 0 || i == 3) {
-                        gc.drawImage(imgUra, x, y);
+                        gc.drawImage(imgUra, x, y, 32, 45);
                     } else {
-                        gc.drawImage(getImage(naki.hai[i], true, true), x, y);
+                        gc.drawImage(getImage(naki.hai[i], true, true), x, y, 32, 45);
                     }
                 }
             }
