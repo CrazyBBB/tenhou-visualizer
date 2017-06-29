@@ -52,6 +52,17 @@ public class DatabaseService implements Closeable {
         return result;
     }
 
+    public boolean existsId(String id) {
+        String sqlStr = "SELECT id FROM MJLOG WHERE id = ?;";
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement(sqlStr)) {
+            preparedStatement.setString(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     void dump(File file) throws SQLException {
         Statement statement = this.connection.createStatement();
         statement.execute("backup to " + file);
