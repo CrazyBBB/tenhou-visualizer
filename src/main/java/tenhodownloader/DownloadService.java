@@ -61,9 +61,9 @@ public class DownloadService {
                         if (matcher.find()) {
                             String mjlog = matcher.group(1);
                             int time = Integer.parseInt(columns[1]);
-                            String taku = columns[2];
+                            String taku = columns[2].replaceAll("－", "");
                             String players = columns[4].substring(0, columns[4].length() - 4);
-                            infoSchemas.add(new InfoSchema(null, time, mjlog, mjlog, players));
+                            infoSchemas.add(new InfoSchema(null, time, taku, mjlog, players));
                         }
                     }
                 }

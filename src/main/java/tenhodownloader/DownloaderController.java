@@ -23,7 +23,7 @@ public class DownloaderController implements Initializable {
     public ListView<LocalDateTime> hourListView;
     private final DownloadService service = new DownloadService();
     public TableView<InfoSchema> tableView;
-    public TableColumn<InfoSchema, String> idColumn;
+    public TableColumn<InfoSchema, String> takuColumn;
     public TableColumn<InfoSchema, String> playersColumn;
     public TableColumn<InfoSchema, String> downloadColumn;
     public Label statusBarLabel;
@@ -49,7 +49,7 @@ public class DownloaderController implements Initializable {
         }
 
         this.tableView.setItems(this.service.infoSchemas);
-        this.idColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().id));
+        this.takuColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().taku));
         this.playersColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().payers));
         this.downloadColumn.setCellValueFactory(e ->
             new SimpleStringProperty(this.service.isDownloaded(e.getValue()) ? "✓" : "")
