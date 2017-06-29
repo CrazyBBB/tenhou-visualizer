@@ -51,6 +51,8 @@ public class DownloaderController implements Initializable {
     public void downloadMjlog(ActionEvent actionEvent) {
         if (tableView.getSelectionModel().getSelectedItem() != null) {
             this.service.downloadMjlogToDatabase(tableView.getSelectionModel().getSelectedItem());
+            tableView.getItems().set(tableView.getSelectionModel().getFocusedIndex(),
+                    tableView.getSelectionModel().getSelectedItem());
         }
     }
 
