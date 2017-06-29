@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,12 +31,23 @@ public class DownloadService {
         }
     }
 
-    void download(LocalDate localDate) {
+    void downloadDate(LocalDate localDate) {
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
         String urlPrefix = "http://tenhou.net/sc/raw/dat/2017/scc";
         String urlPostfix = ".html.gz";
+        download(urlPrefix + localDate.format(formatter) + urlPostfix);
+    }
+
+    void downloadHour(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
+        String urlPrefix = "http://tenhou.net/sc/raw/dat/scc";
+        String urlPostfix = ".html.gz";
+        download(urlPrefix + localDateTime.format(formatter) + urlPostfix);
+    }
+
+    private void download(String urlString) {
         try {
-            URL url = new URL(urlPrefix + localDate.format(formatter) + urlPostfix);
+            URL url = new URL(urlString);
             try (InputStream is = url.openStream();
                  GZIPInputStream gzis = new GZIPInputStream(is);
                  InputStreamReader isr = new InputStreamReader(gzis);

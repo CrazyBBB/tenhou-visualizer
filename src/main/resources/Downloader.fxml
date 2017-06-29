@@ -29,9 +29,12 @@
             <rowConstraints>
                 <RowConstraints vgrow="ALWAYS" />
             </rowConstraints>
-            <TabPane GridPane.columnIndex="0">
+            <TabPane fx:id="tabPane" GridPane.columnIndex="0">
                 <Tab text="Current Year" closable="false">
-                    <ListView fx:id="listView" />
+                    <ListView fx:id="dateListView"/>
+                </Tab>
+                <Tab text="Current Week" closable="false">
+                    <ListView fx:id="hourListView"/>
                 </Tab>
             </TabPane>
             <TableView GridPane.columnIndex="1" fx:id="tableView" >
