@@ -75,7 +75,6 @@ public class AppController implements Initializable {
     @FXML
     public void onExit(ActionEvent actionEvent) {
         Platform.exit();
-        System.exit(0);
     }
 
     @FXML
