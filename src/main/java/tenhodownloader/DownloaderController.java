@@ -59,9 +59,13 @@ public class DownloaderController implements Initializable {
 
     public void downloadIndex(ActionEvent actionEvent) {
         if (tabPane.getSelectionModel().getSelectedItem() == currentYearTab) {
-            this.service.downloadDate(dateListView.getSelectionModel().getSelectedItem());
+            if (dateListView.getSelectionModel().getSelectedItem() != null) {
+                this.service.downloadDate(dateListView.getSelectionModel().getSelectedItem());
+            }
         } else if (tabPane.getSelectionModel().getSelectedItem() == currentWeekTab) {
-            this.service.downloadHour(hourListView.getSelectionModel().getSelectedItem());
+            if (hourListView.getSelectionModel().getSelectedItem() != null) {
+                this.service.downloadHour(hourListView.getSelectionModel().getSelectedItem());
+            }
         }
     }
 

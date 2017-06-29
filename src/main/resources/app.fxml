@@ -18,7 +18,7 @@
                 <MenuItem text="データベースを解析" onAction="#analyzeDB"/>
             </Menu>
             <Menu text="データベース">
-                <MenuItem text="Webから牌譜をインポート" onAction="#openDownload"/>
+                <MenuItem text="Webから鳳凰卓の牌譜をインポート" onAction="#openDownload"/>
             </Menu>
         </MenuBar>
     </top>
