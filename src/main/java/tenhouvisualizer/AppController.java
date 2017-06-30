@@ -47,7 +47,7 @@ public class AppController implements Initializable {
         File selectedFile = fc.showOpenDialog(root.getScene().getWindow());
 
         if (selectedFile != null) {
-            lastSelectedFile = selectedFile;
+            lastSelectedFile = new File(selectedFile.getParent());
 
             Task<List<Scene>> task = new AnalyzeZipTask(selectedFile, listView, label2);
             this.progressBar.progressProperty().bind(task.progressProperty());
