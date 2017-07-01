@@ -42,7 +42,7 @@
     </center>
     <bottom>
         <ToolBar>
-            <Label fx:id="label" text="解析には数分かかることがあります"/>
+            <Label fx:id="label"/>
             <Pane HBox.hgrow="ALWAYS"/>
             <Label fx:id="label2"/>
             <ProgressBar fx:id="progressBar" progress="0" />
