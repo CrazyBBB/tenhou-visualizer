@@ -3,7 +3,6 @@ package tenhodownloader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +16,8 @@ public class DatabaseService implements Closeable {
     private final PreparedStatement insertInfoStatement;
     private final PreparedStatement findAllMjlogStatement;
     private final PreparedStatement findAllMjlogContent;
-    private final PreparedStatement findAllInfo;
+    private final PreparedStatement findAllInfoStatement;
+    private final PreparedStatement findAllExistsInfoStatement;
     public DatabaseService(File file) throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + (file == null ? "" : file));
@@ -26,7 +26,8 @@ public class DatabaseService implements Closeable {
         this.insertInfoStatement = connection.prepareStatement("INSERT INTO INFO VALUES(?, ?, ?, ?, ?, ?, ?, ?);");
         this.findAllMjlogStatement = connection.prepareStatement("SELECT id FROM MJLOG;");
         this.findAllMjlogContent = connection.prepareStatement("SELECT content FROM MJLOG;");
-        this.findAllInfo = connection.prepareStatement("SELECT * FROM INFO;");
+        this.findAllInfoStatement = connection.prepareStatement("SELECT * FROM INFO;");
+        this.findAllExistsInfoStatement = connection.prepareStatement("SELECT * FROM INFO WHERE id in (SELECT id FROM MJLOG);");
     }
 
     private void initialize() throws SQLException {
@@ -84,7 +85,29 @@ public class DatabaseService implements Closeable {
     public List<InfoSchema> findAllInfos() {
         List<InfoSchema> list = new ArrayList<>();
         try {
-            ResultSet rs = this.findAllInfo.executeQuery();
+            ResultSet rs = this.findAllInfoStatement.executeQuery();
+            while (rs.next()) {
+                list.add(new InfoSchema(
+                        rs.getString("id"),
+                        rs.getString("ma"),
+                        rs.getString("sou"),
+                        rs.getString("first"),
+                        rs.getString("second"),
+                        rs.getString("third"),
+                        rs.getString("fourth"),
+                        LocalDateTime.now() // todo
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException();
+        }
+        return list;
+    }
+
+    public List<InfoSchema> findAllExistsInfos() {
+        List<InfoSchema> list = new ArrayList<>();
+        try {
+            ResultSet rs = this.findAllExistsInfoStatement.executeQuery();
             while (rs.next()) {
                 list.add(new InfoSchema(
                         rs.getString("id"),

@@ -25,6 +25,6 @@ public class InfoSchema {
 
     @Override
     public String toString() {
-        return this.id;
+        return ma + "鳳" + sou + " " + first + ", " + second + ", " + third + ("".equals(fourth) ? "" : ", " + fourth);
     }
 }

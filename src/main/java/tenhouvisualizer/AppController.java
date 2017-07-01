@@ -1,32 +1,26 @@
 package tenhouvisualizer;
 
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.xml.sax.SAXException;
+import javafx.stage.WindowEvent;
+import tenhodownloader.InfoSchema;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
     public ProgressBar progressBar;
-    public MenuItem openMenuItem;
     @FXML
     private BorderPane root;
     @FXML
@@ -34,24 +28,23 @@ public class AppController implements Initializable {
     @FXML
     private Label label2;
     @FXML
-    private ListView<Scene> listView;
+    private ListView<InfoSchema> listView;
     @FXML
     private BoardControl boardControl;
-
-    private File lastSelectedFile = null;
+    @FXML
+    private MjlogTreeControl mjlogTreeControl;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        listView.getItems().addAll(Main.databaseService.findAllExistsInfos());
+
         this.boardControl.drawScene();
 //        this.label2.textProperty().bind(Bindings.concat(
 //                Bindings.convert(Bindings.size(this.listView.getItems())),
 //                new SimpleStringProperty("/"),
 //                new SimpleStringProperty("NaN")) );
-        listView.getSelectionModel().selectedItemProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) {
-                this.boardControl.drawScene(newScene);
-                this.label.setText(newScene.toString());
-            }
+        listView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
+            this.mjlogTreeControl.showMjlogContent(null);
         });
     }
 
@@ -71,6 +64,11 @@ public class AppController implements Initializable {
         stage.setScene(scene);
         stage.setTitle("鳳凰卓牌譜ダウンロード");
         stage.show();
+
+        stage.setOnHiding(event ->  {
+            listView.getItems().clear();
+            listView.getItems().addAll(Main.databaseService.findAllExistsInfos());
+        });
     }
 
     @FXML

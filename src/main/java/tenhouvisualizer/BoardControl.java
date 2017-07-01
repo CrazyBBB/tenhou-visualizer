@@ -34,10 +34,6 @@ public class BoardControl extends Canvas {
         imgUra = new Image("/img_s/ura.png");
 
         gc = this.getGraphicsContext2D();
-        gc.setFill(Color.GREEN);
-        gc.fillRect(0, 0, this.getWidth(), this.getHeight());
-        gc.setFill(Color.valueOf("#cccccc"));
-        gc.fillRect(200, 200, 200, 200);
     }
 
     private void initBase() {
