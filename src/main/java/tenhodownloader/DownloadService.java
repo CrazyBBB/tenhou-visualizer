@@ -22,6 +22,8 @@ import java.util.zip.GZIPInputStream;
 public class DownloadService {
     final ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
     private final Set<String> storedInfoSchemas = new HashSet<>();
+    private final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
+    private final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
 
     DownloadService() {
         try {
@@ -53,17 +55,25 @@ public class DownloadService {
                  InputStreamReader isr = new InputStreamReader(gzis);
                  BufferedReader br = new BufferedReader(isr)) {
                 String line;
-                Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
                 while ((line = br.readLine()) != null) {
                     if (!line.isEmpty()) {
                         String[] columns = line.split(" \\| ");
                         Matcher matcher = mjlogPattern.matcher(columns[3]);
                         if (matcher.find()) {
-                            String mjlog = matcher.group(1);
-                            int time = Integer.parseInt(columns[1]);
-                            String taku = columns[2].replaceAll("－", "");
-                            String players = columns[4].substring(0, columns[4].length() - 4);
-                            infoSchemas.add(new InfoSchema(null, time, taku, mjlog, players));
+                            String id = matcher.group(1);
+                            if (App.databaseService.existsIdInINFO(id)) continue;
+
+                            String ma = columns[2].substring(0, 1);
+                            String sou = columns[2].substring(2, 3);
+                            String[] playerAndScore = columns[4].split(" ");
+                            String[] players = new String[4];
+                            for (int i = 0; i < playerAndScore.length; i++) {
+                                Matcher playerMatcher = playerPattern.matcher(playerAndScore[i]);
+                                if (playerMatcher.find()) players[i] = playerMatcher.group(1);
+                            }
+                            if (players[3] == null) players[3] = "";
+                            infoSchemas.add(new InfoSchema(id, ma, sou, players[0], players[1], players[2], players[3], LocalDateTime.now())); // todo datetime
+                            App.databaseService.saveInfo(id, ma, sou, players[0], players[1], players[2], players[3], LocalDateTime.now().toString());
                         }
                     }
                 }

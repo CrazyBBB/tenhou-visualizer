@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DownloaderController implements Initializable {
@@ -23,12 +24,16 @@ public class DownloaderController implements Initializable {
     public ListView<LocalDateTime> hourListView;
     private final DownloadService service = new DownloadService();
     public TableView<InfoSchema> tableView;
-    public TableColumn<InfoSchema, String> takuColumn;
-    public TableColumn<InfoSchema, String> playersColumn;
     public TableColumn<InfoSchema, String> downloadColumn;
     public Label statusBarLabel;
     public Tab currentYearTab;
     public Tab currentWeekTab;
+    public TableColumn<InfoSchema, String>  firstColumn;
+    public TableColumn<InfoSchema, String>  secondColumn;
+    public TableColumn<InfoSchema, String>  thirdColumn;
+    public TableColumn<InfoSchema, String>  fourthColumn;
+    public TableColumn<InfoSchema, String>  maColumn;
+    public TableColumn<InfoSchema, String> souColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,12 +53,28 @@ public class DownloaderController implements Initializable {
             }
         }
 
+        List<InfoSchema> list = App.databaseService.findAllInfos();
+        this.service.infoSchemas.addAll(list);
         this.tableView.setItems(this.service.infoSchemas);
-        this.takuColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().taku));
-        this.playersColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().payers));
+
         this.downloadColumn.setCellValueFactory(e ->
-            new SimpleStringProperty(this.service.isDownloaded(e.getValue()) ? "✓" : "")
+                new SimpleStringProperty(this.service.isDownloaded(e.getValue()) ? "✓" : "")
         );
+        this.maColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().ma));
+        this.souColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().sou));
+        this.firstColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().first));
+        this.secondColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().second));
+        this.thirdColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().third));
+        this.fourthColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().fourth));
+
+        this.downloadColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
+        this.maColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
+        this.souColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
+        this.firstColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
+        this.secondColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
+        this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
+        this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
+
         this.statusBarLabel.textProperty().bind(Bindings.convert(Bindings.size(this.tableView.getItems())));
     }
 
@@ -72,7 +93,7 @@ public class DownloaderController implements Initializable {
     public void downloadMjlog(ActionEvent actionEvent) {
         if (tableView.getSelectionModel().getSelectedItem() != null) {
             InfoSchema infoSchema = tableView.getSelectionModel().getSelectedItem();
-            if (!App.databaseService.existsId(infoSchema.id)) {
+            if (!App.databaseService.existsIdInMJLOG(infoSchema.id)) {
                 this.service.downloadMjlogToDatabase(infoSchema);
                 tableView.getItems().set(tableView.getSelectionModel().getFocusedIndex(), infoSchema);
             }

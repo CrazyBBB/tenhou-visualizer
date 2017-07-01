@@ -5,26 +5,38 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class DatabaseService implements Closeable {
     private final Connection connection;
     private final PreparedStatement insertMjlogStatement;
+    private final PreparedStatement insertInfoStatement;
     private final PreparedStatement findAllMjlogStatement;
     private final PreparedStatement findAllMjlogContent;
+    private final PreparedStatement findAllInfo;
     public DatabaseService(File file) throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + (file == null ? "" : file));
         initialize();
         this.insertMjlogStatement = connection.prepareStatement("INSERT INTO MJLOG VALUES(?, ?);");
+        this.insertInfoStatement = connection.prepareStatement("INSERT INTO INFO VALUES(?, ?, ?, ?, ?, ?, ?, ?);");
         this.findAllMjlogStatement = connection.prepareStatement("SELECT id FROM MJLOG;");
         this.findAllMjlogContent = connection.prepareStatement("SELECT content FROM MJLOG;");
+        this.findAllInfo = connection.prepareStatement("SELECT * FROM INFO;");
     }
 
     private void initialize() throws SQLException {
-        String sql = "CREATE TABLE IF NOT EXISTS MJLOG(id TEXT PRIMARY KEY, content text);";
+        String sql = "CREATE TABLE IF NOT EXISTS MJLOG(id TEXT PRIMARY KEY, content TEXT);";
         Statement statement = this.connection.createStatement();
+        statement.execute(sql);
+
+        sql = "CREATE TABLE IF NOT EXISTS INFO(id TEXT PRIMARY KEY, ma TEXT, sou TEXT," +
+                                                    " first TEXT, second TEXT, third TEXT, fourth TEXT, date_time TEXT);";
+        statement = this.connection.createStatement();
         statement.execute(sql);
     }
 
@@ -32,6 +44,23 @@ public class DatabaseService implements Closeable {
         this.insertMjlogStatement.setString(1, id);
         this.insertMjlogStatement.setString(2, content);
         this.insertMjlogStatement.executeUpdate();
+    }
+
+    void saveInfo(String id, String ma, String sou,
+                    String first, String second, String third, String fourth, String dateTime) {
+        try {
+            this.insertInfoStatement.setString(1, id);
+            this.insertInfoStatement.setString(2, ma);
+            this.insertInfoStatement.setString(3, sou);
+            this.insertInfoStatement.setString(4, first);
+            this.insertInfoStatement.setString(5, second);
+            this.insertInfoStatement.setString(6, third);
+            this.insertInfoStatement.setString(7, fourth);
+            this.insertInfoStatement.setString(8, dateTime);
+            this.insertInfoStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException();
+        }
     }
 
     Set<String> findAllMjlogIds() throws SQLException {
@@ -43,17 +72,48 @@ public class DatabaseService implements Closeable {
         return result;
     }
 
-    public Set<String> findAllMjlogContents() throws SQLException {
+    public List<String> findAllMjlogContents() throws SQLException {
         ResultSet rs = this.findAllMjlogContent.executeQuery();
-        Set<String> result = new HashSet<>();
+        List<String> result = new ArrayList<>();
         while (rs.next()) {
             result.add(rs.getString(1));
         }
         return result;
     }
 
-    public boolean existsId(String id) {
+    public List<InfoSchema> findAllInfos() {
+        List<InfoSchema> list = new ArrayList<>();
+        try {
+            ResultSet rs = this.findAllInfo.executeQuery();
+            while (rs.next()) {
+                list.add(new InfoSchema(
+                        rs.getString("id"),
+                        rs.getString("ma"),
+                        rs.getString("sou"),
+                        rs.getString("first"),
+                        rs.getString("second"),
+                        rs.getString("third"),
+                        rs.getString("fourth"),
+                        LocalDateTime.now() // todo
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException();
+        }
+        return list;
+    }
+
+    public boolean existsIdInMJLOG(String id) {
         String sqlStr = "SELECT id FROM MJLOG WHERE id = ?;";
+        return existsId(id, sqlStr);
+    }
+
+    public boolean existsIdInINFO(String id) {
+        String sqlStr = "SELECT id FROM INFO WHERE id = ?;";
+        return existsId(id, sqlStr);
+    }
+
+    private boolean existsId(String id, String sqlStr) {
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sqlStr)) {
             preparedStatement.setString(1, id);
             ResultSet rs = preparedStatement.executeQuery();

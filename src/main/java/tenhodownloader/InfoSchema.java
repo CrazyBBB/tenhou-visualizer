@@ -3,18 +3,24 @@ package tenhodownloader;
 import java.time.LocalDateTime;
 
 public class InfoSchema {
-    public final LocalDateTime dateTime;
-    public final String taku;
-    public final String id;
-    public final int time;
-    public final String payers;
+    final String id;
+    final String ma;
+    final String sou;
+    final String first;
+    final String second;
+    final String third;
+    final String fourth;
+    final LocalDateTime dateTime;
 
-    public InfoSchema(LocalDateTime dateTime, int time, String taku, String id, String payers) {
-        this.dateTime = dateTime;
-        this.taku = taku;
+    public InfoSchema(String id, String ma, String sou, String first, String second, String third, String fourth, LocalDateTime dateTime) {
         this.id = id;
-        this.time = time;
-        this.payers = payers;
+        this.ma = ma;
+        this.sou = sou;
+        this.first = first;
+        this.second = second;
+        this.third = third;
+        this.fourth = fourth;
+        this.dateTime = dateTime;
     }
 
     @Override

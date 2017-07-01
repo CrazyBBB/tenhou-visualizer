@@ -14,10 +14,6 @@
                     <MenuItem text="Dump" onAction="#dump" />
                 </Menu>
             </MenuBar>
-            <ToolBar>
-                <Button text="Download Index" onAction="#downloadIndex" />
-                <Button text="Download Mjlog" onAction="#downloadMjlog" />
-            </ToolBar>
         </VBox>
     </top>
     <center>
@@ -29,21 +25,31 @@
             <rowConstraints>
                 <RowConstraints vgrow="ALWAYS" />
             </rowConstraints>
-            <TabPane fx:id="tabPane" GridPane.columnIndex="0">
-                <Tab fx:id="currentYearTab" text="Current Year" closable="false">
-                    <ListView fx:id="dateListView"/>
-                </Tab>
-                <Tab fx:id="currentWeekTab" text="Current Week" closable="false">
-                    <ListView fx:id="hourListView"/>
-                </Tab>
-            </TabPane>
-            <TableView GridPane.columnIndex="1" fx:id="tableView" >
-                <columns>
-                    <TableColumn fx:id="downloadColumn" text="Store" sortable="false" editable="false" />
-                    <TableColumn fx:id="takuColumn" text="ID" sortable="false" editable="false" />
-                    <TableColumn fx:id="playersColumn" text="Players" sortable="false" editable="false" />
-                </columns>
-            </TableView>
+            <VBox GridPane.columnIndex="0">
+                <TabPane fx:id="tabPane">
+                    <Tab fx:id="currentYearTab" text="Current Year" closable="false">
+                        <ListView fx:id="dateListView"/>
+                    </Tab>
+                    <Tab fx:id="currentWeekTab" text="Current Week" closable="false">
+                        <ListView fx:id="hourListView"/>
+                    </Tab>
+                </TabPane>
+                <Button text="Download Index" onAction="#downloadIndex" />
+            </VBox>
+            <VBox GridPane.columnIndex="1" >
+                <TableView fx:id="tableView" >
+                    <columns>
+                        <TableColumn fx:id="downloadColumn" text="済" editable="false" />
+                        <TableColumn fx:id="maColumn" text="麻" editable="false" />
+                        <TableColumn fx:id="souColumn" text="荘" editable="false" />
+                        <TableColumn fx:id="firstColumn" text="1位" editable="false" />
+                        <TableColumn fx:id="secondColumn" text="2位" editable="false" />
+                        <TableColumn fx:id="thirdColumn" text="3位" editable="false" />
+                        <TableColumn fx:id="fourthColumn" text="4位" editable="false" />
+                    </columns>
+                </TableView>
+                <Button text="Download Mjlog" onAction="#downloadMjlog" />
+            </VBox>
         </GridPane>
     </center>
     <bottom>

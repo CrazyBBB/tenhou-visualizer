@@ -23,11 +23,11 @@ public class AnalyzeDBTask extends Task<List<Scene>> {
     protected List<Scene> call() throws Exception {
         Platform.runLater(() -> this.listView.getItems().clear());
 
-        Set<String> set = App.databaseService.findAllMjlogContents();
+        List<String> list = App.databaseService.findAllMjlogContents();
 
         long workDone = 0;
-        long workMax = set.size();
-        for (String content : set) {
+        long workMax = list.size();
+        for (String content : list) {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
             Analyzer analyzer = new Analyzer(0);

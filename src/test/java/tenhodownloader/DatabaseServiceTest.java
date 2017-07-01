@@ -11,12 +11,12 @@ public class DatabaseServiceTest {
         String id = "2017010101gm-0000-0000-00000000";
 
         DatabaseService databaseService = new DatabaseService(null);
-        assertFalse(databaseService.existsId(id));
+        assertFalse(databaseService.existsIdInMJLOG(id));
 
         String content = DatabaseServiceTest.class.getResource("/mjlog/test.mjlog").toExternalForm();
         databaseService.saveMjlog(id, content);
 
-        assertTrue(databaseService.existsId(id));
+        assertTrue(databaseService.existsIdInMJLOG(id));
     }
 
     @Test

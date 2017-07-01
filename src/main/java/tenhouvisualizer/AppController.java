@@ -59,7 +59,7 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        boardControl.drawScene();
+        this.boardControl.drawScene();
 //        this.label2.textProperty().bind(Bindings.concat(
 //                Bindings.convert(Bindings.size(this.listView.getItems())),
 //                new SimpleStringProperty("/"),
