@@ -87,18 +87,28 @@ public class AppController implements Initializable {
     }
 
     @FXML
-    public void openDownload(ActionEvent actionEvent) throws IOException {
-        // 新しいウインドウを生成
+    public void openDownloader(ActionEvent actionEvent) throws IOException {
         Stage stage = new Stage();
-        // モーダルウインドウに設定
         stage.initModality(Modality.APPLICATION_MODAL);
-        // オーナーを設定
         stage.initOwner(listView.getScene().getWindow());
 
         Parent root = FXMLLoader.load(getClass().getResource("/Downloader.fxml"));
         javafx.scene.Scene scene = new javafx.scene.Scene(root);
         stage.setScene(scene);
-        stage.setTitle("Tenhou Downloader");
+        stage.setTitle("鳳凰卓牌譜ダウンロード");
+        stage.show();
+    }
+
+    @FXML
+    public void openSyantenBackAnalyzer(ActionEvent actionEvent) throws IOException {
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(listView.getScene().getWindow());
+
+        Parent root = FXMLLoader.load(getClass().getResource("/SyantenBackAnalyzer.fxml"));
+        javafx.scene.Scene scene = new javafx.scene.Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("シャンテン後退解析");
         stage.show();
     }
 }

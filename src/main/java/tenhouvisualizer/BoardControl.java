@@ -14,11 +14,11 @@ public class BoardControl extends Canvas {
     private Image[] img_dy = new Image[37];
     private Image imgUra;
 
-    void drawScene() {
+    public void drawScene() {
         initBase();
     }
 
-    void drawScene(Scene scene) {
+    public void drawScene(Scene scene) {
         initBase();
         initInfoAndHai(scene);
     }

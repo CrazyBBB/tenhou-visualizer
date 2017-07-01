@@ -18,7 +18,10 @@
                 <MenuItem text="データベースを解析" onAction="#analyzeDB"/>
             </Menu>
             <Menu text="データベース">
-                <MenuItem text="Webから鳳凰卓の牌譜をインポート" onAction="#openDownload"/>
+                <MenuItem text="Webから鳳凰卓の牌譜をインポート" onAction="#openDownloader"/>
+            </Menu>
+            <Menu text="ツール">
+                <MenuItem text="シャンテン後退解析" onAction="#openSyantenBackAnalyzer"/>
             </Menu>
         </MenuBar>
     </top>
