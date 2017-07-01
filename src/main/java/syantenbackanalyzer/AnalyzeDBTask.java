@@ -26,6 +26,13 @@ public class AnalyzeDBTask extends Task<List<Scene>> {
         Platform.runLater(() -> this.listView.getItems().clear());
 
         List<String> list = App.databaseService.findAllMjlogContents();
+        if (list.size() == 0) {
+            Platform.runLater(() -> {
+                label.setText("0/0");
+            });
+            updateProgress(0, 0);
+            return null;
+        }
 
         long workDone = 0;
         long workMax = list.size();
