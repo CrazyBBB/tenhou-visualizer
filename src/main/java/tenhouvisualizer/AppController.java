@@ -52,8 +52,10 @@ public class AppController implements Initializable {
         });
 
         this.mjlogTreeControl.getSelectionModel().selectedItemProperty().addListener((obs, oldMjlog, newMjlog) -> {
-            if (newMjlog.isLeaf()) {
+            if (newMjlog != null && newMjlog.isLeaf()) {
                 this.boardControl.drawScene(newMjlog.getValue().getScene());
+            } else {
+                this.mjlogTreeControl.getSelectionModel().getSelectedItem().setExpanded(true);
             }
         });
     }
