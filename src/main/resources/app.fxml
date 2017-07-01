@@ -6,16 +6,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import tenhouvisualizer.BoardControl?>
 <?import javafx.scene.layout.VBox?>
-<BorderPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8"
+<BorderPane id="AnchorPane" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="tenhouvisualizer.AppController" fx:id="root">
     <top>
         <MenuBar>
             <Menu text="ファイル">
                 <MenuItem text="終了" onAction="#onExit"/>
-            </Menu>
-            <Menu text="解析">
-                <MenuItem fx:id="openMenuItem" text="ZIPを解析" onAction="#analyzeZIP"/>
-                <MenuItem text="データベースを解析" onAction="#analyzeDB"/>
             </Menu>
             <Menu text="データベース">
                 <MenuItem text="Webから鳳凰卓の牌譜をインポート" onAction="#openDownloader"/>
@@ -46,6 +42,9 @@
             <!--</bottom>-->
         </BorderPane>
     </center>
+    <right>
+        <TreeView/>
+    </right>
     <bottom>
         <ToolBar>
             <Label fx:id="label"/>
