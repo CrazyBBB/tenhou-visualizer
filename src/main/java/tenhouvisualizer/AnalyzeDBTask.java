@@ -10,7 +10,6 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class AnalyzeDBTask extends Task<List<Scene>> {
     private ListView<Scene> listView;
@@ -23,7 +22,7 @@ public class AnalyzeDBTask extends Task<List<Scene>> {
     protected List<Scene> call() throws Exception {
         Platform.runLater(() -> this.listView.getItems().clear());
 
-        List<String> list = App.databaseService.findAllMjlogContents();
+        List<String> list = Main.databaseService.findAllMjlogContents();
         if (list.size() == 0) {
             Platform.runLater(() -> {
                 label.setText("0/0");

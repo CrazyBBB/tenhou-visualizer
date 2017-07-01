@@ -6,7 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
-import tenhouvisualizer.App;
+import tenhouvisualizer.Main;
 
 import java.io.File;
 import java.net.URL;
@@ -53,7 +53,7 @@ public class DownloaderController implements Initializable {
             }
         }
 
-        List<InfoSchema> list = App.databaseService.findAllInfos();
+        List<InfoSchema> list = Main.databaseService.findAllInfos();
         this.service.infoSchemas.addAll(list);
         this.tableView.setItems(this.service.infoSchemas);
 
@@ -93,7 +93,7 @@ public class DownloaderController implements Initializable {
     public void downloadMjlog(ActionEvent actionEvent) {
         if (tableView.getSelectionModel().getSelectedItem() != null) {
             InfoSchema infoSchema = tableView.getSelectionModel().getSelectedItem();
-            if (!App.databaseService.existsIdInMJLOG(infoSchema.id)) {
+            if (!Main.databaseService.existsIdInMJLOG(infoSchema.id)) {
                 this.service.downloadMjlogToDatabase(infoSchema);
                 tableView.getItems().set(tableView.getSelectionModel().getFocusedIndex(), infoSchema);
             }
@@ -108,7 +108,7 @@ public class DownloaderController implements Initializable {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showSaveDialog(this.dateListView.getScene().getWindow());
         if (selectedFile != null) {
-            App.databaseService.dump(selectedFile);
+            Main.databaseService.dump(selectedFile);
         }
     }
 }

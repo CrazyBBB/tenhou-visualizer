@@ -2,7 +2,7 @@ package tenhodownloader;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import tenhouvisualizer.App;
+import tenhouvisualizer.Main;
 
 import java.io.*;
 import java.net.URL;
@@ -27,7 +27,7 @@ public class DownloadService {
 
     DownloadService() {
         try {
-            this.storedInfoSchemas.addAll(App.databaseService.findAllMjlogIds());
+            this.storedInfoSchemas.addAll(Main.databaseService.findAllMjlogIds());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -61,7 +61,7 @@ public class DownloadService {
                         Matcher matcher = mjlogPattern.matcher(columns[3]);
                         if (matcher.find()) {
                             String id = matcher.group(1);
-                            if (App.databaseService.existsIdInINFO(id)) continue;
+                            if (Main.databaseService.existsIdInINFO(id)) continue;
 
                             String ma = columns[2].substring(0, 1);
                             String sou = columns[2].substring(2, 3);
@@ -73,7 +73,7 @@ public class DownloadService {
                             }
                             if (players[3] == null) players[3] = "";
                             infoSchemas.add(new InfoSchema(id, ma, sou, players[0], players[1], players[2], players[3], LocalDateTime.now())); // todo datetime
-                            App.databaseService.saveInfo(id, ma, sou, players[0], players[1], players[2], players[3], LocalDateTime.now().toString());
+                            Main.databaseService.saveInfo(id, ma, sou, players[0], players[1], players[2], players[3], LocalDateTime.now().toString());
                         }
                     }
                 }
@@ -102,7 +102,7 @@ public class DownloadService {
             try (InputStream is = url.openStream();
             InputStreamReader isr = new InputStreamReader(is)) {
                 String content = consumeReader(isr);
-                App.databaseService.saveMjlog(schema.id, content);
+                Main.databaseService.saveMjlog(schema.id, content);
                 this.storedInfoSchemas.add(schema.id);
             }
         } catch (IOException | SQLException e) {
