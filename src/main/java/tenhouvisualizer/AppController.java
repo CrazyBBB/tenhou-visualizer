@@ -36,15 +36,25 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        listView.getItems().addAll(Main.databaseService.findAllExistsInfos());
+        this.listView.getItems().addAll(Main.databaseService.findAllExistsInfos());
 
         this.boardControl.drawScene();
 //        this.label2.textProperty().bind(Bindings.concat(
 //                Bindings.convert(Bindings.size(this.listView.getItems())),
 //                new SimpleStringProperty("/"),
 //                new SimpleStringProperty("NaN")) );
-        listView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
-            this.mjlogTreeControl.showMjlogContent(null);
+        this.listView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
+            String xmlStr = Main.databaseService.findMjlogWithId(newInfo.getId());
+            if (xmlStr != null) {
+                byte[] xml = xmlStr.getBytes();
+                this.mjlogTreeControl.showMjlogContent(xml, 0);
+            }
+        });
+
+        this.mjlogTreeControl.getSelectionModel().selectedItemProperty().addListener((obs, oldMjlog, newMjlog) -> {
+            if (newMjlog.isLeaf()) {
+                this.boardControl.drawScene(newMjlog.getValue().getScene());
+            }
         });
     }
 

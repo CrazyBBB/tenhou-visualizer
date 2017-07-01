@@ -13,7 +13,8 @@ public class Analyzer extends DefaultHandler {
 
     final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級", "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
 
-    ArrayList<Scene> oriScenes = new ArrayList<>();
+    ArrayList<ArrayList<Scene>> oriScenesList = new ArrayList<>();
+    ArrayList<Scene> oriScenes;
 
     String[] players = new String[4];
     boolean isSanma = false;
@@ -60,9 +61,9 @@ public class Analyzer extends DefaultHandler {
         } else if ("INIT".equals(qName)) {
             analyzeINIT(attributes);
         } else if ("AGARI".equals(qName)) {
-
+            analyzeAGARI();
         } else if ("RYUUKYOKU".equals(qName)) {
-
+            analyzeRYUUKYOKU();
         } else if ("N".equals(qName)) {
             analyzeN(attributes);
         } else if (qName.matches("[T-W]\\d+")) {
@@ -73,6 +74,18 @@ public class Analyzer extends DefaultHandler {
             analyzeREACH(attributes);
         } else if ("DORA".equals(qName)) {
             analyzeDORA(attributes);
+        }
+    }
+
+    private void analyzeAGARI() {
+        if (!oriScenes.isEmpty()) {
+            oriScenesList.add(new ArrayList<>(oriScenes));
+        }
+    }
+
+    private void analyzeRYUUKYOKU() {
+        if (!oriScenes.isEmpty()) {
+            oriScenesList.add(new ArrayList<>(oriScenes));
         }
     }
 
@@ -105,6 +118,8 @@ public class Analyzer extends DefaultHandler {
     }
 
     private void analyzeINIT(Attributes attributes) {
+        oriScenes = new ArrayList<>();
+
         for (int i = 0; i < 4; i++) {
             Arrays.fill(tehai[i], 0);
             stehai[i] = new TreeSet<>();
@@ -160,9 +175,9 @@ public class Analyzer extends DefaultHandler {
     private void analyzeD(String qName) {
         int playerId = qName.charAt(0) - 'D';
         int beforeSyanten = 0;
-        if (playerId == position && !saved) {
-            beforeSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
-        }
+//        if (playerId == position && !saved) {
+//            beforeSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
+//        }
 
         int hai = Integer.parseInt(qName.substring(1));
         stehai[playerId].remove(hai);
@@ -170,13 +185,14 @@ public class Analyzer extends DefaultHandler {
         dahai[playerId].add(hai);
         tedashi[playerId].add(prev != hai);
 
-        if (playerId == position && !saved) {
-            int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
-            if (beforeSyanten < afterSyanten) {
+//        if (playerId == position && !saved) {
+//            int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
+//            if (beforeSyanten < afterSyanten) {
+        if (playerId == position) // todo
                 saveScene(playerId);
-                saved = true;
-            }
-        }
+//                saved = true;
+//            }
+//        }
     }
 
     private void analyzeN(Attributes attributes) {
@@ -321,7 +337,7 @@ public class Analyzer extends DefaultHandler {
                 new ArrayList<>(dora)));
     }
 
-    public ArrayList<Scene> getOriScenes() {
-        return oriScenes;
+    public ArrayList<ArrayList<Scene>> getOriScenesList() {
+        return oriScenesList;
     }
 }

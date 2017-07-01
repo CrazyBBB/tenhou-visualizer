@@ -9,6 +9,7 @@ public class InfoSchema {
     final String first;
     final String second;
     final String third;
+
     final String fourth;
     final LocalDateTime dateTime;
 
@@ -26,5 +27,9 @@ public class InfoSchema {
     @Override
     public String toString() {
         return ma + "鳳" + sou + " " + first + ", " + second + ", " + third + ("".equals(fourth) ? "" : ", " + fourth);
+    }
+
+    public String getId() {
+        return id;
     }
 }

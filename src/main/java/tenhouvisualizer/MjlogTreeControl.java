@@ -2,43 +2,39 @@ package tenhouvisualizer;
 
 import javafx.scene.control.TreeView;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+
 public class MjlogTreeControl extends TreeView<Mjlog> {
     public MjlogTreeControl() {
         this.setShowRoot(false);
     }
 
-    public void showMjlogContent(MjlogFile mjlogFile) {
+    public void showMjlogContent(byte[] xml, int position)  {
+        ArrayList<ArrayList<Scene>> scenesList;
+
+        try {
+            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+            SAXParser saxParser = null;
+            saxParser = saxParserFactory.newSAXParser();
+            Analyzer analyzer = new Analyzer(position);
+            saxParser.parse(new ByteArrayInputStream(xml), analyzer);
+            scenesList = analyzer.getOriScenesList();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+
         MjlogTreeItem root = new MjlogTreeItem();
-        MjlogTreeItem child1 = new MjlogTreeItem(new Mjlog("aaa"));
-        MjlogTreeItem child1child1 = new MjlogTreeItem(new Mjlog("sss"));
-        MjlogTreeItem child1child2 = new MjlogTreeItem(new Mjlog("ttt"));
-        MjlogTreeItem child1child3 = new MjlogTreeItem(new Mjlog("uuu"));
-        tenhouvisualizer.Scene scene1 = new tenhouvisualizer.Scene(
-                true,
-                0,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                0,
-                0,
-                0,
-                0,
-                null
-        );
-        MjlogTreeItem child1child4 = new MjlogTreeItem(new Mjlog("mmm", scene1));
-        child1.getChildren().addAll(child1child1, child1child2, child1child3, child1child4);
-        MjlogTreeItem child2 = new MjlogTreeItem(new Mjlog("bbb"));
-        MjlogTreeItem child2child1 = new MjlogTreeItem(new Mjlog("xxx"));
-        child2.getChildren().add(child2child1);
-        root.getChildren().add(child1);
-        root.getChildren().add(child2);
+        for (ArrayList<Scene> scenes : scenesList) {
+            MjlogTreeItem child = new MjlogTreeItem(new Mjlog(scenes.get(0).getBaStr()));
+            for (Scene scene : scenes) {
+                MjlogTreeItem grandchild = new MjlogTreeItem(new Mjlog(scene.dahai[position].size() + "巡目", scene));
+                child.getChildren().add(grandchild);
+            }
+            root.getChildren().add(child);
+        }
         this.setRoot(root);
     }
 }
