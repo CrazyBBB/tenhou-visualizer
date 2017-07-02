@@ -48,14 +48,18 @@ public class AppController implements Initializable {
             if (xmlStr != null) {
                 byte[] xml = xmlStr.getBytes();
                 this.mjlogTreeControl.showMjlogContent(xml, 0);
+                this.mjlogTreeControl.getSelectionModel().select(this.mjlogTreeControl.getRoot()
+                                                                    .getChildren().get(0).getChildren().get(0));
             }
         });
 
         this.mjlogTreeControl.getSelectionModel().selectedItemProperty().addListener((obs, oldMjlog, newMjlog) -> {
-            if (newMjlog != null && newMjlog.isLeaf()) {
-                this.boardControl.drawScene(newMjlog.getValue().getScene());
-            } else {
-                this.mjlogTreeControl.getSelectionModel().getSelectedItem().setExpanded(true);
+            if (newMjlog != null) {
+                if (newMjlog.isLeaf()) {
+                    this.boardControl.drawScene(newMjlog.getValue().getScene());
+                } else {
+                    this.mjlogTreeControl.getSelectionModel().getSelectedItem().setExpanded(true);
+                }
             }
         });
     }
