@@ -44,12 +44,14 @@ public class AppController implements Initializable {
 //                new SimpleStringProperty("/"),
 //                new SimpleStringProperty("NaN")) );
         this.listView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
-            String xmlStr = Main.databaseService.findMjlogWithId(newInfo.getId());
-            if (xmlStr != null) {
-                byte[] xml = xmlStr.getBytes();
-                this.mjlogTreeControl.showMjlogContent(xml, 0);
-                this.mjlogTreeControl.getSelectionModel().select(this.mjlogTreeControl.getRoot()
-                                                                    .getChildren().get(0).getChildren().get(0));
+            if (newInfo != null) {
+                String xmlStr = Main.databaseService.findMjlogWithId(newInfo.getId());
+                if (xmlStr != null) {
+                    byte[] xml = xmlStr.getBytes();
+                    this.mjlogTreeControl.showMjlogContent(xml, 0);
+                    this.mjlogTreeControl.getSelectionModel().select(this.mjlogTreeControl.getRoot()
+                            .getChildren().get(0).getChildren().get(0));
+                }
             }
         });
 
