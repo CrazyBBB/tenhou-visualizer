@@ -16,7 +16,7 @@ public class DatabaseService implements Closeable {
     private final PreparedStatement insertInfoStatement;
     private final PreparedStatement findAllMjlogStatement;
     private final PreparedStatement findAllMjlogContent;
-    private final PreparedStatement findMjlogWithIdStatement;
+    private final PreparedStatement findMjlogByIdStatement;
     private final PreparedStatement findAllInfoStatement;
     private final PreparedStatement findAllExistsInfoStatement;
     public DatabaseService(File file) throws ClassNotFoundException, SQLException {
@@ -27,7 +27,7 @@ public class DatabaseService implements Closeable {
         this.insertInfoStatement = connection.prepareStatement("INSERT INTO INFO VALUES(?, ?, ?, ?, ?, ?, ?, ?);");
         this.findAllMjlogStatement = connection.prepareStatement("SELECT id FROM MJLOG;");
         this.findAllMjlogContent = connection.prepareStatement("SELECT content FROM MJLOG;");
-        this.findMjlogWithIdStatement = connection.prepareStatement("SELECT content FROM MJLOG WHERE id = ?;");
+        this.findMjlogByIdStatement = connection.prepareStatement("SELECT content FROM MJLOG WHERE id = ?;");
         this.findAllInfoStatement = connection.prepareStatement("SELECT * FROM INFO;");
         this.findAllExistsInfoStatement = connection.prepareStatement("SELECT * FROM INFO WHERE id in (SELECT id FROM MJLOG);");
     }
@@ -84,10 +84,10 @@ public class DatabaseService implements Closeable {
         return result;
     }
 
-    public String findMjlogWithId(String id) {
+    public String findMjlogById(String id) {
         try {
-            findMjlogWithIdStatement.setString(1, id);
-            ResultSet rs = this.findMjlogWithIdStatement.executeQuery();
+            findMjlogByIdStatement.setString(1, id);
+            ResultSet rs = this.findMjlogByIdStatement.executeQuery();
             if (rs.next()) {
                 return rs.getString(1);
             }
