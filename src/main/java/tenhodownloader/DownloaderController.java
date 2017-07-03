@@ -8,8 +8,11 @@ import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import tenhouvisualizer.Main;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -109,6 +112,24 @@ public class DownloaderController implements Initializable {
         File selectedFile = fileChooser.showSaveDialog(this.dateListView.getScene().getWindow());
         if (selectedFile != null) {
             Main.databaseService.dump(selectedFile);
+        }
+    }
+
+    public void exportMjlog(ActionEvent actionEvent) throws IOException {
+        if (tableView.getSelectionModel().getSelectedItem() != null) {
+            InfoSchema infoSchema = tableView.getSelectionModel().getSelectedItem();
+            String content = Main.databaseService.findMjlogById(infoSchema.getId());
+            if (content != null) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setInitialFileName(infoSchema.id);
+                fileChooser.setTitle("Save mjlog File");
+                fileChooser.getExtensionFilters().add(
+                        new FileChooser.ExtensionFilter("mjlog Files", "*.mjlog"));
+                File selectedFile = fileChooser.showSaveDialog(this.dateListView.getScene().getWindow());
+                if (selectedFile != null) {
+                    Files.copy(new ByteArrayInputStream(content.getBytes()), selectedFile.toPath());
+                }
+            }
         }
     }
 }

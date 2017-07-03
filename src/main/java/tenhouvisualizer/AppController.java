@@ -2,7 +2,6 @@ package tenhouvisualizer;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,10 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import tenhodownloader.InfoSchema;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -45,7 +42,7 @@ public class AppController implements Initializable {
 //                new SimpleStringProperty("NaN")) );
         this.listView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
             if (newInfo != null) {
-                String xmlStr = Main.databaseService.findMjlogWithId(newInfo.getId());
+                String xmlStr = Main.databaseService.findMjlogById(newInfo.getId());
                 if (xmlStr != null) {
                     byte[] xml = xmlStr.getBytes();
                     this.mjlogTreeControl.showMjlogContent(xml, 0);

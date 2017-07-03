@@ -12,6 +12,7 @@
                 <Menu text="File" />
                 <Menu text="Tools">
                     <MenuItem text="Dump" onAction="#dump" />
+                    <MenuItem text="Export .mjlog file" onAction="#exportMjlog"/>
                 </Menu>
             </MenuBar>
         </VBox>
