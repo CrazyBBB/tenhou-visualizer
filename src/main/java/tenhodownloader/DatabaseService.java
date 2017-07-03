@@ -1,5 +1,8 @@
 package tenhodownloader;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +22,7 @@ public class DatabaseService implements Closeable {
     private final PreparedStatement findMjlogByIdStatement;
     private final PreparedStatement findAllInfoStatement;
     private final PreparedStatement findAllExistsInfoStatement;
-    public DatabaseService(File file) throws ClassNotFoundException, SQLException {
+    public DatabaseService(@Nullable File file) throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + (file == null ? "" : file));
         initialize();
@@ -66,7 +69,7 @@ public class DatabaseService implements Closeable {
         }
     }
 
-    Set<String> findAllMjlogIds() throws SQLException {
+    @NotNull Set<String> findAllMjlogIds() throws SQLException {
         ResultSet rs = this.findAllMjlogStatement.executeQuery();
         Set<String> result = new HashSet<>();
         while (rs.next()) {
@@ -75,6 +78,7 @@ public class DatabaseService implements Closeable {
         return result;
     }
 
+    @NotNull
     public List<String> findAllMjlogContents() throws SQLException {
         ResultSet rs = this.findAllMjlogContent.executeQuery();
         List<String> result = new ArrayList<>();
@@ -84,7 +88,8 @@ public class DatabaseService implements Closeable {
         return result;
     }
 
-    public String findMjlogById(String id) {
+    @Nullable
+    public String findMjlogById(@NotNull String id) {
         try {
             findMjlogByIdStatement.setString(1, id);
             ResultSet rs = this.findMjlogByIdStatement.executeQuery();
@@ -97,6 +102,7 @@ public class DatabaseService implements Closeable {
         return null;
     }
 
+    @NotNull
     public List<InfoSchema> findAllInfos() {
         List<InfoSchema> list = new ArrayList<>();
         try {
@@ -119,6 +125,7 @@ public class DatabaseService implements Closeable {
         return list;
     }
 
+    @NotNull
     public List<InfoSchema> findAllExistsInfos() {
         List<InfoSchema> list = new ArrayList<>();
         try {
