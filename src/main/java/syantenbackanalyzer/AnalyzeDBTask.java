@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import tenhouvisualizer.MjlogFile;
 import tenhouvisualizer.Scene;
 
 import javax.xml.parsers.SAXParser;
@@ -39,7 +40,7 @@ public class AnalyzeDBTask extends Task<List<Scene>> {
         for (String content : list) {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
-            Analyzer analyzer = new Analyzer(0);
+            Analyzer analyzer = new Analyzer(MjlogFile.Position.TON);
             saxParser.parse(new ByteArrayInputStream(content.getBytes()), analyzer);
             ArrayList<Scene> scenes = analyzer.getOriScenes();
             workDone++;

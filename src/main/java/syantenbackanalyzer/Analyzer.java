@@ -2,6 +2,7 @@ package syantenbackanalyzer;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+import tenhouvisualizer.MjlogFile;
 import tenhouvisualizer.Naki;
 import tenhouvisualizer.Scene;
 import tenhouvisualizer.Utils;
@@ -40,9 +41,9 @@ public class Analyzer extends DefaultHandler {
 
     int prev = -1;
 
-    int position;
+    MjlogFile.Position position;
 
-    public Analyzer(int position) {
+    public Analyzer(MjlogFile.Position position) {
         this.position = position;
     }
 
@@ -163,7 +164,7 @@ public class Analyzer extends DefaultHandler {
     private void analyzeD(String qName) {
         int playerId = qName.charAt(0) - 'D';
         int beforeSyanten = 0;
-        if (playerId == position && !saved) {
+        if (MjlogFile.Position.values()[playerId] == position && !saved) {
             beforeSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
         }
 
@@ -173,7 +174,7 @@ public class Analyzer extends DefaultHandler {
         dahai[playerId].add(hai);
         tedashi[playerId].add(prev != hai);
 
-        if (playerId == position && !saved) {
+        if (MjlogFile.Position.values()[playerId] == position && !saved) {
             int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
             if (beforeSyanten < afterSyanten) {
                 saveScene(playerId);

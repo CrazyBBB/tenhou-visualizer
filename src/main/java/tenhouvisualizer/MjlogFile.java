@@ -2,18 +2,10 @@ package tenhouvisualizer;
 
 public class MjlogFile {
     byte[] xml;
-    int position;
+    Position position;
 
-    public MjlogFile(byte[] xml, int position) {
+    public MjlogFile(byte[] xml, Position position) {
         this.xml = xml;
-        this.position = position;
-    }
-
-    public void setXml(byte[] xml) {
-        this.xml = xml;
-    }
-
-    public void setPosition(int position) {
         this.position = position;
     }
 
@@ -21,7 +13,14 @@ public class MjlogFile {
         return xml;
     }
 
-    public int getPosition() {
+    public Position getPosition() {
         return position;
+    }
+
+    public enum Position {
+        TON,
+        NAN,
+        SHA,
+        PE
     }
 }
