@@ -19,37 +19,35 @@
     <center>
         <GridPane>
             <columnConstraints>
-                <ColumnConstraints hgrow="ALWAYS" />
-                <ColumnConstraints hgrow="ALWAYS" />
+                <ColumnConstraints percentWidth="25" hgrow="ALWAYS" />
+                <ColumnConstraints percentWidth="75" hgrow="ALWAYS" />
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints vgrow="ALWAYS" />
+                <RowConstraints vgrow="NEVER" />
             </rowConstraints>
-            <VBox GridPane.columnIndex="0">
-                <TabPane fx:id="tabPane">
-                    <Tab fx:id="currentYearTab" text="Current Year" closable="false">
-                        <ListView fx:id="dateListView"/>
-                    </Tab>
-                    <Tab fx:id="currentWeekTab" text="Current Week" closable="false">
-                        <ListView fx:id="hourListView"/>
-                    </Tab>
-                </TabPane>
-                <Button text="Download Index" onAction="#downloadIndex" />
-            </VBox>
-            <VBox GridPane.columnIndex="1" >
-                <TableView fx:id="tableView" >
-                    <columns>
-                        <TableColumn fx:id="downloadColumn" text="済" editable="false" />
-                        <TableColumn fx:id="maColumn" text="麻" editable="false" />
-                        <TableColumn fx:id="souColumn" text="荘" editable="false" />
-                        <TableColumn fx:id="firstColumn" text="1位" editable="false" />
-                        <TableColumn fx:id="secondColumn" text="2位" editable="false" />
-                        <TableColumn fx:id="thirdColumn" text="3位" editable="false" />
-                        <TableColumn fx:id="fourthColumn" text="4位" editable="false" />
-                    </columns>
-                </TableView>
-                <Button text="Download Mjlog" onAction="#downloadMjlog" />
-            </VBox>
+            <TabPane fx:id="tabPane" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Tab fx:id="currentYearTab" text="Current Year" closable="false">
+                    <ListView fx:id="dateListView"/>
+                </Tab>
+                <Tab fx:id="currentWeekTab" text="Current Week" closable="false">
+                    <ListView fx:id="hourListView"/>
+                </Tab>
+            </TabPane>
+            <Button text="Download Index" onAction="#downloadIndex"  GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+            <TableView fx:id="tableView"  GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <columns>
+                    <TableColumn fx:id="downloadColumn" text="済" editable="false" />
+                    <TableColumn fx:id="maColumn" text="麻" editable="false" />
+                    <TableColumn fx:id="souColumn" text="荘" editable="false" />
+                    <TableColumn fx:id="firstColumn" text="1位" editable="false" />
+                    <TableColumn fx:id="secondColumn" text="2位" editable="false" />
+                    <TableColumn fx:id="thirdColumn" text="3位" editable="false" />
+                    <TableColumn fx:id="fourthColumn" text="4位" editable="false" />
+                </columns>
+            </TableView>
+            <Button text="Download Mjlog" onAction="#downloadMjlog"  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
         </GridPane>
     </center>
     <bottom>
