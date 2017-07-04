@@ -186,7 +186,7 @@ public class Analyzer extends DefaultHandler {
         int m = Integer.parseInt(attributes.getValue("m"));
         int who = Integer.parseInt(attributes.getValue("who"));
 
-        int kui = m & 3;
+        int kui = 3 - (m & 3); // 0: 上家, 1: 対面, 2: 下家, (3: 暗槓を表す)
         if ((m >> 2 & 1) == 1) {
             // 順子
             int t = (m >> 10) & 63;
@@ -210,7 +210,7 @@ public class Analyzer extends DefaultHandler {
                 hai = new int[]{h[2], h[0], h[1]};
             }
 
-            naki[who].add(new Naki(hai, 0, 3 - kui));
+            naki[who].add(new Naki(hai, 0, kui));
 
             for (int i = 0; i < 3; i++) {
                 if (i != r) {
@@ -237,10 +237,10 @@ public class Analyzer extends DefaultHandler {
 
             int[] hai = new int[3];
             for (int i = 0; i < 3; i++) {
-                hai[(3 - kui + i) % 3] = h[(r + i) % 3];
+                hai[(kui + i) % 3] = h[(r + i) % 3];
             }
 
-            naki[who].add(new Naki(hai, 1, 3 - kui));
+            naki[who].add(new Naki(hai, 1, kui));
 
             for (int i = 0; i < 3; i++) {
                 if (i != r) {
@@ -250,22 +250,22 @@ public class Analyzer extends DefaultHandler {
             }
         } else if ((m >> 4 & 1) == 1) {
             // 加槓
-            int t = (m >> 8) & 255;
+            int unused = (m >> 5) & 3;
+            int t = (m >> 9) & 127;
 
-            t = t / 4 * 4;
-
-            int[] hai = {t + 1, t, t + 2, t + 3};
+            t /= 3;
+            t *= 4;
 
             for (int i = 0; i < naki[who].size(); i++) {
-                if (naki[who].get(i).hai[0] / 4 == t) {
-                    naki[who].set(i, new Naki(hai, 4, 3 - kui));
+                if (naki[who].get(i).hai[0] / 4 == t / 4) {
+                    int[] hai = {naki[who].get(i).hai[0], naki[who].get(i).hai[1], naki[who].get(i).hai[2], t + unused};
+                    int nakiIdx = naki[who].get(i).nakiIdx;
+                    naki[who].set(i, new Naki(hai, 4, nakiIdx));
                 }
             }
 
-            for (int i = 0; i < 4; i++) {
-                tehai[who][hai[i] / 4]--;
-                stehai[who].remove(hai[i]);
-            }
+            tehai[who][t / 4]--;
+            stehai[who].remove(t + unused);
         } else if ((m >> 5 & 1) == 1) {
             // 北
             kita[who]++;
@@ -277,7 +277,7 @@ public class Analyzer extends DefaultHandler {
                     break;
                 }
             }
-        } else if (kui == 0) {
+        } else if (kui == 3) {
             // 暗槓
             int t = (m >> 8) & 255;
 
@@ -293,13 +293,25 @@ public class Analyzer extends DefaultHandler {
             }
         } else {
             // 明槓
-            int t = (m >> 8) & 255;
+            int t = (m >> 8) & 255; // 鳴いた牌
 
-            t = t / 4 * 4;
+            int t2 = t / 4 * 4;
 
-            int[] hai = {t + 1, t, t + 2, t + 3};
+            if (kui == 2) kui++;
 
-            naki[who].add(new Naki(hai, 2, -1));
+            int[] hai = new int[4];
+            int idx = 0;
+            for (int i = 0; i < 4; i++) {
+                if (i == kui) {
+                    hai[i] = t;
+                } else {
+                    if (t2 + idx == t) idx++;
+                    hai[i] = t2 + idx;
+                    idx++;
+                }
+            }
+
+            naki[who].add(new Naki(hai, 3, kui));
 
             for (int i = 0; i < 4; i++) {
                 tehai[who][hai[i] / 4]--;

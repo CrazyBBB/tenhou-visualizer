@@ -3,7 +3,7 @@ package tenhouvisualizer;
 public class Naki {
     public int[] hai;
     int type; // 0: チー, 1: ポン, 2: 暗カン, 3: 明カン, 4: 加カン
-    int nakiIdx;
+    public int nakiIdx;
 
     public Naki(int[] hai, int type, int nakiIdx) {
         this.hai = hai;

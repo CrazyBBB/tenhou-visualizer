@@ -1,9 +1,8 @@
 package tenhouvisualizer;
 
-import javafx.scene.canvas.*;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 public class BoardControl extends Canvas {
     private GraphicsContext gc;
@@ -150,6 +149,29 @@ public class BoardControl extends Canvas {
                         gc.drawImage(getImage(naki.hai[i], true, true), x, y, 32, 45);
                     }
                 }
+            } else if (naki.type == 3) {
+                for (int i = 3; i >= 0; i--) {
+                    if (i == naki.nakiIdx) {
+                        x -= 45;
+                        gc.drawImage(getImage(naki.hai[i], true, false), x, y + 13, 45, 32);
+                    } else {
+                        x -= 32;
+                        gc.drawImage(getImage(naki.hai[i], true, true), x, y, 32, 45);
+                    }
+                }
+            } else if (naki.type == 4) {
+                for (int i = 2; i >= 0; i--) {
+                    if (i == naki.nakiIdx) {
+                        x -= 45;
+                        gc.drawImage(getImage(naki.hai[i], true, false), x, y + 13, 45, 32);
+                        gc.drawImage(getImage(naki.hai[3], true, false), x, y - 19, 45, 32);
+                    } else {
+                        x -= 32;
+                        gc.drawImage(getImage(naki.hai[i], true, true), x, y, 32, 45);
+                    }
+                }
+            } else {
+                throw new RuntimeException();
             }
         }
     }

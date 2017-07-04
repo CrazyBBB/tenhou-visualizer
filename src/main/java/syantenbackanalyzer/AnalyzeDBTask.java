@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import tenhouvisualizer.MjlogFile;
 import tenhouvisualizer.Scene;
 
 import javax.xml.parsers.SAXParser;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tenhouvisualizer.Main;
+import tenhouvisualizer.Utils;
 
 public class AnalyzeDBTask extends Task<List<Scene>> {
     private ListView<Scene> listView;
@@ -40,7 +40,7 @@ public class AnalyzeDBTask extends Task<List<Scene>> {
         for (String content : list) {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
-            Analyzer analyzer = new Analyzer(MjlogFile.Position.TON);
+            Analyzer analyzer = new Analyzer(Utils.Position.TON);
             saxParser.parse(new ByteArrayInputStream(content.getBytes()), analyzer);
             ArrayList<Scene> scenes = analyzer.getOriScenes();
             workDone++;
