@@ -2,7 +2,6 @@ package syantenbackanalyzer;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-import tenhouvisualizer.MjlogFile;
 import tenhouvisualizer.Naki;
 import tenhouvisualizer.Scene;
 import tenhouvisualizer.Utils;
@@ -41,9 +40,9 @@ public class Analyzer extends DefaultHandler {
 
     int prev = -1;
 
-    MjlogFile.Position position;
+    Utils.Position position;
 
-    public Analyzer(MjlogFile.Position position) {
+    public Analyzer(Utils.Position position) {
         this.position = position;
     }
 
@@ -164,7 +163,7 @@ public class Analyzer extends DefaultHandler {
     private void analyzeD(String qName) {
         int playerId = qName.charAt(0) - 'D';
         int beforeSyanten = 0;
-        if (MjlogFile.Position.values()[playerId] == position && !saved) {
+        if (Utils.Position.values()[playerId] == position && !saved) {
             beforeSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
         }
 
@@ -174,7 +173,7 @@ public class Analyzer extends DefaultHandler {
         dahai[playerId].add(hai);
         tedashi[playerId].add(prev != hai);
 
-        if (MjlogFile.Position.values()[playerId] == position && !saved) {
+        if (Utils.Position.values()[playerId] == position && !saved) {
             int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
             if (beforeSyanten < afterSyanten) {
                 saveScene(playerId);
@@ -189,6 +188,7 @@ public class Analyzer extends DefaultHandler {
 
         int kui = m & 3;
         if ((m >> 2 & 1) == 1) {
+            // 順子
             int t = (m >> 10) & 63;
             int r = t % 3;
 
@@ -219,6 +219,7 @@ public class Analyzer extends DefaultHandler {
                 }
             }
         } else if ((m >> 3 & 1) == 1) {
+            // 刻子
             int unused = (m >> 5) & 3;
             int t = (m >> 9) & 127;
             int r = t % 3;
@@ -248,8 +249,25 @@ public class Analyzer extends DefaultHandler {
                 }
             }
         } else if ((m >> 4 & 1) == 1) {
+            // 加槓
+            int t = (m >> 8) & 255;
 
+            t = t / 4 * 4;
+
+            int[] hai = {t + 1, t, t + 2, t + 3};
+
+            for (int i = 0; i < naki[who].size(); i++) {
+                if (naki[who].get(i).hai[0] / 4 == t) {
+                    naki[who].set(i, new Naki(hai, 4, 3 - kui));
+                }
+            }
+
+            for (int i = 0; i < 4; i++) {
+                tehai[who][hai[i] / 4]--;
+                stehai[who].remove(hai[i]);
+            }
         } else if ((m >> 5 & 1) == 1) {
+            // 北
             kita[who]++;
 
             tehai[who][30]--;
@@ -260,6 +278,7 @@ public class Analyzer extends DefaultHandler {
                 }
             }
         } else if (kui == 0) {
+            // 暗槓
             int t = (m >> 8) & 255;
 
             t = t / 4 * 4;
@@ -273,7 +292,19 @@ public class Analyzer extends DefaultHandler {
                 stehai[who].remove(hai[i]);
             }
         } else {
+            // 明槓
+            int t = (m >> 8) & 255;
 
+            t = t / 4 * 4;
+
+            int[] hai = {t + 1, t, t + 2, t + 3};
+
+            naki[who].add(new Naki(hai, 2, -1));
+
+            for (int i = 0; i < 4; i++) {
+                tehai[who][hai[i] / 4]--;
+                stehai[who].remove(hai[i]);
+            }
         }
         prev = -1;
     }

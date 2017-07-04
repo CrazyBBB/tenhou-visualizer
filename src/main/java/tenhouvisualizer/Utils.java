@@ -210,4 +210,11 @@ public class Utils {
 
         return images;
     }
+
+    public enum Position {
+        TON,
+        NAN,
+        SHA,
+        PE
+    }
 }
