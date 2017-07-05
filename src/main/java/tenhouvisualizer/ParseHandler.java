@@ -6,43 +6,19 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.TreeSet;
 
 public class ParseHandler extends DefaultHandler {
 
     private static final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級",
             "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
 
-    private ArrayList<Scene> oriScenes = new ArrayList<>();
-
-    private String[] players = new String[4];
-    private boolean isSanma = false;
-    private String[] dan = new String[4];
-    private int[] rate = new int[4];
-
-    private int[] point = new int[4];
-    private int[][] tehai = new int[4][34];
-    private ArrayList<TreeSet<Integer>> stehai = new ArrayList<>(4);
-    private ArrayList<ArrayList<Integer>> dahai = new ArrayList<>(4);
-    private ArrayList<ArrayList<Boolean>> tedashi = new ArrayList<>(4);
-    private ArrayList<ArrayList<Naki>> naki = new ArrayList<>(4);
-    private int[] reach = new int[4];
-    private int[] kita = new int[4];
-    private int bakaze = 0;
-    private int kyoku = -1;             // 残す
-    private int honba = 0;              // 残す
-    private ArrayList<Integer> dora;
-
-    private boolean saved = false;
-
-    private int prev = -1;
+    private int kyoku = -1;
+    private int honba = 0;
 
     private IAnalyzer analyzer;
-    private Utils.KAZE position;
 
-    ParseHandler(IAnalyzer analyzer, Utils.KAZE position) {
+    ParseHandler(IAnalyzer analyzer) {
         this.analyzer = analyzer;
-        this.position = position;
     }
 
     @Override
