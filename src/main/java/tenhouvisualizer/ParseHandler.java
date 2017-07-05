@@ -12,6 +12,16 @@ public class ParseHandler extends DefaultHandler {
     private static final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級",
             "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
 
+    boolean isSanma;
+    Utils.Taku taku;
+    boolean isTonnan;
+    boolean isSoku;
+    boolean isUseAka;
+    boolean isAriAri;
+    String[] playerNames = new String[4];
+    int[] playerRates = new int[4];
+    String[] playerDans = new String[4];
+
     private int kyoku = -1;
     private int honba = 0;
 
@@ -24,13 +34,13 @@ public class ParseHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String tagName, Attributes attributes) {
         if ("SHUFFLE".equals(tagName)) {
-            visitSHUFFLE(attributes);
+            visitSHUFFLE();
         } else if ("GO".equals(tagName)) {
             visitGO(attributes);
         } else if ("UN".equals(tagName)) {
             visitUN(attributes);
         } else if ("TAIKYOKU".equals(tagName)) {
-            visitTAIKYOKU(attributes);
+            visitTAIKYOKU();
         } else if ("INIT".equals(tagName)) {
             visitINIT(attributes);
         } else if ("AGARI".equals(tagName)) {
@@ -53,20 +63,19 @@ public class ParseHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String tagName) {
         if ("mjlogjm".equals(tagName)) {
-
+            analyzer.endGame();
         }
     }
 
-    private void visitSHUFFLE(Attributes attributes) {
-        analyzer.analyzeSHUFFLE(attributes.getValue("seed"));
+    private void visitSHUFFLE() {
+        // no op
     }
 
     private void visitGO(Attributes attributes) {
         int type = Integer.parseInt(attributes.getValue("type"));
-        boolean isSanma     = (type & 0b00010000) != 0;
+        isSanma     = (type & 0b00010000) != 0;
         boolean takuBit1    = (type & 0b00100000) != 0;
         boolean takuBit2    = (type & 0b10000000) != 0;
-        Utils.Taku taku;
         if (takuBit1) {
             if (takuBit2) {
                 taku = Utils.Taku.HOUOU;
@@ -80,11 +89,10 @@ public class ParseHandler extends DefaultHandler {
                 taku = Utils.Taku.PAN;
             }
         }
-        boolean isTonnan    = (type & 0b00001000) != 0;
-        boolean isSoku      = (type & 0b01000000) != 0;
-        boolean isUseAka    = (type & 0b00000010) == 0;
-        boolean isAriAri    = (type & 0b00000100) == 0;
-        analyzer.analyzeGO(isSanma, taku, isTonnan, isSoku, isUseAka, isAriAri);
+        isTonnan    = (type & 0b00001000) != 0;
+        isSoku      = (type & 0b01000000) != 0;
+        isUseAka    = (type & 0b00000010) == 0;
+        isAriAri    = (type & 0b00000100) == 0;
     }
 
     private void visitUN(Attributes attributes) {
@@ -92,9 +100,9 @@ public class ParseHandler extends DefaultHandler {
 
         // 復帰時のUN要素でない
         if (danCsv != null) {
-            String[] playerNames = new String[4];
-            int[] playerRates = new int[4];
-            String[] playerDans = new String[4];
+            playerNames = new String[4];
+            playerRates = new int[4];
+            playerDans = new String[4];
 
             for (int i = 0; i < 4; i++) {
                 try {
@@ -115,15 +123,11 @@ public class ParseHandler extends DefaultHandler {
             for (int j = 0; j < 4; j++) {
                 playerDans[j] = danStr[Integer.valueOf(splitedDanCsv[j])];
             }
-
-            analyzer.analyzeUN(playerNames, playerRates, playerDans);
         }
     }
 
-    private void visitTAIKYOKU(Attributes attributes) {
-        int p = Integer.parseInt(attributes.getValue("oya"));
-        Utils.KAZE oya = Utils.KAZE.values()[p];
-        analyzer.analyzeTAIKYOKU(oya);
+    private void visitTAIKYOKU() {
+        analyzer.startGame(isSanma, taku, isTonnan, isSoku, isUseAka, isAriAri, playerNames, playerRates, playerDans);
     }
 
     private void visitINIT(Attributes attributes) {
@@ -163,19 +167,19 @@ public class ParseHandler extends DefaultHandler {
             }
         }
 
-        analyzer.analyzeINIT(playerPoints, playerHaipais, oya, bakaze, kyoku, honba, firstDora);
+        analyzer.startKyoku(playerPoints, playerHaipais, oya, bakaze, kyoku, honba, firstDora);
     }
 
     private void visitTUVW(String tagName) {
         Utils.KAZE position = Utils.KAZE.values()[tagName.charAt(0) - 'T'];
         int tsumoHai = Integer.parseInt(tagName.substring(1));
-        analyzer.analyzeTUVW(position, tsumoHai);
+        analyzer.draw(position, tsumoHai);
     }
 
     private void visitDEFG(String tagName) {
         Utils.KAZE position = Utils.KAZE.values()[tagName.charAt(0) - 'D'];
         int kiriHai = Integer.parseInt(tagName.substring(1));
-        analyzer.analyzeDEFG(position, kiriHai);
+        analyzer.discard(position, kiriHai);
     }
 
     private void visitN(Attributes attributes) {
@@ -291,18 +295,16 @@ public class ParseHandler extends DefaultHandler {
 
             naki = new Naki(hai, 3, nakiFrom);
         }
-
-        analyzer.analyzeN(position, isKita, naki);
     }
 
     private void visitREACH(Attributes attributes) {
         Utils.KAZE position = Utils.KAZE.values()[Integer.parseInt(attributes.getValue("who"))];
         int step = Integer.parseInt(attributes.getValue("step"));
-        analyzer.analyzeREACH(position, step);
+        analyzer.reach(position, step);
     }
 
     private void visitDORA(Attributes attributes) {
         int newDora = Integer.parseInt(attributes.getValue("hai"));
-        analyzer.analyzeDORA(newDora);
+        analyzer.addDora(newDora);
     }
 }
