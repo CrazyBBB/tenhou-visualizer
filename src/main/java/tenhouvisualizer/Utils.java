@@ -217,4 +217,11 @@ public class Utils {
         SHA,
         PE
     }
+
+    public enum Taku {
+        PAN,
+        JOU,
+        TOKUJOU,
+        HOUOU
+    }
 }
