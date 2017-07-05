@@ -130,8 +130,14 @@ public class BoardControl extends Canvas {
         }
 
         for (Naki naki : scene.naki.get(playerId)) {
-            if (naki.type == 0 || naki.type == 1) {
-                for (int i = 2; i >= 0; i--) {
+            if (naki.type == 0 || naki.type == 1 || naki.type == 3) {
+                int n;
+                if (naki.type == 3) {
+                    n = 3;
+                } else {
+                    n = 2;
+                }
+                for (int i = n; i >= 0; i--) {
                     if (i == naki.nakiIdx) {
                         x -= 45;
                         gc.drawImage(getImage(naki.hai[i], true, false), x, y + 13, 45, 32);
@@ -146,16 +152,6 @@ public class BoardControl extends Canvas {
                     if (i == 0 || i == 3) {
                         gc.drawImage(imgUra, x, y, 32, 45);
                     } else {
-                        gc.drawImage(getImage(naki.hai[i], true, true), x, y, 32, 45);
-                    }
-                }
-            } else if (naki.type == 3) {
-                for (int i = 3; i >= 0; i--) {
-                    if (i == naki.nakiIdx) {
-                        x -= 45;
-                        gc.drawImage(getImage(naki.hai[i], true, false), x, y + 13, 45, 32);
-                    } else {
-                        x -= 32;
                         gc.drawImage(getImage(naki.hai[i], true, true), x, y, 32, 45);
                     }
                 }
