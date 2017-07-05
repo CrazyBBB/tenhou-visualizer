@@ -35,7 +35,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class" : "tenhouvisualizer.App"
+        attributes "Main-Class" : "tenhouvisualizer.Main"
     }
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }

@@ -27,7 +27,7 @@ public class Reader {
             // ex) mjlog_pf3-20_n14/2017010818gm-00b9-0000-bcbde0df&tw=0.mjlog
             int position = path.charAt(path.length() - 7) - '0';
 
-            list.add(new MjlogFile(buf, Utils.Position.TON));
+            list.add(new MjlogFile(buf, Utils.KAZE.TON));
         }
         zis.close();
         fis.close();

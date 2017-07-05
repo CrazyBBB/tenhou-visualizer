@@ -38,9 +38,9 @@ public class Analyzer extends DefaultHandler {
 
     private int prev = -1;
 
-    private Utils.Position position;
+    private Utils.KAZE position;
 
-    Analyzer(Utils.Position position) {
+    Analyzer(Utils.KAZE position) {
         this.position = position;
     }
 
@@ -192,7 +192,7 @@ public class Analyzer extends DefaultHandler {
 //        if (playerId == position && !saved) {
 //            int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
 //            if (beforeSyanten < afterSyanten) {
-        if (Utils.Position.values()[playerId] == position) // todo
+        if (Utils.KAZE.values()[playerId] == position) // todo
                 saveScene(playerId);
 //                saved = true;
 //            }

@@ -45,7 +45,7 @@ public class AppController implements Initializable {
                 String xmlStr = Main.databaseService.findMjlogById(newInfo.getId());
                 if (xmlStr != null) {
                     byte[] xml = xmlStr.getBytes();
-                    this.mjlogTreeControl.showMjlogContent(xml, Utils.Position.TON);
+                    this.mjlogTreeControl.showMjlogContent(xml, Utils.KAZE.TON);
                     this.mjlogTreeControl.getSelectionModel().select(this.mjlogTreeControl.getRoot()
                             .getChildren().get(0).getChildren().get(0));
                 }

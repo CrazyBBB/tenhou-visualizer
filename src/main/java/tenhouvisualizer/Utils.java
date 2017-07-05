@@ -211,7 +211,7 @@ public class Utils {
         return images;
     }
 
-    public enum Position {
+    public enum KAZE {
         TON,
         NAN,
         SHA,

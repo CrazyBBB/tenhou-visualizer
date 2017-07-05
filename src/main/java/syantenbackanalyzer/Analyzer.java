@@ -40,9 +40,9 @@ public class Analyzer extends DefaultHandler {
 
     private int prev = -1;
 
-    private Utils.Position position;
+    private Utils.KAZE position;
 
-    Analyzer(Utils.Position position) {
+    Analyzer(Utils.KAZE position) {
         this.position = position;
     }
 
@@ -167,7 +167,7 @@ public class Analyzer extends DefaultHandler {
     private void analyzeD(String qName) {
         int playerId = qName.charAt(0) - 'D';
         int beforeSyanten = 0;
-        if (Utils.Position.values()[playerId] == position && !saved) {
+        if (Utils.KAZE.values()[playerId] == position && !saved) {
             beforeSyanten = Utils.computeSyanten(tehai[playerId], naki.get(playerId).size());
         }
 
@@ -177,7 +177,7 @@ public class Analyzer extends DefaultHandler {
         dahai.get(playerId).add(hai);
         tedashi.get(playerId).add(prev != hai);
 
-        if (Utils.Position.values()[playerId] == position && !saved) {
+        if (Utils.KAZE.values()[playerId] == position && !saved) {
             int afterSyanten = Utils.computeSyanten(tehai[playerId], naki.get(playerId).size());
             if (beforeSyanten < afterSyanten) {
                 saveScene(playerId);

@@ -40,7 +40,7 @@ public class AnalyzeDBTask extends Task<List<Scene>> {
         for (String content : list) {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
-            Analyzer analyzer = new Analyzer(Utils.Position.TON);
+            Analyzer analyzer = new Analyzer(Utils.KAZE.TON);
             saxParser.parse(new ByteArrayInputStream(content.getBytes()), analyzer);
             ArrayList<Scene> scenes = analyzer.getOriScenes();
             workDone++;

@@ -12,7 +12,7 @@ public class MjlogTreeControl extends TreeView<Mjlog> {
         this.setShowRoot(false);
     }
 
-    public void showMjlogContent(byte[] xml, Utils.Position position)  {
+    public void showMjlogContent(byte[] xml, Utils.KAZE position)  {
         ArrayList<ArrayList<Scene>> scenesList;
 
         try {
