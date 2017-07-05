@@ -84,13 +84,6 @@ public class ParseHandler extends DefaultHandler {
         }
     }
 
-    @Override
-    public void endElement(String uri, String localName, String tagName) {
-        if ("mjlogjm".equals(tagName)) {
-            analyzer.endGame();
-        }
-    }
-
     private void visitSHUFFLE() {
         // no op
     }
@@ -335,10 +328,28 @@ public class ParseHandler extends DefaultHandler {
     private void visitAGARI(Attributes attributes) {
         analyzer.agari();
         analyzer.endKyoku();
+
+        String owariCsv = attributes.getValue("owari");
+        owari(owariCsv);
     }
 
     private void visitRYUUKYOKU(Attributes attributes) {
         analyzer.ryuukyoku();
         analyzer.endKyoku();
+
+        String owariCsv = attributes.getValue("owari");
+        owari(owariCsv);
+    }
+
+    private void owari(String owariCsv) {
+        if (owariCsv != null) {
+            String[] splitedOwariCsv = owariCsv.split(",");
+            int[] playerPoints = new int[4];
+            for (int i = 0; i < 4; i++) {
+                playerPoints[i] = Integer.parseInt(splitedOwariCsv[i]) * 100;
+            }
+
+            analyzer.endGame(playerPoints);
+        }
     }
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public interface IAnalyzer {
     void startGame(boolean isSanma, Utils.Taku taku, boolean isTonnan, boolean isSoku, boolean isUseAka, boolean isAriAri,
                    String[] playerNames, int[] playerRates, String[] playerDans);
-    void endGame();
+    void endGame(int[] playerPoints);
 
     void startKyoku(int[] playerPoints, ArrayList<ArrayList<Integer>> playerHaipais, Utils.KAZE oya, Utils.KAZE bakaze,
                     int kyoku, int honba, int firstDora);
