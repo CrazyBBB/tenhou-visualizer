@@ -86,7 +86,7 @@ public class BoardControl extends Canvas {
     private void drawTehai(Scene scene, int playerId) {
         int x = 70;
         int y = 555;
-        for (int hai : scene.stehai[playerId]) {
+        for (int hai : scene.stehai.get(playerId)) {
             gc.drawImage(getImage(hai, true, true), x, y, 32, 45);
             x += 32;
         }
@@ -96,12 +96,12 @@ public class BoardControl extends Canvas {
         int x = 200;
         int y = 400;
         int i = 0;
-        for (int hai : scene.dahai[playerId]) {
+        for (int hai : scene.dahai.get(playerId)) {
             if (i == scene.reach[playerId]) {
-                gc.drawImage(getImage(hai, scene.tedashi[playerId].get(i), false), x, y + 13, 45, 32);
+                gc.drawImage(getImage(hai, scene.tedashi.get(playerId).get(i), false), x, y + 13, 45, 32);
                 x += 45;
             } else {
-                gc.drawImage(getImage(hai, scene.tedashi[playerId].get(i), true), x, y, 32, 45);
+                gc.drawImage(getImage(hai, scene.tedashi.get(playerId).get(i), true), x, y, 32, 45);
                 x += 32;
             }
 
@@ -129,7 +129,7 @@ public class BoardControl extends Canvas {
             gc.fillText("×" + nOfKita, 577, 553);
         }
 
-        for (Naki naki : scene.naki[playerId]) {
+        for (Naki naki : scene.naki.get(playerId)) {
             if (naki.type == 0 || naki.type == 1) {
                 for (int i = 2; i >= 0; i--) {
                     if (i == naki.nakiIdx) {

@@ -14,35 +14,35 @@ import java.util.TreeSet;
 
 public class Analyzer extends DefaultHandler {
 
-    final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級", "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
+    private final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級", "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
 
-    ArrayList<Scene> oriScenes = new ArrayList<>();
+    private ArrayList<Scene> oriScenes = new ArrayList<>();
 
-    String[] players = new String[4];
-    boolean isSanma = false;
-    String[] dan = new String[4];
-    int[] rate = new int[4];
+    private String[] players = new String[4];
+    private boolean isSanma = false;
+    private String[] dan = new String[4];
+    private int[] rate = new int[4];
 
-    int[] point = new int[4];
-    int[][] tehai = new int[4][34];
-    TreeSet<Integer>[] stehai = new TreeSet[4];
-    ArrayList<Integer>[] dahai = new ArrayList[4];
-    ArrayList<Boolean>[] tedashi = new ArrayList[4];
-    ArrayList<Naki>[] naki = new ArrayList[4];
-    int[] reach = new int[4];
-    int[] kita = new int[4];
-    int bakaze = 0;
-    int kyoku = -1;
-    int honba = 0;
-    ArrayList<Integer> dora;
+    private int[] point = new int[4];
+    private int[][] tehai = new int[4][34];
+    private ArrayList<TreeSet<Integer>> stehai = new ArrayList<>(4);
+    private ArrayList<ArrayList<Integer>> dahai = new ArrayList<>(4);
+    private ArrayList<ArrayList<Boolean>> tedashi = new ArrayList<>(4);
+    private ArrayList<ArrayList<Naki>> naki = new ArrayList<>(4);
+    private int[] reach = new int[4];
+    private int[] kita = new int[4];
+    private int bakaze = 0;
+    private int kyoku = -1;
+    private int honba = 0;
+    private ArrayList<Integer> dora;
 
-    boolean saved = false;
+    private boolean saved = false;
 
-    int prev = -1;
+    private int prev = -1;
 
-    Utils.Position position;
+    private Utils.Position position;
 
-    public Analyzer(Utils.Position position) {
+    Analyzer(Utils.Position position) {
         this.position = position;
     }
 
@@ -108,12 +108,16 @@ public class Analyzer extends DefaultHandler {
     }
 
     private void analyzeINIT(Attributes attributes) {
+        stehai.clear();
+        dahai.clear();
+        tedashi.clear();
+        naki.clear();
         for (int i = 0; i < 4; i++) {
             Arrays.fill(tehai[i], 0);
-            stehai[i] = new TreeSet<>();
-            dahai[i] = new ArrayList<>();
-            tedashi[i] = new ArrayList<>();
-            naki[i] = new ArrayList<>();
+            stehai.add(new TreeSet<>());
+            dahai.add(new ArrayList<>());
+            tedashi.add(new ArrayList<>());
+            naki.add(new ArrayList<>());
         }
         Arrays.fill(reach, -1);
         Arrays.fill(kita, 0);
@@ -146,7 +150,7 @@ public class Analyzer extends DefaultHandler {
             String[] splitedHaiCsv = haiCsv.split(",");
             for (int j = 0; j < 13; j++) {
                 int hai = Integer.parseInt(splitedHaiCsv[j]);
-                stehai[i].add(hai);
+                stehai.get(i).add(hai);
                 tehai[i][hai / 4]++;
             }
         }
@@ -155,7 +159,7 @@ public class Analyzer extends DefaultHandler {
     private void analyzeT(String qName) {
         int playerId = qName.charAt(0) - 'T';
         int hai = Integer.parseInt(qName.substring(1));
-        stehai[playerId].add(hai);
+        stehai.get(playerId).add(hai);
         tehai[playerId][hai / 4]++;
         prev = hai;
     }
@@ -164,17 +168,17 @@ public class Analyzer extends DefaultHandler {
         int playerId = qName.charAt(0) - 'D';
         int beforeSyanten = 0;
         if (Utils.Position.values()[playerId] == position && !saved) {
-            beforeSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
+            beforeSyanten = Utils.computeSyanten(tehai[playerId], naki.get(playerId).size());
         }
 
         int hai = Integer.parseInt(qName.substring(1));
-        stehai[playerId].remove(hai);
+        stehai.get(playerId).remove(hai);
         tehai[playerId][hai / 4]--;
-        dahai[playerId].add(hai);
-        tedashi[playerId].add(prev != hai);
+        dahai.get(playerId).add(hai);
+        tedashi.get(playerId).add(prev != hai);
 
         if (Utils.Position.values()[playerId] == position && !saved) {
-            int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
+            int afterSyanten = Utils.computeSyanten(tehai[playerId], naki.get(playerId).size());
             if (beforeSyanten < afterSyanten) {
                 saveScene(playerId);
                 saved = true;
@@ -197,9 +201,9 @@ public class Analyzer extends DefaultHandler {
             t *= 4;
 
             int[] h = new int[3];
-            h[0] = t + 4 * 0 + ((m >> 3) & 3);
-            h[1] = t + 4 * 1 + ((m >> 5) & 3);
-            h[2] = t + 4 * 2 + ((m >> 7) & 3);
+            h[0] = t + ((m >> 3) & 3);
+            h[1] = t + 4 + ((m >> 5) & 3);
+            h[2] = t + 8 + ((m >> 7) & 3);
 
             int[] hai = null;
             if (r == 0) {
@@ -210,12 +214,12 @@ public class Analyzer extends DefaultHandler {
                 hai = new int[]{h[2], h[0], h[1]};
             }
 
-            naki[who].add(new Naki(hai, 0, kui));
+            naki.get(who).add(new Naki(hai, 0, kui));
 
             for (int i = 0; i < 3; i++) {
                 if (i != r) {
                     tehai[who][h[i] / 4]--;
-                    stehai[who].remove(h[i]);
+                    stehai.get(who).remove(h[i]);
                 }
             }
         } else if ((m >> 3 & 1) == 1) {
@@ -240,12 +244,12 @@ public class Analyzer extends DefaultHandler {
                 hai[(kui + i) % 3] = h[(r + i) % 3];
             }
 
-            naki[who].add(new Naki(hai, 1, kui));
+            naki.get(who).add(new Naki(hai, 1, kui));
 
             for (int i = 0; i < 3; i++) {
                 if (i != r) {
                     tehai[who][h[i] / 4]--;
-                    stehai[who].remove(h[i]);
+                    stehai.get(who).remove(h[i]);
                 }
             }
         } else if ((m >> 4 & 1) == 1) {
@@ -256,24 +260,24 @@ public class Analyzer extends DefaultHandler {
             t /= 3;
             t *= 4;
 
-            for (int i = 0; i < naki[who].size(); i++) {
-                if (naki[who].get(i).hai[0] / 4 == t / 4) {
-                    int[] hai = {naki[who].get(i).hai[0], naki[who].get(i).hai[1], naki[who].get(i).hai[2], t + unused};
-                    int nakiIdx = naki[who].get(i).nakiIdx;
-                    naki[who].set(i, new Naki(hai, 4, nakiIdx));
+            for (int i = 0; i < naki.get(who).size(); i++) {
+                if (naki.get(who).get(i).hai[0] / 4 == t / 4) {
+                    int[] hai = {naki.get(who).get(i).hai[0], naki.get(who).get(i).hai[1], naki.get(who).get(i).hai[2], t + unused};
+                    int nakiIdx = naki.get(who).get(i).nakiIdx;
+                    naki.get(who).set(i, new Naki(hai, 4, nakiIdx));
                 }
             }
 
             tehai[who][t / 4]--;
-            stehai[who].remove(t + unused);
+            stehai.get(who).remove(t + unused);
         } else if ((m >> 5 & 1) == 1) {
             // 北
             kita[who]++;
 
             tehai[who][30]--;
             for (int i = 120; i <= 123 ; i++) {
-                if (stehai[who].contains(i)) {
-                    stehai[who].remove(i);
+                if (stehai.get(who).contains(i)) {
+                    stehai.get(who).remove(i);
                     break;
                 }
             }
@@ -285,11 +289,11 @@ public class Analyzer extends DefaultHandler {
 
             int[] hai = {t + 1, t, t + 2, t + 3};
 
-            naki[who].add(new Naki(hai, 2, -1));
+            naki.get(who).add(new Naki(hai, 2, -1));
 
             for (int i = 0; i < 4; i++) {
                 tehai[who][hai[i] / 4]--;
-                stehai[who].remove(hai[i]);
+                stehai.get(who).remove(hai[i]);
             }
         } else {
             // 明槓
@@ -311,11 +315,11 @@ public class Analyzer extends DefaultHandler {
                 }
             }
 
-            naki[who].add(new Naki(hai, 3, kui));
+            naki.get(who).add(new Naki(hai, 3, kui));
 
             for (int i = 0; i < 4; i++) {
                 tehai[who][hai[i] / 4]--;
-                stehai[who].remove(hai[i]);
+                stehai.get(who).remove(hai[i]);
             }
         }
         prev = -1;
@@ -325,7 +329,7 @@ public class Analyzer extends DefaultHandler {
         int step = Integer.parseInt(attributes.getValue("step"));
         int who = Integer.parseInt(attributes.getValue("who"));
         if (step == 1) {
-            reach[who] = dahai[who].size();
+            reach[who] = dahai.get(who).size();
         } else {
             point[who] -= 1000;
         }
@@ -337,16 +341,16 @@ public class Analyzer extends DefaultHandler {
     }
 
     private void saveScene(int playerId) {
-        TreeSet<Integer>[] tmpStehai = new TreeSet[4];
-        ArrayList<Integer>[] tmpDahai = new ArrayList[4];
-        ArrayList<Boolean>[] tmpTedashi = new ArrayList[4];
-        ArrayList<Naki>[] tmpNaki = new ArrayList[4];
+        ArrayList<TreeSet<Integer>> tmpStehai = new ArrayList<>(4);
+        ArrayList<ArrayList<Integer>> tmpDahai = new ArrayList<>(4);
+        ArrayList<ArrayList<Boolean>> tmpTedashi = new ArrayList<>(4);
+        ArrayList<ArrayList<Naki>> tmpNaki = new ArrayList<>(4);
 
         for (int i = 0; i < 4; i++) {
-            tmpStehai[i] = new TreeSet<>(stehai[i]);
-            tmpDahai[i] = new ArrayList<>(dahai[i]);
-            tmpTedashi[i] = new ArrayList<>(tedashi[i]);
-            tmpNaki[i] = new ArrayList<>(naki[i]);
+            tmpStehai.add(new TreeSet<>(stehai.get(i)));
+            tmpDahai.add(new ArrayList<>(dahai.get(i)));
+            tmpTedashi.add(new ArrayList<>(tedashi.get(i)));
+            tmpNaki.add(new ArrayList<>(naki.get(i)));
         }
 
         oriScenes.add(new Scene(isSanma,
@@ -368,7 +372,7 @@ public class Analyzer extends DefaultHandler {
                 new ArrayList<>(dora)));
     }
 
-    public ArrayList<Scene> getOriScenes() {
+    ArrayList<Scene> getOriScenes() {
         return oriScenes;
     }
 }

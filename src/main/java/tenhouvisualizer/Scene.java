@@ -11,10 +11,10 @@ public class Scene {
     int[] rate;
 
     int[] point;
-    TreeSet<Integer>[] stehai;
-    ArrayList<Naki>[] naki;
-    ArrayList<Integer>[] dahai;
-    ArrayList<Boolean>[] tedashi;
+    ArrayList<TreeSet<Integer>> stehai;
+    ArrayList<ArrayList<Naki>> naki;
+    ArrayList<ArrayList<Integer>> dahai;
+    ArrayList<ArrayList<Boolean>> tedashi;
     int[] reach;
     int[] kita;
     int bakaze;
@@ -26,7 +26,7 @@ public class Scene {
     static final String[] bakazeStr = {"東", "南", "西", "北"};
     static final String[] maStr = {"三", "四"};
 
-    public Scene(boolean isSanma, int playerId, String[] players, String[] dan, int[] rate, int[] point, TreeSet<Integer>[] stehai, ArrayList<Naki>[] naki, ArrayList<Integer>[] dahai, ArrayList<Boolean>[] tedashi, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora) {
+    public Scene(boolean isSanma, int playerId, String[] players, String[] dan, int[] rate, int[] point, ArrayList<TreeSet<Integer>> stehai, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> dahai, ArrayList<ArrayList<Boolean>> tedashi, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora) {
         this.isSanma = isSanma;
         this.playerId = playerId;
         this.players = players;
@@ -59,7 +59,7 @@ public class Scene {
         sb.append("(").append(point[playerId]).append("点, ");
         sb.append(bakazeStr[bakaze]).append(kyoku).append("-");
         sb.append(honba).append("局");
-        sb.append(dahai[playerId].size()).append("巡目)");
+        sb.append(dahai.get(playerId).size()).append("巡目)");
 
         return sb.toString();
     }
