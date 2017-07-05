@@ -12,15 +12,15 @@ public class ParseHandler extends DefaultHandler {
     private static final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級",
             "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
 
-    boolean isSanma;
-    Utils.Taku taku;
-    boolean isTonnan;
-    boolean isSoku;
-    boolean isUseAka;
-    boolean isAriAri;
-    String[] playerNames = new String[4];
-    int[] playerRates = new int[4];
-    String[] playerDans = new String[4];
+    private boolean isSanma;
+    private Utils.Taku taku;
+    private boolean isTonnan;
+    private boolean isSoku;
+    private boolean isUseAka;
+    private boolean isAriAri;
+    private String[] playerNames = new String[4];
+    private int[] playerRates = new int[4];
+    private String[] playerDans = new String[4];
 
     private int kyoku = -1;
     private int honba = 0;
