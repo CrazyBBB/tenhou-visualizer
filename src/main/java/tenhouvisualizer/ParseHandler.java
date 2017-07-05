@@ -12,6 +12,30 @@ public class ParseHandler extends DefaultHandler {
     private static final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級",
             "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
 
+    private static final String[] yakuStr = {
+            //// 一飜
+            "門前清自摸和","立直","一発","槍槓","嶺上開花",
+            "海底摸月","河底撈魚","平和","断幺九","一盃口",
+            "自風 東","自風 南","自風 西","自風 北",
+            "場風 東","場風 南","場風 西","場風 北",
+            "役牌 白","役牌 發","役牌 中",
+            //// 二飜
+            "両立直","七対子","混全帯幺九","一気通貫","三色同順",
+            "三色同刻","三槓子","対々和","三暗刻","小三元","混老頭",
+            //// 三飜
+            "二盃口","純全帯幺九","混一色",
+            //// 六飜
+            "清一色",
+            //// 満貫
+            "人和",
+            //// 役満
+            "天和","地和","大三元","四暗刻","四暗刻単騎","字一色",
+            "緑一色","清老頭","九蓮宝燈","純正九蓮宝燈","国士無双",
+            "国士無双１３面","大四喜","小四喜","四槓子",
+            //// 懸賞役
+            "ドラ","裏ドラ","赤ドラ"
+    };
+
     private boolean isSanma;
     private Utils.Taku taku;
     private boolean isTonnan;
@@ -44,9 +68,9 @@ public class ParseHandler extends DefaultHandler {
         } else if ("INIT".equals(tagName)) {
             visitINIT(attributes);
         } else if ("AGARI".equals(tagName)) {
-
+            visitAGARI(attributes);
         } else if ("RYUUKYOKU".equals(tagName)) {
-
+            visitRYUUKYOKU(attributes);
         } else if ("N".equals(tagName)) {
             visitN(attributes);
         } else if (tagName.matches("[T-W]\\d+")) {
@@ -306,5 +330,15 @@ public class ParseHandler extends DefaultHandler {
     private void visitDORA(Attributes attributes) {
         int newDora = Integer.parseInt(attributes.getValue("hai"));
         analyzer.addDora(newDora);
+    }
+
+    private void visitAGARI(Attributes attributes) {
+        analyzer.agari();
+        analyzer.endKyoku();
+    }
+
+    private void visitRYUUKYOKU(Attributes attributes) {
+        analyzer.ryuukyoku();
+        analyzer.endKyoku();
     }
 }

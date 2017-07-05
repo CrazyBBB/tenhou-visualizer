@@ -12,7 +12,7 @@ public interface IAnalyzer {
 
     void startKyoku(int[] playerPoints, ArrayList<ArrayList<Integer>> playerHaipais, Utils.KAZE oya, Utils.KAZE bakaze,
                     int kyoku, int honba, int firstDora);
-    void endKyoku(boolean isAgari, boolean isNagashiMangan);
+    void endKyoku();
 
     void draw(Utils.KAZE position, int tsumoHai);
     void discard(Utils.KAZE position, int kiriHai);
@@ -24,4 +24,7 @@ public interface IAnalyzer {
     void kakan();
     void reach(Utils.KAZE position, int step);
     void addDora(int newDora);
+
+    void agari();
+    void ryuukyoku();
 }
