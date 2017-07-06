@@ -28,14 +28,23 @@
     <center>
         <GridPane>
             <columnConstraints>
-                <ColumnConstraints hgrow="ALWAYS" />
-                <ColumnConstraints hgrow="ALWAYS" maxWidth="640" />
-                <ColumnConstraints hgrow="ALWAYS" />
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="ALWAYS" minWidth="640" maxWidth="640" />
+                <ColumnConstraints hgrow="ALWAYS"/>
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints vgrow="ALWAYS" />
             </rowConstraints>
-            <ListView fx:id="listView" GridPane.columnIndex="0"/>
+            <TableView fx:id="tableView" GridPane.columnIndex="0">
+                <columns>
+                    <TableColumn fx:id="maColumn" text="麻" editable="false" />
+                    <TableColumn fx:id="souColumn" text="荘" editable="false" />
+                    <TableColumn fx:id="firstColumn" text="1位" editable="false" />
+                    <TableColumn fx:id="secondColumn" text="2位" editable="false" />
+                    <TableColumn fx:id="thirdColumn" text="3位" editable="false" />
+                    <TableColumn fx:id="fourthColumn" text="4位" editable="false" />
+                </columns>
+            </TableView>
             <ScrollPane fitToWidth="true" fitToHeight="true" GridPane.columnIndex="1">
                 <VBox alignment="CENTER">
                     <HBox alignment="CENTER">

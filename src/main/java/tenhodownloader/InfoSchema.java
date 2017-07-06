@@ -3,15 +3,14 @@ package tenhodownloader;
 import java.time.LocalDateTime;
 
 public class InfoSchema {
-    final String id;
-    final String ma;
-    final String sou;
-    final String first;
-    final String second;
-    final String third;
-
-    final String fourth;
-    final LocalDateTime dateTime;
+    final public String id;
+    final public String ma;
+    final public String sou;
+    final public String first;
+    final public String second;
+    final public String third;
+    final public String fourth;
+    final public LocalDateTime dateTime;
 
     public InfoSchema(String id, String ma, String sou, String first, String second, String third, String fourth, LocalDateTime dateTime) {
         this.id = id;
