@@ -37,7 +37,7 @@ public class BoardControl extends Canvas {
 
     private void initBase() {
         gc.clearRect(0, 0, this.getWidth(), this.getHeight());
-        gc.setFill(javafx.scene.paint.Color.GREEN);
+        gc.setFill(javafx.scene.paint.Color.rgb(50, 100, 50));
         gc.fillRect(0, 0, this.getWidth(), this.getHeight());
         gc.setFill(javafx.scene.paint.Color.valueOf("#cccccc"));
         gc.fillRect(200, 200, 200, 200);

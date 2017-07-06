@@ -8,6 +8,10 @@
     -fx-background-color: rgb(60, 63, 65);
 }
 
+.label, .cell {
+    -fx-text-fill: #bbbbbb;
+}
+
 #statusBar {
     -fx-background-color: rgb(60, 63, 65);
 }
