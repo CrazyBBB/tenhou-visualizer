@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
-    static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyMMdd");
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyMMdd");
 
     public ProgressBar progressBar;
     @FXML
@@ -92,6 +92,7 @@ public class AppController implements Initializable {
                     this.mjlogTreeControl.getSelectionModel().select(this.mjlogTreeControl.getRoot()
                             .getChildren().get(0).getChildren().get(0));
                 }
+                this.label.setText(newInfo.toString());
             }
         });
 

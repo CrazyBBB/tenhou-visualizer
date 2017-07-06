@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class DownloaderController implements Initializable {
-    static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
-    static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日HH時台");
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日");
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日H時台");
 
     public TabPane tabPane;
     public ListView<LocalDate> dateListView;
