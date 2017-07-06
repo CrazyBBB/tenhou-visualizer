@@ -47,7 +47,7 @@
         <MjlogTreeControl fx:id="mjlogTreeControl"/>
     </right>
     <bottom>
-        <ToolBar>
+        <ToolBar fx:id="statusBar">
             <Label fx:id="label"/>
             <Pane HBox.hgrow="ALWAYS"/>
             <Label fx:id="label2"/>

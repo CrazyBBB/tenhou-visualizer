@@ -26,11 +26,7 @@ public class DownloadService {
     private final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
 
     DownloadService() {
-        try {
-            this.storedInfoSchemas.addAll(Main.databaseService.findAllMjlogIds());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        this.storedInfoSchemas.addAll(Main.databaseService.findAllMjlogIds());
     }
 
     void downloadDate(LocalDate localDate) {

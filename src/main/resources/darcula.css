@@ -1,0 +1,13 @@
+.root {
+    -fx-base: rgb(60, 63, 65);
+    -fx-background: rgb(60, 63, 65);
+    -fx-control-inner-background:  rgb(60, 63, 65);
+}
+
+.menu-bar {
+    -fx-background-color: rgb(60, 63, 65);
+}
+
+#statusBar {
+    -fx-background-color: rgb(60, 63, 65);
+}

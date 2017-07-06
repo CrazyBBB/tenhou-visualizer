@@ -28,6 +28,7 @@ public class Main extends Application {
         }
 
         Parent root = FXMLLoader.load(getClass().getResource("/app.fxml"));
+        root.getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Tenhou Visualizer");
