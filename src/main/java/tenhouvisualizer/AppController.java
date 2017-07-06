@@ -1,9 +1,9 @@
 package tenhouvisualizer;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,10 +18,13 @@ import tenhodownloader.InfoSchema;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
+    static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyMMdd");
+
     public ProgressBar progressBar;
     @FXML
     private BorderPane root;
@@ -36,6 +39,8 @@ public class AppController implements Initializable {
     @FXML
     private MjlogTreeControl mjlogTreeControl;
 
+    @FXML
+    private TableColumn<InfoSchema, String> dataTimeColumn;
     @FXML
     private TableColumn<InfoSchema, String>  firstColumn;
     @FXML
@@ -57,6 +62,7 @@ public class AppController implements Initializable {
         this.infoSchemas.addAll(list);
         this.tableView.setItems(this.infoSchemas);
 
+        this.dataTimeColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().dateTime.format(dateFormatter)));
         this.maColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().ma));
         this.souColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().sou));
         this.firstColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().first));
@@ -64,12 +70,13 @@ public class AppController implements Initializable {
         this.thirdColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().third));
         this.fourthColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().fourth));
 
+        this.maColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
         this.maColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.1));
         this.souColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.1));
-        this.firstColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
-        this.secondColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
-        this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
-        this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
+        this.firstColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+        this.secondColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+        this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+        this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
 
         this.boardControl.drawScene();
 //        this.label2.textProperty().bind(Bindings.concat(

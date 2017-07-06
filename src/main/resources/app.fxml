@@ -37,6 +37,7 @@
             </rowConstraints>
             <TableView fx:id="tableView" GridPane.columnIndex="0">
                 <columns>
+                    <TableColumn fx:id="dataTimeColumn" text="対戦日" editable="false" />
                     <TableColumn fx:id="maColumn" text="麻" editable="false" />
                     <TableColumn fx:id="souColumn" text="荘" editable="false" />
                     <TableColumn fx:id="firstColumn" text="1位" editable="false" />
