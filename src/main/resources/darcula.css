@@ -12,6 +12,6 @@
     -fx-text-fill: #bbbbbb;
 }
 
-#statusBar {
+.tool-bar {
     -fx-background-color: rgb(60, 63, 65);
 }

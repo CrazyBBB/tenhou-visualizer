@@ -3,6 +3,7 @@ package tenhouvisualizer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public class BoardControl extends Canvas {
     private GraphicsContext gc;
@@ -39,7 +40,7 @@ public class BoardControl extends Canvas {
         gc.clearRect(0, 0, this.getWidth(), this.getHeight());
         gc.setFill(javafx.scene.paint.Color.rgb(50, 100, 50));
         gc.fillRect(0, 0, this.getWidth(), this.getHeight());
-        gc.setFill(javafx.scene.paint.Color.valueOf("#cccccc"));
+        gc.setFill(javafx.scene.paint.Color.rgb(60, 63, 65));
         gc.fillRect(200, 200, 200, 200);
     }
 
@@ -48,11 +49,11 @@ public class BoardControl extends Canvas {
             int drawnPlayerId = (i + scene.playerId) % 4;
 
             if (drawnPlayerId != 3 || !scene.isSanma) {
-                gc.setFill(javafx.scene.paint.Color.RED);
+                gc.setFill(Color.valueOf("#CD5F12"));
                 gc.setFont(javafx.scene.text.Font.font(15));
                 gc.fillText(scene.getZikaze(drawnPlayerId) + " " + String.valueOf(scene.point[drawnPlayerId]), 200, 368);
 
-                gc.setFill(javafx.scene.paint.Color.BLACK);
+                gc.setFill(javafx.scene.paint.Color.valueOf("#bbbbbb"));
                 gc.fillText(scene.dan[drawnPlayerId] + "R" + scene.rate[drawnPlayerId], 200, 383);
 
                 gc.setFont(javafx.scene.text.Font.font(15));
@@ -62,7 +63,7 @@ public class BoardControl extends Canvas {
             rotate();
         }
 
-        gc.setFill(javafx.scene.paint.Color.BLACK);
+        gc.setFill(javafx.scene.paint.Color.valueOf("#bbbbbb"));
         gc.setFont(javafx.scene.text.Font.font(24));
         gc.fillText(scene.getBaStr(), 240, 290);
 
