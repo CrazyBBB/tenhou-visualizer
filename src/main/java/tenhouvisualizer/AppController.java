@@ -75,6 +75,7 @@ public class AppController implements Initializable {
         stage.initOwner(listView.getScene().getWindow());
 
         Parent root = FXMLLoader.load(getClass().getResource("/Downloader.fxml"));
+        root.getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
         javafx.scene.Scene scene = new javafx.scene.Scene(root);
         stage.setScene(scene);
         stage.setTitle("鳳凰卓牌譜ダウンロード");
@@ -93,6 +94,7 @@ public class AppController implements Initializable {
         stage.initOwner(listView.getScene().getWindow());
 
         Parent root = FXMLLoader.load(getClass().getResource("/SyantenBackAnalyzer.fxml"));
+        root.getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
         javafx.scene.Scene scene = new javafx.scene.Scene(root);
         stage.setScene(scene);
         stage.setTitle("シャンテン後退解析");
