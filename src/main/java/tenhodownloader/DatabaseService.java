@@ -69,23 +69,29 @@ public class DatabaseService implements Closeable {
         }
     }
 
-    @NotNull Set<String> findAllMjlogIds() throws SQLException {
-        ResultSet rs = this.findAllMjlogStatement.executeQuery();
-        Set<String> result = new HashSet<>();
-        while (rs.next()) {
-            result.add(rs.getString(1));
+    @NotNull Set<String> findAllMjlogIds() {
+        try (ResultSet rs = this.findAllMjlogStatement.executeQuery()) {
+            Set<String> result = new HashSet<>();
+            while (rs.next()) {
+                result.add(rs.getString(1));
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return result;
     }
 
     @NotNull
-    public List<String> findAllMjlogContents() throws SQLException {
-        ResultSet rs = this.findAllMjlogContent.executeQuery();
-        List<String> result = new ArrayList<>();
-        while (rs.next()) {
-            result.add(rs.getString(1));
+    public List<String> findAllMjlogContents() {
+        try (ResultSet rs = this.findAllMjlogContent.executeQuery()) {
+            List<String> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(rs.getString(1));
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return result;
     }
 
     @Nullable
@@ -104,9 +110,8 @@ public class DatabaseService implements Closeable {
 
     @NotNull
     public List<InfoSchema> findAllInfos() {
-        List<InfoSchema> list = new ArrayList<>();
-        try {
-            ResultSet rs = this.findAllInfoStatement.executeQuery();
+        try (ResultSet rs = this.findAllInfoStatement.executeQuery()) {
+            List<InfoSchema> list = new ArrayList<>();
             while (rs.next()) {
                 list.add(new InfoSchema(
                         rs.getString("id"),
@@ -119,17 +124,16 @@ public class DatabaseService implements Closeable {
                         LocalDateTime.now() // todo
                 ));
             }
+            return list;
         } catch (SQLException e) {
             throw new RuntimeException();
         }
-        return list;
     }
 
     @NotNull
     public List<InfoSchema> findAllExistsInfos() {
-        List<InfoSchema> list = new ArrayList<>();
-        try {
-            ResultSet rs = this.findAllExistsInfoStatement.executeQuery();
+        try (ResultSet rs = this.findAllExistsInfoStatement.executeQuery()) {
+            List<InfoSchema> list = new ArrayList<>();
             while (rs.next()) {
                 list.add(new InfoSchema(
                         rs.getString("id"),
@@ -142,10 +146,10 @@ public class DatabaseService implements Closeable {
                         LocalDateTime.now() // todo
                 ));
             }
+            return list;
         } catch (SQLException e) {
             throw new RuntimeException();
         }
-        return list;
     }
 
     public boolean existsIdInMJLOG(String id) {
