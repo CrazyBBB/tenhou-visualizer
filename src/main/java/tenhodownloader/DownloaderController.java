@@ -17,11 +17,15 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class DownloaderController implements Initializable {
+    static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
+    static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日HH時台");
+
     public TabPane tabPane;
     public ListView<LocalDate> dateListView;
     public ListView<LocalDateTime> hourListView;
@@ -40,6 +44,28 @@ public class DownloaderController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.dateListView.setCellFactory(e -> new ListCell<LocalDate>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item.format(dateFormatter));
+                }
+            }
+        });
+        this.hourListView.setCellFactory(e -> new ListCell<LocalDateTime>() {
+            @Override
+            protected void updateItem(LocalDateTime item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item.format(dateTimeFormatter));
+                }
+            }
+        });
         {
             LocalDate from = LocalDate.of(2017, 1, 1);
             LocalDate to = LocalDate.now().minusDays(7);
