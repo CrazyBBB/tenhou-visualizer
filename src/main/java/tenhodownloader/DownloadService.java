@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,17 +34,17 @@ public class DownloadService {
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
         String urlPrefix = "http://tenhou.net/sc/raw/dat/2017/scc";
         String urlPostfix = ".html.gz";
-        download(urlPrefix + localDate.format(formatter) + urlPostfix);
+        download(urlPrefix + localDate.format(formatter) + urlPostfix, localDate);
     }
 
     void downloadHour(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
         String urlPrefix = "http://tenhou.net/sc/raw/dat/scc";
         String urlPostfix = ".html.gz";
-        download(urlPrefix + localDateTime.format(formatter) + urlPostfix);
+        download(urlPrefix + localDateTime.format(formatter) + urlPostfix, localDateTime.toLocalDate());
     }
 
-    private void download(String urlString) {
+    private void download(String urlString, LocalDate localDate) {
         try {
             URL url = new URL(urlString);
             try (InputStream is = url.openStream();
@@ -68,8 +69,12 @@ public class DownloadService {
                                 if (playerMatcher.find()) players[i] = playerMatcher.group(1);
                             }
                             if (players[3] == null) players[3] = "";
-                            infoSchemas.add(new InfoSchema(id, ma, sou, players[0], players[1], players[2], players[3], LocalDateTime.now())); // todo datetime
-                            Main.databaseService.saveInfo(id, ma, sou, players[0], players[1], players[2], players[3], LocalDateTime.now().toString());
+                            LocalTime localTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(columns[0]));
+                            LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+                            System.out.println(localDateTime);
+                            InfoSchema infoSchema = new InfoSchema(id, ma, sou, players[0], players[1], players[2], players[3], localDateTime);
+                            infoSchemas.add(infoSchema);
+                            Main.databaseService.saveInfo(infoSchema);
                         }
                     }
                 }

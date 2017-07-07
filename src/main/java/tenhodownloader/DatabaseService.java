@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -52,17 +53,16 @@ public class DatabaseService implements Closeable {
         this.insertMjlogStatement.executeUpdate();
     }
 
-    void saveInfo(String id, String ma, String sou,
-                    String first, String second, String third, String fourth, String dateTime) {
+    void saveInfo(InfoSchema infoSchema) {
         try {
-            this.insertInfoStatement.setString(1, id);
-            this.insertInfoStatement.setString(2, ma);
-            this.insertInfoStatement.setString(3, sou);
-            this.insertInfoStatement.setString(4, first);
-            this.insertInfoStatement.setString(5, second);
-            this.insertInfoStatement.setString(6, third);
-            this.insertInfoStatement.setString(7, fourth);
-            this.insertInfoStatement.setString(8, dateTime);
+            this.insertInfoStatement.setString(1, infoSchema.id);
+            this.insertInfoStatement.setString(2, infoSchema.ma);
+            this.insertInfoStatement.setString(3, infoSchema.sou);
+            this.insertInfoStatement.setString(4, infoSchema.first);
+            this.insertInfoStatement.setString(5, infoSchema.second);
+            this.insertInfoStatement.setString(6, infoSchema.third);
+            this.insertInfoStatement.setString(7, infoSchema.fourth);
+            this.insertInfoStatement.setString(8, infoSchema.dateTime.toString());
             this.insertInfoStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException();
@@ -121,7 +121,7 @@ public class DatabaseService implements Closeable {
                         rs.getString("second"),
                         rs.getString("third"),
                         rs.getString("fourth"),
-                        LocalDateTime.now() // todo
+                        LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(rs.getString("date_time")))
                 ));
             }
             return list;
@@ -143,7 +143,7 @@ public class DatabaseService implements Closeable {
                         rs.getString("second"),
                         rs.getString("third"),
                         rs.getString("fourth"),
-                        LocalDateTime.now() // todo
+                        LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(rs.getString("date_time")))
                 ));
             }
             return list;

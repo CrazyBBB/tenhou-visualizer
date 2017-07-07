@@ -23,18 +23,20 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class DownloaderController implements Initializable {
-    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日");
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日H時台");
+    private static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日");
+    private static final DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日H時台");
+    private static final DateTimeFormatter minuteFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日H時m分");
 
     public TabPane tabPane;
     public ListView<LocalDate> dateListView;
     public ListView<LocalDateTime> hourListView;
     private final DownloadService service = new DownloadService();
     public TableView<InfoSchema> tableView;
-    public TableColumn<InfoSchema, String> downloadColumn;
     public Label statusBarLabel;
     public Tab currentYearTab;
     public Tab currentWeekTab;
+    public TableColumn<InfoSchema, String> downloadColumn;
+    public TableColumn<InfoSchema, String> dateTimeColumn;
     public TableColumn<InfoSchema, String>  firstColumn;
     public TableColumn<InfoSchema, String>  secondColumn;
     public TableColumn<InfoSchema, String>  thirdColumn;
@@ -51,7 +53,7 @@ public class DownloaderController implements Initializable {
                 if (empty) {
                     setText(null);
                 } else {
-                    setText(item.format(dateFormatter));
+                    setText(item.format(dayFormatter));
                 }
             }
         });
@@ -62,7 +64,7 @@ public class DownloaderController implements Initializable {
                 if (empty) {
                     setText(null);
                 } else {
-                    setText(item.format(dateTimeFormatter));
+                    setText(item.format(hourFormatter));
                 }
             }
         });
@@ -89,6 +91,7 @@ public class DownloaderController implements Initializable {
         this.downloadColumn.setCellValueFactory(e ->
                 new SimpleStringProperty(this.service.isDownloaded(e.getValue()) ? "✓" : "")
         );
+        this.dateTimeColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().dateTime.format(minuteFormatter)));
         this.maColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().ma));
         this.souColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().sou));
         this.firstColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().first));
@@ -97,12 +100,13 @@ public class DownloaderController implements Initializable {
         this.fourthColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().fourth));
 
         this.downloadColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
+        this.dateTimeColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
         this.maColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
         this.souColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
-        this.firstColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
-        this.secondColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
-        this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
-        this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
+        this.firstColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+        this.secondColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+        this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+        this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
 
         this.statusBarLabel.textProperty().bind(Bindings.convert(Bindings.size(this.tableView.getItems())));
     }

@@ -40,6 +40,7 @@
             <TableView fx:id="tableView"  GridPane.columnIndex="1" GridPane.rowIndex="0">
                 <columns>
                     <TableColumn fx:id="downloadColumn" text="済" editable="false" />
+                    <TableColumn fx:id="dateTimeColumn" text="対戦日" editable="false" />
                     <TableColumn fx:id="maColumn" text="麻" editable="false" />
                     <TableColumn fx:id="souColumn" text="荘" editable="false" />
                     <TableColumn fx:id="firstColumn" text="1位" editable="false" />
