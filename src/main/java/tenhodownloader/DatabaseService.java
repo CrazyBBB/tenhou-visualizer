@@ -21,6 +21,7 @@ public class DatabaseService implements Closeable {
     private final PreparedStatement findAllMjlogStatement;
     private final PreparedStatement findAllMjlogContent;
     private final PreparedStatement findMjlogByIdStatement;
+    private final PreparedStatement removeMjlogByIdStatement;
     private final PreparedStatement findAllInfoStatement;
     private final PreparedStatement findAllExistsInfoStatement;
     public DatabaseService(@Nullable File file) throws ClassNotFoundException, SQLException {
@@ -32,6 +33,7 @@ public class DatabaseService implements Closeable {
         this.findAllMjlogStatement = connection.prepareStatement("SELECT id FROM MJLOG;");
         this.findAllMjlogContent = connection.prepareStatement("SELECT content FROM MJLOG;");
         this.findMjlogByIdStatement = connection.prepareStatement("SELECT content FROM MJLOG WHERE id = ?;");
+        this.removeMjlogByIdStatement = connection.prepareStatement("DELETE FROM MJLOG WHERE id = ?;");
         this.findAllInfoStatement = connection.prepareStatement("SELECT * FROM INFO;");
         this.findAllExistsInfoStatement = connection.prepareStatement("SELECT * FROM INFO WHERE id in (SELECT id FROM MJLOG);");
     }
@@ -106,6 +108,15 @@ public class DatabaseService implements Closeable {
             throw new RuntimeException();
         }
         return null;
+    }
+
+    public void removeMjlogById(@NotNull String id) {
+        try {
+            removeMjlogByIdStatement.setString(1, id);
+            removeMjlogByIdStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @NotNull

@@ -52,7 +52,10 @@
                     </columns>
                 </TableView>
             </VBox>
-            <Button text="牌譜をデータベースに追加する" onAction="#downloadMjlog"  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Button text="牌譜をデータベースに追加する" onAction="#downloadMjlog"/>
+                <Button text="牌譜をデータベースから削除する" onAction="#removeMjlog"/>
+            </HBox>
         </GridPane>
     </center>
     <bottom>

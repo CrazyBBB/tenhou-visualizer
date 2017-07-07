@@ -179,4 +179,15 @@ public class DownloaderController implements Initializable {
             }
         }
     }
+
+    public void removeMjlog(ActionEvent actionEvent) {
+        if (tableView.getSelectionModel().getSelectedItem() != null) {
+            InfoSchema infoSchema = tableView.getSelectionModel().getSelectedItem();
+            if (Main.databaseService.existsIdInMJLOG(infoSchema.id)) {
+                Main.databaseService.removeMjlogById(infoSchema.id);
+                this.service.removeInfoSchema(infoSchema);
+                tableView.getItems().set(tableView.getSelectionModel().getFocusedIndex(), infoSchema);
+            }
+        }
+    }
 }

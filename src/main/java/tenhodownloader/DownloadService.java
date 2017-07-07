@@ -23,12 +23,12 @@ import java.util.zip.GZIPInputStream;
 
 public class DownloadService {
     final ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
-    private final Set<String> storedInfoSchemas = new HashSet<>();
+    private final Set<String> storedInfoSchemaIds = new HashSet<>();
     private final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
     private final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
 
     DownloadService() {
-        this.storedInfoSchemas.addAll(Main.databaseService.findAllMjlogIds());
+        this.storedInfoSchemaIds.addAll(Main.databaseService.findAllMjlogIds());
     }
 
     void downloadDate(LocalDate localDate) {
@@ -109,7 +109,7 @@ public class DownloadService {
             InputStreamReader isr = new InputStreamReader(is)) {
                 String content = consumeReader(isr);
                 Main.databaseService.saveMjlog(schema.id, content);
-                this.storedInfoSchemas.add(schema.id);
+                this.storedInfoSchemaIds.add(schema.id);
             }
         } catch (IOException | SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -131,7 +131,11 @@ public class DownloadService {
         return sb.toString();
     }
 
-    boolean isDownloaded(InfoSchema schema) {
-        return this.storedInfoSchemas.contains(schema.id);
+    boolean isDownloaded(InfoSchema infoSchema) {
+        return this.storedInfoSchemaIds.contains(infoSchema.id);
+    }
+
+    void removeInfoSchema(InfoSchema infoSchema) {
+        this.storedInfoSchemaIds.remove(infoSchema.id);
     }
 }
