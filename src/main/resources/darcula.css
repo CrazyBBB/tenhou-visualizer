@@ -35,3 +35,7 @@
 .scroll-bar:vertical .thumb {
     -fx-background-color: rgba(200,200,200,0.5);
 }
+
+#filterField {
+    -fx-prompt-text-fill: #888888;
+}

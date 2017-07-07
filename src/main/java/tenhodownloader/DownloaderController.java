@@ -2,6 +2,8 @@ package tenhodownloader;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -43,6 +45,7 @@ public class DownloaderController implements Initializable {
     public TableColumn<InfoSchema, String>  fourthColumn;
     public TableColumn<InfoSchema, String>  maColumn;
     public TableColumn<InfoSchema, String> souColumn;
+    public TextField filterField;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -107,6 +110,19 @@ public class DownloaderController implements Initializable {
         this.secondColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
         this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
         this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+        this.filterField.textProperty().addListener((obs, oldText, newText) -> {
+            if (newText != null) {
+                newText = newText.toLowerCase();
+                ObservableList<InfoSchema> filteredList = FXCollections.observableArrayList();
+                for (InfoSchema infoSchema : this.service.infoSchemas) {
+                    if (infoSchema.first.toLowerCase().contains(newText) || infoSchema.second.toLowerCase().contains(newText)
+                            || infoSchema.third.toLowerCase().contains(newText) || infoSchema.fourth.toLowerCase().contains(newText)) {
+                        filteredList.add(infoSchema);
+                    }
+                }
+                tableView.setItems(filteredList);
+            }
+        });
 
         this.statusBarLabel.textProperty().bind(Bindings.convert(Bindings.size(this.tableView.getItems())));
     }

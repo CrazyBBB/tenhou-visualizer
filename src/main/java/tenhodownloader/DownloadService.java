@@ -71,7 +71,6 @@ public class DownloadService {
                             if (players[3] == null) players[3] = "";
                             LocalTime localTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(columns[0]));
                             LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-                            System.out.println(localDateTime);
                             InfoSchema infoSchema = new InfoSchema(id, ma, sou, players[0], players[1], players[2], players[3], localDateTime);
                             infoSchemas.add(infoSchema);
                             Main.databaseService.saveInfo(infoSchema);
