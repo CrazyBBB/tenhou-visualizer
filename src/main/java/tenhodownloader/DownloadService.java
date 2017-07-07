@@ -2,6 +2,7 @@ package tenhodownloader;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import tenhouvisualizer.Main;
 
 import java.io.*;
@@ -79,6 +80,10 @@ public class DownloadService {
                 }
             }
         } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.getDialogPane().setHeaderText("インデックス追加の失敗");
+            alert.getDialogPane().setContentText("インデックスを追加することができませんでした");
+            alert.show();
             throw new UncheckedIOException(e);
         }
     }
@@ -106,6 +111,10 @@ public class DownloadService {
                 this.storedInfoSchemas.add(schema.id);
             }
         } catch (IOException | SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.getDialogPane().setHeaderText("牌譜追加の失敗");
+            alert.getDialogPane().setContentText("牌譜を追加することができませんでした");
+            alert.show();
             throw new RuntimeException(e);
         }
     }

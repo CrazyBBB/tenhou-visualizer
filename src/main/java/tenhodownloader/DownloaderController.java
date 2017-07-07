@@ -137,6 +137,7 @@ public class DownloaderController implements Initializable {
                 this.service.downloadHour(hourListView.getSelectionModel().getSelectedItem());
             }
         }
+        this.tableView.setItems(this.service.infoSchemas);
     }
 
     public void downloadMjlog(ActionEvent actionEvent) {
