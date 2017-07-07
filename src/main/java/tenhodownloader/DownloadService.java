@@ -81,6 +81,7 @@ public class DownloadService {
             }
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
             alert.getDialogPane().setHeaderText("インデックス追加の失敗");
             alert.getDialogPane().setContentText("インデックスを追加することができませんでした");
             alert.show();
@@ -112,6 +113,7 @@ public class DownloadService {
             }
         } catch (IOException | SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
             alert.getDialogPane().setHeaderText("牌譜追加の失敗");
             alert.getDialogPane().setContentText("牌譜を追加することができませんでした");
             alert.show();
