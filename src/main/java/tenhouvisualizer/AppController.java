@@ -1,7 +1,6 @@
 package tenhouvisualizer;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -88,7 +87,7 @@ public class AppController implements Initializable {
                 String xmlStr = Main.databaseService.findMjlogById(newInfo.getId());
                 if (xmlStr != null) {
                     byte[] xml = xmlStr.getBytes();
-                    this.mjlogTreeControl.showMjlogContent(xml, Utils.KAZE.TON);
+                    this.mjlogTreeControl.showMjlogContent(xml, 0);
                     this.mjlogTreeControl.getSelectionModel().select(this.mjlogTreeControl.getRoot()
                             .getChildren().get(0).getChildren().get(0));
                 }

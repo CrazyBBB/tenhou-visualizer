@@ -13,8 +13,8 @@ public class Analyzer extends DefaultHandler {
 
     private final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級", "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
 
-    ArrayList<ArrayList<Scene>> oriScenesList = new ArrayList<>();
-    ArrayList<Scene> oriScenes;
+    private ArrayList<ArrayList<Scene>> oriScenesList = new ArrayList<>();
+    private ArrayList<Scene> oriScenes;
 
     private String[] players = new String[4];
     private boolean isSanma = false;
@@ -38,9 +38,9 @@ public class Analyzer extends DefaultHandler {
 
     private int prev = -1;
 
-    private Utils.KAZE position;
+    private int position;
 
-    Analyzer(Utils.KAZE position) {
+    Analyzer(int position) {
         this.position = position;
     }
 
@@ -192,7 +192,7 @@ public class Analyzer extends DefaultHandler {
 //        if (playerId == position && !saved) {
 //            int afterSyanten = Utils.computeSyanten(tehai[playerId], naki[playerId].size());
 //            if (beforeSyanten < afterSyanten) {
-        if (Utils.KAZE.values()[playerId] == position) // todo
+        if (playerId == position) // todo
                 saveScene(playerId);
 //                saved = true;
 //            }

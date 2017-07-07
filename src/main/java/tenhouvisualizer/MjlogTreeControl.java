@@ -12,12 +12,12 @@ public class MjlogTreeControl extends TreeView<Mjlog> {
         this.setShowRoot(false);
     }
 
-    public void showMjlogContent(byte[] xml, Utils.KAZE position)  {
+    public void showMjlogContent(byte[] xml, int position)  {
         ArrayList<ArrayList<Scene>> scenesList;
 
         try {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-            SAXParser saxParser = null;
+            SAXParser saxParser;
             saxParser = saxParserFactory.newSAXParser();
             Analyzer analyzer = new Analyzer(position);
             saxParser.parse(new ByteArrayInputStream(xml), analyzer);
@@ -30,7 +30,7 @@ public class MjlogTreeControl extends TreeView<Mjlog> {
         for (ArrayList<Scene> scenes : scenesList) {
             MjlogTreeItem child = new MjlogTreeItem(new Mjlog(scenes.get(0).getBaStr()));
             for (Scene scene : scenes) {
-                MjlogTreeItem grandchild = new MjlogTreeItem(new Mjlog(scene.dahai.get(position.ordinal()).size() + "巡目", scene));
+                MjlogTreeItem grandchild = new MjlogTreeItem(new Mjlog(scene.dahai.get(position).size() + "巡目", scene));
                 child.getChildren().add(grandchild);
             }
             root.getChildren().add(child);

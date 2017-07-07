@@ -1,10 +1,10 @@
 package tenhouvisualizer;
 
 public class MjlogFile {
-    byte[] xml;
-    Utils.KAZE position;
+    private byte[] xml;
+    private int position;
 
-    public MjlogFile(byte[] xml, Utils.KAZE position) {
+    public MjlogFile(byte[] xml, int position) {
         this.xml = xml;
         this.position = position;
     }
@@ -13,7 +13,7 @@ public class MjlogFile {
         return xml;
     }
 
-    public Utils.KAZE getPosition() {
+    public int getPosition() {
         return position;
     }
 

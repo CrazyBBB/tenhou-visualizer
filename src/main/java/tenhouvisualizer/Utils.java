@@ -5,12 +5,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 
 import javax.imageio.ImageIO;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 public class Utils {
 
@@ -56,10 +54,10 @@ public class Utils {
         return syantenKokusi;
     }
 
-    static int mentu;
-    static int toitu;
-    static int kouho;
-    static int syantenNormal;
+    private static int mentu;
+    private static int toitu;
+    private static int kouho;
+    private static int syantenNormal;
 
     public static int computeNormalSyanten(int[] tehai, int naki) {
         mentu = naki;
@@ -211,17 +209,4 @@ public class Utils {
         return images;
     }
 
-    public enum KAZE {
-        TON,
-        NAN,
-        SHA,
-        PE
-    }
-
-    public enum Taku {
-        PAN,
-        JOU,
-        TOKUJOU,
-        HOUOU
-    }
 }

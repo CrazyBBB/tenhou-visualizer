@@ -37,7 +37,7 @@ public class ParseHandler extends DefaultHandler {
     };
 
     private boolean isSanma;
-    private Utils.Taku taku;
+    private int taku;
     private boolean isTonnan;
     private boolean isSoku;
     private boolean isUseAka;
@@ -95,15 +95,15 @@ public class ParseHandler extends DefaultHandler {
         boolean takuBit2    = (type & 0b10000000) != 0;
         if (takuBit1) {
             if (takuBit2) {
-                taku = Utils.Taku.HOUOU;
+                taku = 3;
             } else {
-                taku = Utils.Taku.TOKUJOU;
+                taku = 2;
             }
         } else {
             if (takuBit2) {
-                taku = Utils.Taku.JOU;
+                taku = 1;
             } else {
-                taku = Utils.Taku.PAN;
+                taku = 0;
             }
         }
         isTonnan    = (type & 0b00001000) != 0;
@@ -155,8 +155,7 @@ public class ParseHandler extends DefaultHandler {
             playerPoints[j] = Integer.valueOf(splitedPointCsv[j]) * 100;
         }
 
-        int p = Integer.parseInt(attributes.getValue("oya"));
-        Utils.KAZE oya = Utils.KAZE.values()[p];
+        int oya = Integer.parseInt(attributes.getValue("oya"));
 
         String seedCsv = attributes.getValue("seed");
         String[] splitedSeedCsv = seedCsv.split(",");
@@ -166,7 +165,7 @@ public class ParseHandler extends DefaultHandler {
         } else {
             honba = 0;
         }
-        Utils.KAZE bakaze = Utils.KAZE.values()[seedElementFirst / 4];
+        int bakaze = seedElementFirst / 4;
         kyoku = seedElementFirst % 4 + 1;
         int firstDora = Integer.valueOf(splitedSeedCsv[5]);
 
@@ -188,20 +187,20 @@ public class ParseHandler extends DefaultHandler {
     }
 
     private void visitTUVW(String tagName) {
-        Utils.KAZE position = Utils.KAZE.values()[tagName.charAt(0) - 'T'];
+        int position = tagName.charAt(0) - 'T';
         int tsumoHai = Integer.parseInt(tagName.substring(1));
         analyzer.draw(position, tsumoHai);
     }
 
     private void visitDEFG(String tagName) {
-        Utils.KAZE position = Utils.KAZE.values()[tagName.charAt(0) - 'D'];
+        int position = tagName.charAt(0) - 'D';
         int kiriHai = Integer.parseInt(tagName.substring(1));
         analyzer.discard(position, kiriHai);
     }
 
     private void visitN(Attributes attributes) {
         int m = Integer.parseInt(attributes.getValue("m"));
-        Utils.KAZE position = Utils.KAZE.values()[Integer.parseInt(attributes.getValue("who"))];
+        int position = Integer.parseInt(attributes.getValue("who"));
 
         Naki naki = null;
         boolean isKita = false;
@@ -315,7 +314,7 @@ public class ParseHandler extends DefaultHandler {
     }
 
     private void visitREACH(Attributes attributes) {
-        Utils.KAZE position = Utils.KAZE.values()[Integer.parseInt(attributes.getValue("who"))];
+        int position = Integer.parseInt(attributes.getValue("who"));
         int step = Integer.parseInt(attributes.getValue("step"));
         analyzer.reach(position, step);
     }
