@@ -24,6 +24,9 @@ public class Analyzer implements IAnalyzer {
     private ArrayList<ArrayList<Integer>> dahai = new ArrayList<>(4);
     private ArrayList<ArrayList<Boolean>> tedashi = new ArrayList<>(4);
     private ArrayList<ArrayList<Naki>> naki = new ArrayList<>(4);
+    private int[] tsumo = new int[4];
+    private int[] da = new int[4];
+    private boolean daTedashi = false;
     private int[] reach = new int[4];
     private int[] kita = new int[4];
     private int bakaze = 0;
@@ -63,6 +66,9 @@ public class Analyzer implements IAnalyzer {
                 tmpNaki,
                 tmpDahai,
                 tmpTedashi,
+                tsumo.clone(),
+                da.clone(),
+                daTedashi,
                 reach.clone(),
                 kita.clone(),
                 bakaze,
@@ -107,6 +113,8 @@ public class Analyzer implements IAnalyzer {
             tedashi.add(new ArrayList<>());
             naki.add(new ArrayList<>());
         }
+        Arrays.fill(tsumo, -1);
+        Arrays.fill(da, -1);
         Arrays.fill(reach, -1);
         Arrays.fill(kita, 0);
         doraDisplays = new ArrayList<>();
@@ -143,8 +151,8 @@ public class Analyzer implements IAnalyzer {
 
         stehai.get(position).remove(kiriHai);
         tehai[position][kiriHai / 4]--;
-        dahai.get(position).add(kiriHai);
-        tedashi.get(position).add(prev != kiriHai);
+        da[position] = kiriHai;
+        daTedashi = prev != kiriHai;
 
         if (position == heroPosition && !used) {
             int afterSyanten = Utils.computeSyanten(tehai[position], naki.get(position).size());
@@ -153,6 +161,10 @@ public class Analyzer implements IAnalyzer {
                 used = true;
             }
         }
+
+        dahai.get(position).add(kiriHai);
+        tedashi.get(position).add(prev != kiriHai);
+        Arrays.fill(da, -1);
     }
 
     @Override

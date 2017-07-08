@@ -35,6 +35,9 @@ public class Analyzer implements IAnalyzer {
     private ArrayList<ArrayList<Integer>> dahai = new ArrayList<>(4);
     private ArrayList<ArrayList<Boolean>> tedashi = new ArrayList<>(4);
     private ArrayList<ArrayList<Naki>> naki = new ArrayList<>(4);
+    private int[] tsumo = new int[4];
+    private int[] da = new int[4];
+    private boolean daTedashi = false;
     private int[] reach = new int[4];
     private int[] kita = new int[4];
     private int bakaze = 0;
@@ -66,7 +69,6 @@ public class Analyzer implements IAnalyzer {
         }
 
         oriScenes.add(new Scene(
-                str,
                 isSanma,
                 playerId,
                 playerNames.clone(),
@@ -77,13 +79,17 @@ public class Analyzer implements IAnalyzer {
                 tmpNaki,
                 tmpDahai,
                 tmpTedashi,
+                tsumo.clone(),
+                da.clone(),
+                daTedashi,
                 reach.clone(),
                 kita.clone(),
                 bakaze,
                 kyoku,
                 honba,
                 0,
-                new ArrayList<>(doraDisplays)));
+                new ArrayList<>(doraDisplays),
+                str));
     }
 
     public ArrayList<ArrayList<Scene>> getOriScenesList() {
@@ -126,6 +132,8 @@ public class Analyzer implements IAnalyzer {
             tedashi.add(new ArrayList<>());
             naki.add(new ArrayList<>());
         }
+        Arrays.fill(tsumo, -1);
+        Arrays.fill(da, -1);
         Arrays.fill(reach, -1);
         Arrays.fill(kita, 0);
         doraDisplays = new ArrayList<>();
@@ -149,23 +157,29 @@ public class Analyzer implements IAnalyzer {
 
     @Override
     public void draw(int position, int tsumoHai) {
+        tsumo[position] = tsumoHai;
+        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 ツモ" + haiStr[tsumoHai]);
+
         stehai.get(position).add(tsumoHai);
         tehai[position][tsumoHai / 4]++;
+        Arrays.fill(tsumo, -1);
         prev = tsumoHai;
-
-        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 ツモ" + haiStr[tsumoHai]);
     }
 
     @Override
     public void discard(int position, int kiriHai) {
         stehai.get(position).remove(kiriHai);
         tehai[position][kiriHai / 4]--;
-        dahai.get(position).add(kiriHai);
-        tedashi.get(position).add(prev != kiriHai);
+        da[position] = kiriHai;
+        daTedashi = prev != kiriHai;
         boolean isTenpai = Utils.computeSyanten(tehai[position], naki.get(position).size()) == 0;
 
         saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 打" + haiStr[kiriHai]
                         + (isTenpai ? " (テンパイ)" : ""));
+
+        dahai.get(position).add(kiriHai);
+        tedashi.get(position).add(prev != kiriHai);
+        Arrays.fill(da, -1);
     }
 
     @Override

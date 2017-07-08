@@ -46,18 +46,18 @@ public class BoardControl extends Canvas {
 
     private void initInfoAndHai(Scene scene) {
         for (int i = 0; i < 4; i++) {
-            int drawnPlayerId = (i + scene.playerId) % 4;
+            int drawnPlayerId = (i + scene.heroPosition) % 4;
 
             if (drawnPlayerId != 3 || !scene.isSanma) {
                 gc.setFill(Color.valueOf("#CD5F12"));
                 gc.setFont(javafx.scene.text.Font.font(15));
-                gc.fillText(scene.getZikaze(drawnPlayerId) + " " + String.valueOf(scene.point[drawnPlayerId]), 200, 368);
+                gc.fillText(scene.getZikaze(drawnPlayerId) + " " + String.valueOf(scene.playerPoints[drawnPlayerId]), 200, 368);
 
                 gc.setFill(javafx.scene.paint.Color.valueOf("#bbbbbb"));
-                gc.fillText(scene.dan[drawnPlayerId] + "R" + scene.rate[drawnPlayerId], 200, 383);
+                gc.fillText(scene.playerDans[drawnPlayerId] + "R" + scene.playerRates[drawnPlayerId], 200, 383);
 
                 gc.setFont(javafx.scene.text.Font.font(15));
-                gc.fillText(scene.players[drawnPlayerId], 200, 398);
+                gc.fillText(scene.playerNames[drawnPlayerId], 200, 398);
                 draw(scene, drawnPlayerId);
             }
             rotate();
@@ -87,9 +87,13 @@ public class BoardControl extends Canvas {
     private void drawTehai(Scene scene, int playerId) {
         int x = 70;
         int y = 555;
-        for (int hai : scene.stehai.get(playerId)) {
+        for (int hai : scene.tehaiSets.get(playerId)) {
             gc.drawImage(getImage(hai, true, true), x, y, 32, 45);
             x += 32;
+        }
+
+        if (scene.tsumo[playerId] != -1) {
+            gc.drawImage(getImage(scene.tsumo[playerId], true, true), x + 4, y, 32, 45);
         }
     }
 
@@ -97,12 +101,12 @@ public class BoardControl extends Canvas {
         int x = 200;
         int y = 400;
         int i = 0;
-        for (int hai : scene.dahai.get(playerId)) {
+        for (int hai : scene.stehaiLists.get(playerId)) {
             if (i == scene.reach[playerId]) {
-                gc.drawImage(getImage(hai, scene.tedashi.get(playerId).get(i), false), x, y + 13, 45, 32);
+                gc.drawImage(getImage(hai, scene.tedashiLists.get(playerId).get(i), false), x, y + 13, 45, 32);
                 x += 45;
             } else {
-                gc.drawImage(getImage(hai, scene.tedashi.get(playerId).get(i), true), x, y, 32, 45);
+                gc.drawImage(getImage(hai, scene.tedashiLists.get(playerId).get(i), true), x, y, 32, 45);
                 x += 32;
             }
 
@@ -113,6 +117,10 @@ public class BoardControl extends Canvas {
             }
 
             i++;
+        }
+
+        if (scene.da[playerId] != -1) {
+            gc.drawImage(getImage(scene.da[playerId], scene.daTedasi, true), x + 4, y + 4, 32, 45);
         }
     }
 
