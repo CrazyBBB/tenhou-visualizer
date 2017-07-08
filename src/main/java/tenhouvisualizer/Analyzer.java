@@ -21,7 +21,7 @@ public class Analyzer implements IAnalyzer {
     };
     private static String[] kazeStr = {"東", "南", "西", "北"};
 
-    private ArrayList<ArrayList<Scene>> oriScenesList = new ArrayList<>();
+    private ArrayList<Kyoku> oriScenesList = new ArrayList<>();
     private ArrayList<Scene> oriScenes;
 
     private boolean isSanma = false;
@@ -92,7 +92,7 @@ public class Analyzer implements IAnalyzer {
                 str));
     }
 
-    public ArrayList<ArrayList<Scene>> getOriScenesList() {
+    public ArrayList<Kyoku> getOriScenesList() {
         return oriScenesList;
     }
 
@@ -150,9 +150,7 @@ public class Analyzer implements IAnalyzer {
 
     @Override
     public void endKyoku() {
-        if (!oriScenes.isEmpty()) {
-            oriScenesList.add(new ArrayList<>(oriScenes));
-        }
+
     }
 
     @Override
@@ -301,11 +299,22 @@ public class Analyzer implements IAnalyzer {
 
     @Override
     public void agari(int position, int from, ArrayList<String> yaku, int han, int hu, int score, int[] increaseAndDecrease) {
-
+        if (!oriScenes.isEmpty()) {
+            String summary = kazeStr[bakaze] + kyoku + "局" + honba + "本場 " + playerNames[position];
+            if (position == from) {
+                summary += " ツモ " + score;
+            } else {
+                summary += " ロン " + score + " " + playerNames[from];
+            }
+            oriScenesList.add(new Kyoku(summary, new ArrayList<>(oriScenes)));
+        }
     }
 
     @Override
     public void ryuukyoku() {
-
+        if (!oriScenes.isEmpty()) {
+            String summary = kazeStr[bakaze] + kyoku + "局" + honba + "本場 流局";
+            oriScenesList.add(new Kyoku(summary, new ArrayList<>(oriScenes)));
+        }
     }
 }

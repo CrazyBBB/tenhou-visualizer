@@ -13,7 +13,7 @@ public class MjlogTreeControl extends TreeView<Mjlog> {
     }
 
     public void showMjlogContent(byte[] xml, int position)  {
-        ArrayList<ArrayList<Scene>> scenesList;
+        ArrayList<Kyoku> scenesList;
 
         try {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
@@ -28,9 +28,9 @@ public class MjlogTreeControl extends TreeView<Mjlog> {
         }
 
         MjlogTreeItem root = new MjlogTreeItem();
-        for (ArrayList<Scene> scenes : scenesList) {
-            MjlogTreeItem child = new MjlogTreeItem(new Mjlog(scenes.get(0).getBaStr()));
-            for (Scene scene : scenes) {
+        for (Kyoku kyoku : scenesList) {
+            MjlogTreeItem child = new MjlogTreeItem(new Mjlog(kyoku.summary));
+            for (Scene scene : kyoku.scenes) {
                 MjlogTreeItem grandchild = new MjlogTreeItem(new Mjlog(scene.toString(), scene));
                 child.getChildren().add(grandchild);
             }
