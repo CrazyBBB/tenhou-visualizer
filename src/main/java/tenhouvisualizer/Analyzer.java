@@ -6,8 +6,6 @@ import java.util.TreeSet;
 
 public class Analyzer implements IAnalyzer {
 
-    private final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級", "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
-
     private ArrayList<ArrayList<Scene>> oriScenesList = new ArrayList<>();
     private ArrayList<Scene> oriScenes;
 
@@ -265,7 +263,7 @@ public class Analyzer implements IAnalyzer {
 
     @Override
     public void agari(int position, int from, ArrayList<String> yaku, int han, int hu, int score, int[] increaseAndDecrease) {
-        
+
     }
 
     @Override
