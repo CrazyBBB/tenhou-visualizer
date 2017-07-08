@@ -51,7 +51,7 @@ public class ParseHandler extends DefaultHandler {
 
     private IAnalyzer analyzer;
 
-    ParseHandler(IAnalyzer analyzer) {
+    public ParseHandler(IAnalyzer analyzer) {
         this.analyzer = analyzer;
     }
 

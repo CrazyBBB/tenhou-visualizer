@@ -5,6 +5,7 @@ import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import tenhouvisualizer.Main;
+import tenhouvisualizer.ParseHandler;
 import tenhouvisualizer.Scene;
 
 import javax.xml.parsers.SAXParser;
@@ -37,7 +38,8 @@ public class AnalyzeDBTask extends Task<List<Scene>> {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
             Analyzer analyzer = new Analyzer(0);
-            saxParser.parse(new ByteArrayInputStream(content.getBytes()), analyzer);
+            ParseHandler parseHandler = new ParseHandler(analyzer);
+            saxParser.parse(new ByteArrayInputStream(content.getBytes()), parseHandler);
             ArrayList<Scene> scenes = analyzer.getOriScenes();
             workDone++;
             final long tmp = workDone;

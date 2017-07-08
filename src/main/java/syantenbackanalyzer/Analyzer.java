@@ -1,30 +1,24 @@
 package syantenbackanalyzer;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
 import tenhouvisualizer.IAnalyzer;
 import tenhouvisualizer.Naki;
 import tenhouvisualizer.Scene;
 import tenhouvisualizer.Utils;
 
-import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
 
-public class Analyzer extends DefaultHandler {
-
-    private final String[] danStr = {"新人", "９級", "８級", "７級", "６級", "５級", "４級", "３級", "２級", "１級", "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "天鳳"};
+public class Analyzer implements IAnalyzer {
 
     private ArrayList<Scene> oriScenes = new ArrayList<>();
 
-    private String[] players = new String[4];
     private boolean isSanma = false;
-    private String[] dan = new String[4];
-    private int[] rate = new int[4];
+    private String[] playerNames = new String[4];
+    private int[] playerRates = new int[4];
+    private String[] playerDans = new String[4];
 
-    private int[] point = new int[4];
+    private int[] playerPoints = new int[4];
     private int[][] tehai = new int[4][34];
     private ArrayList<TreeSet<Integer>> stehai = new ArrayList<>(4);
     private ArrayList<ArrayList<Integer>> dahai = new ArrayList<>(4);
@@ -35,310 +29,15 @@ public class Analyzer extends DefaultHandler {
     private int bakaze = 0;
     private int kyoku = -1;
     private int honba = 0;
-    private ArrayList<Integer> dora;
-
-    private boolean saved = false;
+    private ArrayList<Integer> doraDisplays;
+    private boolean used = false;
 
     private int prev = -1;
 
-    private int position;
+    private int heroPosition;
 
-    Analyzer(int position) {
-        this.position = position;
-    }
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if ("SHUFFLE".equals(qName)) {
-            // nop
-        } else if ("GO".equals(qName)) {
-            analyzeGO(attributes);
-        } else if ("UN".equals(qName)) {
-            try {
-                analyzeUN(attributes);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if ("TAIKYOKU".equals(qName)) {
-            // nop
-        } else if ("INIT".equals(qName)) {
-            analyzeINIT(attributes);
-        } else if ("AGARI".equals(qName)) {
-
-        } else if ("RYUUKYOKU".equals(qName)) {
-
-        } else if ("N".equals(qName)) {
-            analyzeN(attributes);
-        } else if (qName.matches("[T-W]\\d+")) {
-            analyzeT(qName);
-        } else if (qName.matches("[D-G]\\d+")) {
-            analyzeD(qName);
-        } else if ("REACH".equals(qName)) {
-            analyzeREACH(attributes);
-        } else if ("DORA".equals(qName)) {
-            analyzeDORA(attributes);
-        }
-    }
-
-    private void analyzeGO(Attributes attributes) {
-        int type = Integer.parseInt(attributes.getValue("type"));
-        isSanma = (type & 0x10) != 0;
-    }
-
-    private void analyzeUN(Attributes attributes) throws IOException {
-        String danCsv = attributes.getValue("dan");
-
-        // 復帰時のUN要素でない
-        if (danCsv != null) {
-            String[] splitedDanCsv = danCsv.split(",");
-            for (int j = 0; j < 4; j++) {
-                dan[j] = danStr[Integer.valueOf(splitedDanCsv[j])];
-            }
-
-            String rateCsv = attributes.getValue("rate");
-            String[] splitedRateCsv = rateCsv.split(",");
-            for (int j = 0; j < 4; j++) {
-                rate[j] = Float.valueOf(splitedRateCsv[j]).intValue();
-            }
-
-            for (int i = 0; i < 4; i++) {
-                String name = URLDecoder.decode(attributes.getValue("n" + i), "UTF-8");
-                players[i] = name;
-            }
-        }
-    }
-
-    private void analyzeINIT(Attributes attributes) {
-        stehai.clear();
-        dahai.clear();
-        tedashi.clear();
-        naki.clear();
-        for (int i = 0; i < 4; i++) {
-            Arrays.fill(tehai[i], 0);
-            stehai.add(new TreeSet<>());
-            dahai.add(new ArrayList<>());
-            tedashi.add(new ArrayList<>());
-            naki.add(new ArrayList<>());
-        }
-        Arrays.fill(reach, -1);
-        Arrays.fill(kita, 0);
-        saved = false;
-        dora = new ArrayList<>();
-
-        String tenCsv = attributes.getValue("ten");
-        String[] splitedTenCsv = tenCsv.split(",");
-        for (int j = 0; j < 4; j++) {
-            point[j] = Integer.valueOf(splitedTenCsv[j]) * 100;
-        }
-
-        String seedCsv = attributes.getValue("seed");
-        String[] splitedSeedCsv = seedCsv.split(",");
-        int seed0 = Integer.valueOf(splitedSeedCsv[0]);
-        if (seed0 % 4 + 1 == kyoku) {
-            honba++;
-        } else {
-            honba = 0;
-        }
-        bakaze = seed0 / 4;
-        kyoku = seed0 % 4 + 1;
-        int seed5 = Integer.valueOf(splitedSeedCsv[5]);
-        dora.add(seed5);
-
-        for (int i = 0; i < 4; i++) {
-            String haiCsv = attributes.getValue("hai" + i);
-            if ("".equals(haiCsv)) continue;
-
-            String[] splitedHaiCsv = haiCsv.split(",");
-            for (int j = 0; j < 13; j++) {
-                int hai = Integer.parseInt(splitedHaiCsv[j]);
-                stehai.get(i).add(hai);
-                tehai[i][hai / 4]++;
-            }
-        }
-    }
-
-    private void analyzeT(String qName) {
-        int playerId = qName.charAt(0) - 'T';
-        int hai = Integer.parseInt(qName.substring(1));
-        stehai.get(playerId).add(hai);
-        tehai[playerId][hai / 4]++;
-        prev = hai;
-    }
-
-    private void analyzeD(String qName) {
-        int playerId = qName.charAt(0) - 'D';
-        int beforeSyanten = 0;
-        if (playerId == position && !saved) {
-            beforeSyanten = Utils.computeSyanten(tehai[playerId], naki.get(playerId).size());
-        }
-
-        int hai = Integer.parseInt(qName.substring(1));
-        stehai.get(playerId).remove(hai);
-        tehai[playerId][hai / 4]--;
-        dahai.get(playerId).add(hai);
-        tedashi.get(playerId).add(prev != hai);
-
-        if (playerId == position && !saved) {
-            int afterSyanten = Utils.computeSyanten(tehai[playerId], naki.get(playerId).size());
-            if (beforeSyanten < afterSyanten) {
-                saveScene(playerId);
-                saved = true;
-            }
-        }
-    }
-
-    private void analyzeN(Attributes attributes) {
-        int m = Integer.parseInt(attributes.getValue("m"));
-        int who = Integer.parseInt(attributes.getValue("who"));
-
-        int kui = 3 - (m & 3); // 0: 上家, 1: 対面, 2: 下家, (3: 暗槓を表す)
-        if ((m >> 2 & 1) == 1) {
-            // 順子
-            int t = (m >> 10) & 63;
-            int r = t % 3;
-
-            t /= 3;
-            t = t / 7 * 9 + t % 7;
-            t *= 4;
-
-            int[] h = new int[3];
-            h[0] = t + ((m >> 3) & 3);
-            h[1] = t + 4 + ((m >> 5) & 3);
-            h[2] = t + 8 + ((m >> 7) & 3);
-
-            int[] hai = null;
-            if (r == 0) {
-                hai = new int[]{h[0], h[1], h[2]};
-            } else if (r == 1) {
-                hai = new int[]{h[1], h[0], h[2]};
-            } else if (r == 2) {
-                hai = new int[]{h[2], h[0], h[1]};
-            }
-
-            naki.get(who).add(new Naki(hai, 0, kui));
-
-            for (int i = 0; i < 3; i++) {
-                if (i != r) {
-                    tehai[who][h[i] / 4]--;
-                    stehai.get(who).remove(h[i]);
-                }
-            }
-        } else if ((m >> 3 & 1) == 1) {
-            // 刻子
-            int unused = (m >> 5) & 3;
-            int t = (m >> 9) & 127;
-            int r = t % 3;
-
-            t /= 3;
-            t *= 4;
-
-            int[] h = new int[3];
-            int idx = 0;
-            for (int i = 0; i < 4; i++) {
-                if (i != unused) {
-                    h[idx++] = t + i;
-                }
-            }
-
-            int[] hai = new int[3];
-            for (int i = 0; i < 3; i++) {
-                hai[(kui + i) % 3] = h[(r + i) % 3];
-            }
-
-            naki.get(who).add(new Naki(hai, 1, kui));
-
-            for (int i = 0; i < 3; i++) {
-                if (i != r) {
-                    tehai[who][h[i] / 4]--;
-                    stehai.get(who).remove(h[i]);
-                }
-            }
-        } else if ((m >> 4 & 1) == 1) {
-            // 加槓
-            int unused = (m >> 5) & 3;
-            int t = (m >> 9) & 127;
-
-            t /= 3;
-            t *= 4;
-
-            for (int i = 0; i < naki.get(who).size(); i++) {
-                if (naki.get(who).get(i).hai[0] / 4 == t / 4) {
-                    int[] hai = {naki.get(who).get(i).hai[0], naki.get(who).get(i).hai[1], naki.get(who).get(i).hai[2], t + unused};
-                    int nakiIdx = naki.get(who).get(i).nakiIdx;
-                    naki.get(who).set(i, new Naki(hai, 4, nakiIdx));
-                }
-            }
-
-            tehai[who][t / 4]--;
-            stehai.get(who).remove(t + unused);
-        } else if ((m >> 5 & 1) == 1) {
-            // 北
-            kita[who]++;
-
-            tehai[who][30]--;
-            for (int i = 120; i <= 123 ; i++) {
-                if (stehai.get(who).contains(i)) {
-                    stehai.get(who).remove(i);
-                    break;
-                }
-            }
-        } else if (kui == 3) {
-            // 暗槓
-            int t = (m >> 8) & 255;
-
-            t = t / 4 * 4;
-
-            int[] hai = {t + 1, t, t + 2, t + 3};
-
-            naki.get(who).add(new Naki(hai, 2, -1));
-
-            for (int i = 0; i < 4; i++) {
-                tehai[who][hai[i] / 4]--;
-                stehai.get(who).remove(hai[i]);
-            }
-        } else {
-            // 明槓
-            int t = (m >> 8) & 255; // 鳴いた牌
-
-            int t2 = t / 4 * 4;
-
-            if (kui == 2) kui++;
-
-            int[] hai = new int[4];
-            int idx = 0;
-            for (int i = 0; i < 4; i++) {
-                if (i == kui) {
-                    hai[i] = t;
-                } else {
-                    if (t2 + idx == t) idx++;
-                    hai[i] = t2 + idx;
-                    idx++;
-                }
-            }
-
-            naki.get(who).add(new Naki(hai, 3, kui));
-
-            for (int i = 0; i < 4; i++) {
-                tehai[who][hai[i] / 4]--;
-                stehai.get(who).remove(hai[i]);
-            }
-        }
-        prev = -1;
-    }
-
-    private void analyzeREACH(Attributes attributes) {
-        int step = Integer.parseInt(attributes.getValue("step"));
-        int who = Integer.parseInt(attributes.getValue("who"));
-        if (step == 1) {
-            reach[who] = dahai.get(who).size();
-        } else {
-            point[who] -= 1000;
-        }
-    }
-
-    private void analyzeDORA(Attributes attributes) {
-        int hai = Integer.parseInt(attributes.getValue("hai"));
-        dora.add(hai);
+    Analyzer(int heroPosition) {
+        this.heroPosition = heroPosition;
     }
 
     private void saveScene(int playerId) {
@@ -356,10 +55,10 @@ public class Analyzer extends DefaultHandler {
 
         oriScenes.add(new Scene(isSanma,
                 playerId,
-                players.clone(),
-                dan.clone(),
-                rate.clone(),
-                point.clone(),
+                playerNames.clone(),
+                playerDans.clone(),
+                playerRates.clone(),
+                playerPoints.clone(),
                 tmpStehai,
                 tmpNaki,
                 tmpDahai,
@@ -370,10 +69,216 @@ public class Analyzer extends DefaultHandler {
                 kyoku,
                 honba,
                 0,
-                new ArrayList<>(dora)));
+                new ArrayList<>(doraDisplays)));
     }
 
-    ArrayList<Scene> getOriScenes() {
+    public ArrayList<Scene> getOriScenes() {
         return oriScenes;
+    }
+
+    @Override
+    public void startGame(boolean isSanma, int taku, boolean isTonnan, boolean isSoku, boolean isUseAka, boolean isAriAri, String[] playerNames, int[] playerRates, String[] playerDans) {
+        this.isSanma = isSanma;
+        this.playerNames = playerNames;
+        this.playerRates = playerRates;
+        this.playerDans = playerDans;
+    }
+
+    @Override
+    public void endGame(int[] playerPoints) {
+
+    }
+
+    @Override
+    public void startKyoku(int[] playerPoints, ArrayList<ArrayList<Integer>> playerHaipais, int oya, int bakaze, int kyoku, int honba, int firstDoraDisplay) {
+        this.playerPoints = playerPoints;
+        this.bakaze = bakaze;
+        this.kyoku = kyoku;
+        this.honba = honba;
+
+        stehai.clear();
+        dahai.clear();
+        tedashi.clear();
+        naki.clear();
+        for (int i = 0; i < 4; i++) {
+            Arrays.fill(tehai[i], 0);
+            stehai.add(new TreeSet<>());
+            dahai.add(new ArrayList<>());
+            tedashi.add(new ArrayList<>());
+            naki.add(new ArrayList<>());
+        }
+        Arrays.fill(reach, -1);
+        Arrays.fill(kita, 0);
+        doraDisplays = new ArrayList<>();
+        doraDisplays.add(firstDoraDisplay);
+        used = false;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < playerHaipais.get(i).size(); j++) {
+                int hai = playerHaipais.get(i).get(j);
+                stehai.get(i).add(hai);
+                tehai[i][hai / 4]++;
+            }
+        }
+    }
+
+    @Override
+    public void endKyoku() {
+
+    }
+
+    @Override
+    public void draw(int position, int tsumoHai) {
+        stehai.get(position).add(tsumoHai);
+        tehai[position][tsumoHai / 4]++;
+        prev = tsumoHai;
+    }
+
+    @Override
+    public void discard(int position, int kiriHai) {
+        int beforeSyanten = 0;
+        if (position == heroPosition && !used) {
+            beforeSyanten = Utils.computeSyanten(tehai[position], naki.get(position).size());
+        }
+
+        stehai.get(position).remove(kiriHai);
+        tehai[position][kiriHai / 4]--;
+        dahai.get(position).add(kiriHai);
+        tedashi.get(position).add(prev != kiriHai);
+
+        if (position == heroPosition && !used) {
+            int afterSyanten = Utils.computeSyanten(tehai[position], naki.get(position).size());
+            if (beforeSyanten < afterSyanten) {
+                saveScene(position);
+                used = true;
+            }
+        }
+    }
+
+    @Override
+    public void chow(int position, int from, int[] selfHai, int nakiHai) {
+        int[] hai = {nakiHai, selfHai[0], selfHai[1]};
+        naki.get(position).add(new Naki(hai, 0, from));
+
+        for (int i = 0; i < 2; i++) {
+            tehai[position][selfHai[i] / 4]--;
+            stehai.get(position).remove(selfHai[i]);
+        }
+        prev = -1;
+    }
+
+    @Override
+    public void pong(int position, int from, int[] selfHai, int nakiHai) {
+        int[] hai;
+        if (from == 0) {
+            hai = new int[]{nakiHai, selfHai[0], selfHai[1]};
+        } else if (from == 1) {
+            hai = new int[]{selfHai[0], nakiHai, selfHai[1]};
+        } else if (from == 2) {
+            hai = new int[]{selfHai[0], selfHai[1], nakiHai};
+        } else {
+            throw new RuntimeException();
+        }
+        naki.get(position).add(new Naki(hai, 1, from));
+
+        for (int i = 0; i < 2; i++) {
+            tehai[position][selfHai[i] / 4]--;
+            stehai.get(position).remove(selfHai[i]);
+        }
+        prev = -1;
+    }
+
+    @Override
+    public void ankan(int position, int[] selfHai) {
+        naki.get(position).add(new Naki(selfHai, 2, -1));
+
+        for (int i = 0; i < 3; i++) {
+            tehai[position][selfHai[i] / 4]--;
+            stehai.get(position).remove(selfHai[i]);
+        }
+        prev = -1;
+    }
+
+    @Override
+    public void minkan(int position, int from, int[] selfHai, int nakiHai) {
+        int[] hai;
+        if (from == 0) {
+            hai = new int[]{nakiHai, selfHai[0], selfHai[1], selfHai[2]};
+        } else if (from == 1) {
+            hai = new int[]{selfHai[0], nakiHai, selfHai[1], selfHai[2]};
+        } else if (from == 2) {
+            hai = new int[]{selfHai[0], selfHai[1], selfHai[2], nakiHai};
+        } else {
+            throw new RuntimeException();
+        }
+
+        naki.get(position).add(new Naki(hai, 3, from == 2 ? from + 1 : from));
+
+        for (int i = 0; i < 3; i++) {
+            tehai[position][selfHai[i] / 4]--;
+            stehai.get(position).remove(selfHai[i]);
+        }
+        prev = -1;
+    }
+
+    @Override
+    public void kakan(int position, int from, int[] selfHai, int nakiHai, int addHai) {
+        int[] hai;
+        if (from == 0) {
+            hai = new int[]{nakiHai, selfHai[0], selfHai[1], addHai};
+        } else if (from == 1) {
+            hai = new int[]{selfHai[0], nakiHai, selfHai[1], addHai};
+        } else if (from == 2) {
+            hai = new int[]{selfHai[0], selfHai[1], nakiHai, addHai};
+        } else {
+            throw new RuntimeException();
+        }
+        for (int i = 0; i < naki.get(position).size(); i++) {
+            if (naki.get(position).get(i).hai[0] / 4 == addHai / 4) {
+                naki.get(position).set(i, new Naki(hai, 4, from));
+            }
+        }
+
+        tehai[position][addHai / 4]--;
+        stehai.get(position).remove(addHai);
+        prev = -1;
+    }
+
+    @Override
+    public void kita(int position) {
+        kita[position]++;
+
+        tehai[position][30]--;
+        for (int i = 120; i <= 123 ; i++) {
+            if (stehai.get(position).contains(i)) {
+                stehai.get(position).remove(i);
+                break;
+            }
+        }
+        prev = -1;
+    }
+
+    @Override
+    public void reach(int position, int step) {
+        if (step == 1) {
+            reach[position] = dahai.get(position).size();
+        } else {
+            playerPoints[position] -= 1000;
+        }
+    }
+
+    @Override
+    public void addDora(int newDoraDisplay) {
+        doraDisplays.add(newDoraDisplay);
+    }
+
+    @Override
+    public void agari(int position, int from, ArrayList<String> yaku, int han, int hu, int score, int[] increaseAndDecrease) {
+
+    }
+
+    @Override
+    public void ryuukyoku() {
+
     }
 }

@@ -5,6 +5,7 @@ import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import tenhouvisualizer.MjlogFile;
+import tenhouvisualizer.ParseHandler;
 import tenhouvisualizer.Scene;
 
 import javax.xml.parsers.SAXParser;
@@ -37,7 +38,8 @@ public class AnalyzeZipTask extends Task<List<Scene>> {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
             Analyzer analyzer = new Analyzer(mjlogFile.getPosition());
-            saxParser.parse(new ByteArrayInputStream(gunzipedXml), analyzer);
+            ParseHandler parseHandler = new ParseHandler(analyzer);
+            saxParser.parse(new ByteArrayInputStream(gunzipedXml), parseHandler);
             ArrayList<Scene> scenes = analyzer.getOriScenes();
             workDone++;
             final long tmp = workDone;
