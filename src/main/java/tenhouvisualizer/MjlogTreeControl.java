@@ -20,10 +20,11 @@ public class MjlogTreeControl extends TreeView<Mjlog> {
             SAXParser saxParser;
             saxParser = saxParserFactory.newSAXParser();
             Analyzer analyzer = new Analyzer(position);
-            saxParser.parse(new ByteArrayInputStream(xml), analyzer);
+            ParseHandler parseHandler = new ParseHandler(analyzer);
+            saxParser.parse(new ByteArrayInputStream(xml), parseHandler);
             scenesList = analyzer.getOriScenesList();
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
 
         MjlogTreeItem root = new MjlogTreeItem();

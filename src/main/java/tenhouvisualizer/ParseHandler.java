@@ -360,20 +360,31 @@ public class ParseHandler extends DefaultHandler {
         String[] splitedScoreCsv = scoreCsv.split(",");
         int hu = Integer.parseInt(splitedScoreCsv[0]);
         int score = Integer.parseInt(splitedScoreCsv[1]);
-        int han = Integer.parseInt(splitedScoreCsv[2]);
+        int han = 0;
         ArrayList<String> yaku = new ArrayList<>();
         String yakuCsv = attributes.getValue("yaku");
-        String[] splitedYakuCsv = yakuCsv.split(",");
-        for (int i = 0; i < splitedScoreCsv.length; i += 2) {
-            int yakuId = Integer.parseInt(splitedScoreCsv[i]);
-            int n = Integer.parseInt(splitedScoreCsv[i + 1]);
-            if (yakuId < 52) {
-                yaku.add(yakuStr[yakuId]);
-            } else {
-                for (int j = 0; j < n; j++) {
+        if (yakuCsv != null) {
+            String[] splitedYakuCsv = yakuCsv.split(",");
+            for (int i = 0; i < splitedYakuCsv.length; i += 2) {
+                int yakuId = Integer.parseInt(splitedYakuCsv[i]);
+                int n = Integer.parseInt(splitedYakuCsv[i + 1]);
+                if (yakuId < 52) {
                     yaku.add(yakuStr[yakuId]);
+                } else {
+                    for (int j = 0; j < n; j++) {
+                        yaku.add(yakuStr[yakuId]);
+                    }
                 }
+                han += n;
             }
+        }
+        String yakumanCsv = attributes.getValue("yakuman");
+        if (yakumanCsv != null) {
+            String[] splitedYakumanCsv = yakumanCsv.split(",");
+            for (String aSplitedYakumanCsv : splitedYakumanCsv) {
+                yaku.add(yakuStr[Integer.parseInt(aSplitedYakumanCsv)]);
+            }
+            han = splitedYakumanCsv.length * 13;
         }
         int[] increaseAndDecrease = new int[4];
         String scCsv = attributes.getValue("sc");
@@ -402,7 +413,7 @@ public class ParseHandler extends DefaultHandler {
             String[] splitedOwariCsv = owariCsv.split(",");
             int[] playerPoints = new int[4];
             for (int i = 0; i < 4; i++) {
-                playerPoints[i] = Integer.parseInt(splitedOwariCsv[i]) * 100;
+                playerPoints[i] = (int) Float.parseFloat(splitedOwariCsv[i]) * 100;
             }
 
             analyzer.endGame(playerPoints);
