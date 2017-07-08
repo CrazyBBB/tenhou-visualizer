@@ -265,21 +265,18 @@ public class ParseHandler extends DefaultHandler {
         tmp /= 3;
         tmp *= 4;
 
-        int[] h = new int[3];
+        int[] selfHai = new int[2];
+        int count = 0;
         int idx = 0;
         for (int i = 0; i < 4; i++) {
-            if (i != unused) {
-                h[idx++] = tmp + i;
+            if (i == unused) continue;
+            if (count != r) {
+                selfHai[idx++] = tmp + i;
             }
+            count++;
         }
+        int nakiHai = tmp + r;
 
-        int[] hai = new int[3];
-        for (int i = 0; i < 3; i++) {
-            hai[(from + i) % 3] = h[(r + i) % 3];
-        }
-
-        int[] selfHai = {hai[1], hai[2]};
-        int nakiHai = hai[0];
         analyzer.pong(position, from, selfHai, nakiHai);
     }
 
@@ -292,21 +289,17 @@ public class ParseHandler extends DefaultHandler {
         tmp /= 3;
         tmp *= 4;
 
-        int[] h = new int[3];
+        int[] selfHai = new int[2];
+        int count = 0;
         int idx = 0;
         for (int i = 0; i < 4; i++) {
-            if (i != unused) {
-                h[idx++] = tmp + i;
+            if (i == unused) continue;
+            if (count != r) {
+                selfHai[idx++] = tmp + i;
             }
+            count++;
         }
-
-        int[] hai = new int[3];
-        for (int i = 0; i < 3; i++) {
-            hai[(from + i) % 3] = h[(r + i) % 3];
-        }
-
-        int[] selfHai = {hai[1], hai[2]};
-        int nakiHai = hai[0];
+        int nakiHai = tmp + r;
         int addHai = tmp + unused;
         analyzer.kakan(position, from, selfHai, nakiHai, addHai);
     }
