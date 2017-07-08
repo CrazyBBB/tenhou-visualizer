@@ -16,9 +16,9 @@ public class ParseHandler extends DefaultHandler {
             //// 一飜
             "門前清自摸和","立直","一発","槍槓","嶺上開花",
             "海底摸月","河底撈魚","平和","断幺九","一盃口",
-            "自風 東","自風 南","自風 西","自風 北",
-            "場風 東","場風 南","場風 西","場風 北",
-            "役牌 白","役牌 發","役牌 中",
+            "自風東","自風南","自風西","自風北",
+            "場風東","場風南","場風西","場風北",
+            "役牌白","役牌發","役牌中",
             //// 二飜
             "両立直","七対子","混全帯幺九","一気通貫","三色同順",
             "三色同刻","三槓子","対々和","三暗刻","小三元","混老頭",
@@ -364,9 +364,7 @@ public class ParseHandler extends DefaultHandler {
                 if (yakuId < 52) {
                     yaku.add(yakuStr[yakuId]);
                 } else {
-                    for (int j = 0; j < n; j++) {
-                        yaku.add(yakuStr[yakuId]);
-                    }
+                    yaku.add(yakuStr[yakuId] + (n >= 2 ? n : ""));
                 }
                 han += n;
             }

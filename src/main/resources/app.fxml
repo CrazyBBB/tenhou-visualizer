@@ -63,7 +63,6 @@
             <Label fx:id="label"/>
             <Pane HBox.hgrow="ALWAYS"/>
             <Label fx:id="label2"/>
-            <ProgressBar fx:id="progressBar" progress="0" />
         </ToolBar>
     </bottom>
 </BorderPane>

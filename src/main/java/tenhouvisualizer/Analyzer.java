@@ -38,6 +38,7 @@ public class Analyzer implements IAnalyzer {
     private int[] tsumo = new int[4];
     private int[] da = new int[4];
     private boolean daTedashi = false;
+    private boolean daReach = false;
     private int[] reach = new int[4];
     private int[] kita = new int[4];
     private int bakaze = 0;
@@ -82,6 +83,7 @@ public class Analyzer implements IAnalyzer {
                 tsumo.clone(),
                 da.clone(),
                 daTedashi,
+                daReach,
                 reach.clone(),
                 kita.clone(),
                 bakaze,
@@ -172,12 +174,13 @@ public class Analyzer implements IAnalyzer {
         daTedashi = prev != kiriHai;
         boolean isTenpai = Utils.computeSyanten(tehai[position], naki.get(position).size()) == 0;
 
-        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 打" + haiStr[kiriHai]
-                        + (isTenpai ? " (テンパイ)" : ""));
+        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 " +
+                (daReach ? "リーチ" : "") + "打" + haiStr[kiriHai] + (isTenpai ? "*" : ""));
 
         dahai.get(position).add(kiriHai);
         tedashi.get(position).add(prev != kiriHai);
         Arrays.fill(da, -1);
+        daReach = false;
     }
 
     @Override
@@ -189,6 +192,8 @@ public class Analyzer implements IAnalyzer {
             tehai[position][selfHai[i] / 4]--;
             stehai.get(position).remove(selfHai[i]);
         }
+
+        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 チー");
         prev = -1;
     }
 
@@ -210,6 +215,7 @@ public class Analyzer implements IAnalyzer {
             tehai[position][selfHai[i] / 4]--;
             stehai.get(position).remove(selfHai[i]);
         }
+        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 ポン");
         prev = -1;
     }
 
@@ -217,10 +223,11 @@ public class Analyzer implements IAnalyzer {
     public void ankan(int position, int[] selfHai) {
         naki.get(position).add(new Naki(selfHai, 2, -1));
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             tehai[position][selfHai[i] / 4]--;
             stehai.get(position).remove(selfHai[i]);
         }
+        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 暗カン");
         prev = -1;
     }
 
@@ -243,6 +250,7 @@ public class Analyzer implements IAnalyzer {
             tehai[position][selfHai[i] / 4]--;
             stehai.get(position).remove(selfHai[i]);
         }
+        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 明カン");
         prev = -1;
     }
 
@@ -266,6 +274,7 @@ public class Analyzer implements IAnalyzer {
 
         tehai[position][addHai / 4]--;
         stehai.get(position).remove(addHai);
+        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 加カン");
         prev = -1;
     }
 
@@ -280,6 +289,7 @@ public class Analyzer implements IAnalyzer {
                 break;
             }
         }
+        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 キタ");
         prev = -1;
     }
 
@@ -287,6 +297,7 @@ public class Analyzer implements IAnalyzer {
     public void reach(int position, int step) {
         if (step == 1) {
             reach[position] = dahai.get(position).size();
+            daReach = true;
         } else {
             playerPoints[position] -= 1000;
         }
@@ -302,9 +313,9 @@ public class Analyzer implements IAnalyzer {
         if (!oriScenes.isEmpty()) {
             String summary = kazeStr[bakaze] + kyoku + "局" + honba + "本場 " + playerNames[position];
             if (position == from) {
-                summary += " ツモ " + score;
+                summary += " ツモ " + String.join("", yaku) + " " + score;
             } else {
-                summary += " ロン " + score + " " + playerNames[from];
+                summary += " ロン " + String.join("", yaku) + " " + score + " " + playerNames[from];
             }
             oriScenesList.add(new Kyoku(summary, new ArrayList<>(oriScenes)));
         }

@@ -30,8 +30,9 @@ public class MjlogTreeControl extends TreeView<Mjlog> {
         MjlogTreeItem root = new MjlogTreeItem();
         for (Kyoku kyoku : scenesList) {
             MjlogTreeItem child = new MjlogTreeItem(new Mjlog(kyoku.summary));
-            for (Scene scene : kyoku.scenes) {
-                MjlogTreeItem grandchild = new MjlogTreeItem(new Mjlog(scene.toString(), scene));
+            for (int i = 0; i < kyoku.scenes.size(); i++) {
+                Scene scene = kyoku.scenes.get(i);
+                MjlogTreeItem grandchild = new MjlogTreeItem(new Mjlog(scene.toString(), scene, i + 1));
                 child.getChildren().add(grandchild);
             }
             root.getChildren().add(child);

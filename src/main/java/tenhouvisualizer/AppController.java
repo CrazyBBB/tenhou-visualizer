@@ -24,7 +24,6 @@ import java.util.ResourceBundle;
 public class AppController implements Initializable {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyMMdd");
 
-    public ProgressBar progressBar;
     @FXML
     private BorderPane root;
     @FXML
@@ -99,8 +98,11 @@ public class AppController implements Initializable {
             if (newMjlog != null) {
                 if (newMjlog.isLeaf()) {
                     this.boardControl.drawScene(newMjlog.getValue().getScene());
+                    this.label2.setText(newMjlog.getValue().getIdx() + "/" + newMjlog.getParent().getChildren().size()
+                                            + " " + newMjlog.getParent().toString());
                 } else {
                     this.mjlogTreeControl.getSelectionModel().getSelectedItem().setExpanded(true);
+                    this.label2.setText(newMjlog.toString());
                 }
             }
         });

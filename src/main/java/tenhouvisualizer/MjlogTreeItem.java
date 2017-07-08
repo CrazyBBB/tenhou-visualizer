@@ -16,4 +16,9 @@ public class MjlogTreeItem extends TreeItem<Mjlog> {
         Mjlog mjlog = getValue();
         return mjlog != null && mjlog.getScene() != null;
     }
+
+    @Override
+    public String toString() {
+        return getValue().toString();
+    }
 }

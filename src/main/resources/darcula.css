@@ -20,19 +20,19 @@
     -fx-background-color: transparent;
 }
 
-.scroll-bar:vertical {
+.scroll-bar {
     -fx-background-color: transparent;
 }
 
-.scroll-bar:vertical .track-background {
+.scroll-bar .track-background {
     visibility: hidden;
 }
 
-.scroll-bar:vertical .track {
+.scroll-bar .track {
     visibility: hidden;
 }
 
-.scroll-bar:vertical .thumb {
+.scroll-bar .thumb {
     -fx-background-color: rgba(200,200,200,0.5);
 }
 

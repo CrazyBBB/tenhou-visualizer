@@ -69,6 +69,7 @@ public class Analyzer implements IAnalyzer {
                 tsumo.clone(),
                 da.clone(),
                 daTedashi,
+                false,
                 reach.clone(),
                 kita.clone(),
                 bakaze,

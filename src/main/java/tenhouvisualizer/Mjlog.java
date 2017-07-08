@@ -3,14 +3,17 @@ package tenhouvisualizer;
 public class Mjlog {
     private String name;
     private Scene scene;
+    private int idx;
 
-    public Mjlog(String name, Scene scene) {
+    public Mjlog(String name, Scene scene, int idx) {
         this.name = name;
         this.scene = scene;
+        this.idx = idx;
     }
 
     public Mjlog(String name) {
         this.name = name;
+
     }
 
     public String getName() {
@@ -27,6 +30,14 @@ public class Mjlog {
 
     public void setScene(Scene scene) {
         this.scene = scene;
+    }
+
+    public int getIdx() {
+        return idx;
+    }
+
+    public void setIdx(int idx) {
+        this.idx = idx;
     }
 
     @Override

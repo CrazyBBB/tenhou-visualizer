@@ -120,7 +120,11 @@ public class BoardControl extends Canvas {
         }
 
         if (scene.da[playerId] != -1) {
-            gc.drawImage(getImage(scene.da[playerId], scene.daTedasi, true), x + 4, y + 4, 32, 45);
+            if (scene.daReach) {
+                gc.drawImage(getImage(scene.da[playerId], scene.daTedasi, false), x + 4, y + 17, 45, 32);
+            } else {
+                gc.drawImage(getImage(scene.da[playerId], scene.daTedasi, true), x + 4, y + 4, 32, 45);
+            }
         }
     }
 

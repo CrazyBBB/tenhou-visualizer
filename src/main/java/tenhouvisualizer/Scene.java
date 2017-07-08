@@ -18,6 +18,7 @@ public class Scene {
     int[] tsumo;
     int[] da;
     boolean daTedasi;
+    boolean daReach;
     int[] reach;
     int[] kita;
     int bakaze;
@@ -31,7 +32,7 @@ public class Scene {
     static final String[] bakazeStr = {"東", "南", "西", "北"};
     static final String[] maStr = {"三", "四"};
 
-    public Scene(boolean isSanma, int heroPosition, String[] playerNames, String[] playerDans, int[] playerRates, int[] playerPoints, ArrayList<TreeSet<Integer>> tehaiSets, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> stehaiLists, ArrayList<ArrayList<Boolean>> tedashiLists, int[] tsumo, int[] da, boolean daTedasi, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora, String str) {
+    public Scene(boolean isSanma, int heroPosition, String[] playerNames, String[] playerDans, int[] playerRates, int[] playerPoints, ArrayList<TreeSet<Integer>> tehaiSets, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> stehaiLists, ArrayList<ArrayList<Boolean>> tedashiLists, int[] tsumo, int[] da, boolean daTedasi, boolean daReach, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora) {
         this.isSanma = isSanma;
         this.heroPosition = heroPosition;
         this.playerNames = playerNames;
@@ -45,6 +46,32 @@ public class Scene {
         this.tsumo = tsumo;
         this.da = da;
         this.daTedasi = daTedasi;
+        this.daReach = daReach;
+        this.reach = reach;
+        this.kita = kita;
+        this.bakaze = bakaze;
+        this.kyoku = kyoku;
+        this.honba = honba;
+        this.kyotaku = kyotaku;
+        this.dora = dora;
+    }
+
+    public Scene(boolean isSanma, int heroPosition, String[] playerNames, String[] playerDans, int[] playerRates, int[] playerPoints, ArrayList<TreeSet<Integer>> tehaiSets, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> stehaiLists, ArrayList<ArrayList<Boolean>> tedashiLists, int[] tsumo, int[] da, boolean daTedasi, boolean daReach, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora, String str) {
+
+        this.isSanma = isSanma;
+        this.heroPosition = heroPosition;
+        this.playerNames = playerNames;
+        this.playerDans = playerDans;
+        this.playerRates = playerRates;
+        this.playerPoints = playerPoints;
+        this.tehaiSets = tehaiSets;
+        this.naki = naki;
+        this.stehaiLists = stehaiLists;
+        this.tedashiLists = tedashiLists;
+        this.tsumo = tsumo;
+        this.da = da;
+        this.daTedasi = daTedasi;
+        this.daReach = daReach;
         this.reach = reach;
         this.kita = kita;
         this.bakaze = bakaze;
@@ -53,29 +80,6 @@ public class Scene {
         this.kyotaku = kyotaku;
         this.dora = dora;
         this.str = str;
-    }
-
-    public Scene(boolean isSanma, int heroPosition, String[] playerNames, String[] playerDans, int[] playerRates, int[] playerPoints, ArrayList<TreeSet<Integer>> tehaiSets, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> stehaiLists, ArrayList<ArrayList<Boolean>> tedashiLists, int[] tsumo, int[] da, boolean daTedasi, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora) {
-        this.isSanma = isSanma;
-        this.heroPosition = heroPosition;
-        this.playerNames = playerNames;
-        this.playerDans = playerDans;
-        this.playerRates = playerRates;
-        this.playerPoints = playerPoints;
-        this.tehaiSets = tehaiSets;
-        this.naki = naki;
-        this.stehaiLists = stehaiLists;
-        this.tedashiLists = tedashiLists;
-        this.tsumo = tsumo;
-        this.da = da;
-        this.daTedasi = daTedasi;
-        this.reach = reach;
-        this.kita = kita;
-        this.bakaze = bakaze;
-        this.kyoku = kyoku;
-        this.honba = honba;
-        this.kyotaku = kyotaku;
-        this.dora = dora;
     }
 
     public String getZikaze(int playerId) {
