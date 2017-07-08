@@ -14,14 +14,14 @@ public class ParseHandler extends DefaultHandler {
 
     private static final String[] yakuStr = {
             //// 一飜
-            "門前清自摸和","立直","一発","槍槓","嶺上開花",
+            "門前清自摸和","立直","一発","槍カン","嶺上開花",
             "海底摸月","河底撈魚","平和","断幺九","一盃口",
             "自風 東","自風 南","自風 西","自風 北",
             "場風 東","場風 南","場風 西","場風 北",
             "役牌 白","役牌 發","役牌 中",
             //// 二飜
             "両立直","七対子","混全帯幺九","一気通貫","三色同順",
-            "三色同刻","三槓子","対々和","三暗刻","小三元","混老頭",
+            "三色同刻","三カン子","対々和","三暗刻","小三元","混老頭",
             //// 三飜
             "二盃口","純全帯幺九","混一色",
             //// 六飜
@@ -31,7 +31,7 @@ public class ParseHandler extends DefaultHandler {
             //// 役満
             "天和","地和","大三元","四暗刻","四暗刻単騎","字一色",
             "緑一色","清老頭","九蓮宝燈","純正九蓮宝燈","国士無双",
-            "国士無双１３面","大四喜","小四喜","四槓子",
+            "国士無双１３面","大四喜","小四喜","四カン子",
             //// 懸賞役
             "ドラ","裏ドラ","赤ドラ"
     };
@@ -167,7 +167,7 @@ public class ParseHandler extends DefaultHandler {
         }
         int bakaze = seedElementFirst / 4;
         kyoku = seedElementFirst % 4 + 1;
-        int firstDora = Integer.valueOf(splitedSeedCsv[5]);
+        int firstDoraDisplay = Integer.valueOf(splitedSeedCsv[5]);
 
         ArrayList<ArrayList<Integer>> playerHaipais = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
@@ -183,7 +183,7 @@ public class ParseHandler extends DefaultHandler {
             }
         }
 
-        analyzer.startKyoku(playerPoints, playerHaipais, oya, bakaze, kyoku, honba, firstDora);
+        analyzer.startKyoku(playerPoints, playerHaipais, oya, bakaze, kyoku, honba, firstDoraDisplay);
     }
 
     private void visitTUVW(String tagName) {
@@ -202,115 +202,144 @@ public class ParseHandler extends DefaultHandler {
         int m = Integer.parseInt(attributes.getValue("m"));
         int position = Integer.parseInt(attributes.getValue("who"));
 
-        Naki naki = null;
-        boolean isKita = false;
-
-        int nakiFrom = 3 - (m & 3); // 0: 上家, 1: 対面, 2: 下家, (3: 暗槓を表す)
         if ((m >> 2 & 1) == 1) {
-            // 順子
-            int t = (m >> 10) & 63;
-            int r = t % 3;
-
-            t /= 3;
-            t = t / 7 * 9 + t % 7;
-            t *= 4;
-
-            int[] h = new int[3];
-            h[0] = t + ((m >> 3) & 3);
-            h[1] = t + 4 + ((m >> 5) & 3);
-            h[2] = t + 8 + ((m >> 7) & 3);
-
-            int[] hai = null;
-            if (r == 0) {
-                hai = new int[]{h[0], h[1], h[2]};
-            } else if (r == 1) {
-                hai = new int[]{h[1], h[0], h[2]};
-            } else if (r == 2) {
-                hai = new int[]{h[2], h[0], h[1]};
-            }
-
-            naki = new Naki(hai, 0, nakiFrom);
+            // チー
+            parseChow(position, m);
         } else if ((m >> 3 & 1) == 1) {
-            // 刻子
-            int unused = (m >> 5) & 3;
-            int t = (m >> 9) & 127;
-            int r = t % 3;
-
-            t /= 3;
-            t *= 4;
-
-            int[] h = new int[3];
-            int idx = 0;
-            for (int i = 0; i < 4; i++) {
-                if (i != unused) {
-                    h[idx++] = t + i;
-                }
-            }
-
-            int[] hai = new int[3];
-            for (int i = 0; i < 3; i++) {
-                hai[(nakiFrom + i) % 3] = h[(r + i) % 3];
-            }
-
-            naki = new Naki(hai, 1, nakiFrom);
+            // ポン
+            parsePong(position, m);
         } else if ((m >> 4 & 1) == 1) {
-            // 加槓
-            int unused = (m >> 5) & 3;
-            int t = (m >> 9) & 127;
-            int r = t % 3;
-
-            t /= 3;
-            t *= 4;
-
-            int[] h = new int[3];
-            int idx = 0;
-            for (int i = 0; i < 4; i++) {
-                if (i != unused) {
-                    h[idx++] = t + i;
-                }
-            }
-
-            int[] hai = new int[4];
-            for (int i = 0; i < 3; i++) {
-                hai[(nakiFrom + i) % 3] = h[(r + i) % 3];
-            }
-            hai[3] = t + unused;
-
-            naki = new Naki(hai, 4, nakiFrom);
+            // 加カン
+            parseKakan(position, m);
         } else if ((m >> 5 & 1) == 1) {
             // 北
-            isKita = true;
-        } else if (nakiFrom == 3) {
-            // 暗槓
-            int t = (m >> 8) & 255;
-
-            t = t / 4 * 4;
-
-            int[] hai = {t + 1, t, t + 2, t + 3};
-
-            naki = new Naki(hai, 2, -1);
+            parseKita(position);
+        } else if ((m & 3) == 0) {
+            // 暗カン
+            parseAnkan(position, m);
         } else {
-            // 明槓
-            int t = (m >> 8) & 255; // 鳴いた牌
-
-            int t2 = t / 4 * 4;
-
-            if (nakiFrom == 2) nakiFrom++;
-
-            int[] hai = new int[4];
-            int idx = 0;
-            for (int i = 0; i < 4; i++) {
-                if (i == nakiFrom) {
-                    hai[i] = t;
-                } else {
-                    if (t2 + idx == t) idx++;
-                    hai[i] = t2 + idx;
-                    idx++;
-                }
-            }
-
-            naki = new Naki(hai, 3, nakiFrom);
+            // 明カン
+            parseMinkan(position, m);
         }
+    }
+
+    private void parseChow(int position, int m) {
+        int from = 3 - (m & 3); // 0: 上家, 1: 対面, 2: 下家, (3: 暗カンを表す)
+        int tmp = (m >> 10) & 63;
+        int r = tmp % 3; // 下から何番目の牌を鳴いたか
+
+        tmp /= 3;
+        tmp = tmp / 7 * 9 + tmp % 7;
+        tmp *= 4; // 一番下の牌
+
+        int[] h = new int[3];
+        h[0] = tmp + ((m >> 3) & 3);
+        h[1] = tmp + 4 + ((m >> 5) & 3);
+        h[2] = tmp + 8 + ((m >> 7) & 3);
+
+        int[] selfHai;
+        int nakiHai;
+        if (r == 0) {
+            selfHai = new int[]{h[1], h[2]};
+            nakiHai = h[0];
+        } else if (r == 1) {
+            selfHai = new int[]{h[0], h[2]};
+            nakiHai = h[1];
+        } else if (r == 2) {
+            selfHai = new int[]{h[0], h[1]};
+            nakiHai = h[2];
+        } else {
+            throw new RuntimeException();
+        }
+
+        analyzer.chow(position, from, selfHai, nakiHai);
+    }
+
+    private void parsePong(int position, int m) {
+        int from = 3 - (m & 3); // 0: 上家, 1: 対面, 2: 下家, (3: 暗カンを表す)
+
+        int unused = (m >> 5) & 3;
+        int tmp = (m >> 9) & 127;
+        int r = tmp % 3;
+
+        tmp /= 3;
+        tmp *= 4;
+
+        int[] h = new int[3];
+        int idx = 0;
+        for (int i = 0; i < 4; i++) {
+            if (i != unused) {
+                h[idx++] = tmp + i;
+            }
+        }
+
+        int[] hai = new int[3];
+        for (int i = 0; i < 3; i++) {
+            hai[(from + i) % 3] = h[(r + i) % 3];
+        }
+
+        int[] selfHai = {hai[1], hai[2]};
+        int nakiHai = hai[0];
+        analyzer.pong(position, from, selfHai, nakiHai);
+    }
+
+    private void parseKakan(int position, int m) {
+        int from = 3 - (m & 3); // 0: 上家, 1: 対面, 2: 下家, (3: 暗カンを表す)
+        int unused = (m >> 5) & 3;
+        int tmp = (m >> 9) & 127;
+        int r = tmp % 3;
+
+        tmp /= 3;
+        tmp *= 4;
+
+        int[] h = new int[3];
+        int idx = 0;
+        for (int i = 0; i < 4; i++) {
+            if (i != unused) {
+                h[idx++] = tmp + i;
+            }
+        }
+
+        int[] hai = new int[3];
+        for (int i = 0; i < 3; i++) {
+            hai[(from + i) % 3] = h[(r + i) % 3];
+        }
+
+        int[] selfHai = {hai[1], hai[2]};
+        int nakiHai = hai[0];
+        int addHai = tmp + unused;
+        analyzer.kakan(position, from, selfHai, nakiHai, addHai);
+    }
+
+    private void parseKita(int position) {
+        analyzer.kita(position);
+    }
+
+    private void parseAnkan(int position, int m) {
+        int tmp = (m >> 8) & 255;
+
+        tmp = tmp / 4 * 4;
+
+        int[] selfHai = {tmp + 1, tmp, tmp + 2, tmp + 3};
+
+        analyzer.ankan(position, selfHai);
+    }
+
+    private void parseMinkan(int position, int m) {
+        int from = 3 - (m & 3); // 0: 上家, 1: 対面, 2: 下家, (3: 暗カンを表す)
+        int nakiHai = (m >> 8) & 255; // 鳴いた牌
+
+        int haiFirst = nakiHai / 4 * 4;
+
+        int[] selfHai = new int[3];
+        int idx = 0;
+        for (int i = 0; i < 3; i++) {
+            if (haiFirst + idx == nakiHai) idx++;
+            selfHai[i] = haiFirst + idx;
+            idx++;
+        }
+
+        analyzer.minkan(position, from, selfHai, nakiHai);
     }
 
     private void visitREACH(Attributes attributes) {
@@ -320,8 +349,8 @@ public class ParseHandler extends DefaultHandler {
     }
 
     private void visitDORA(Attributes attributes) {
-        int newDora = Integer.parseInt(attributes.getValue("hai"));
-        analyzer.addDora(newDora);
+        int newDoraDisplay = Integer.parseInt(attributes.getValue("hai"));
+        analyzer.addDora(newDoraDisplay);
     }
 
     private void visitAGARI(Attributes attributes) {
