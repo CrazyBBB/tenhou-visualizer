@@ -5,6 +5,21 @@ import java.util.Arrays;
 import java.util.TreeSet;
 
 public class Analyzer implements IAnalyzer {
+    private static String[] haiStr = {
+            "1m", "1m", "1m", "1m", "2m", "2m", "2m", "2m", "3m", "3m", "3m", "3m",
+            "4m", "4m", "4m",  "4m", "赤5m", "5m", "5m", "5m", "6m", "6m", "6m", "6m",
+            "7m", "7m", "7m", "7m", "8m", "8m", "8m", "8m", "9m", "9m", "9m", "9m",
+            "1p", "1p", "1p", "1p", "2p", "2p", "2p", "2p", "3p", "3p", "3p", "3p",
+            "4p", "4p", "4p", "4p", "赤5p", "5p", "5p", "5p", "6p", "6p", "6p", "6p",
+            "7p", "7p", "7p", "7p", "8p", "8p", "8p", "8p", "9p", "9p", "9p", "9p",
+            "1s", "1s", "1s", "1s", "2s", "2s", "2s", "2s", "3s", "3s", "3s", "3s",
+            "4s", "4s", "4s", "4s", "赤5s", "5s", "5s", "5s", "6s", "6s", "6s", "6s",
+            "7s", "7s", "7s", "7s", "8s", "8s", "8s", "8s", "9s", "9s", "9s", "9s",
+            "東", "東", "東", "東", "南", "南", "南", "南",
+            "西", "西", "西", "西", "北", "北", "北", "北",
+            "白", "白", "白", "白", "發", "發", "發", "發", "中", "中", "中", "中"
+    };
+    private static String[] kazeStr = {"東", "南", "西", "北"};
 
     private ArrayList<ArrayList<Scene>> oriScenesList = new ArrayList<>();
     private ArrayList<Scene> oriScenes;
@@ -25,6 +40,8 @@ public class Analyzer implements IAnalyzer {
     private int bakaze = 0;
     private int kyoku = -1;
     private int honba = 0;
+    private int oya = 0;
+    private int ma = 0;
     private ArrayList<Integer> doraDisplays;
 
     private int prev = -1;
@@ -35,7 +52,7 @@ public class Analyzer implements IAnalyzer {
         this.heroPosition = heroPosition;
     }
 
-    private void saveScene(int playerId) {
+    private void saveScene(int playerId, String str) {
         ArrayList<TreeSet<Integer>> tmpStehai = new ArrayList<>(4);
         ArrayList<ArrayList<Integer>> tmpDahai = new ArrayList<>(4);
         ArrayList<ArrayList<Boolean>> tmpTedashi = new ArrayList<>(4);
@@ -48,7 +65,9 @@ public class Analyzer implements IAnalyzer {
             tmpNaki.add(new ArrayList<>(naki.get(i)));
         }
 
-        oriScenes.add(new Scene(isSanma,
+        oriScenes.add(new Scene(
+                str,
+                isSanma,
                 playerId,
                 playerNames.clone(),
                 playerDans.clone(),
@@ -77,6 +96,8 @@ public class Analyzer implements IAnalyzer {
         this.playerNames = playerNames;
         this.playerRates = playerRates;
         this.playerDans = playerDans;
+
+        this.ma = isSanma ? 3 : 4;
     }
 
     @Override
@@ -90,6 +111,7 @@ public class Analyzer implements IAnalyzer {
         this.bakaze = bakaze;
         this.kyoku = kyoku;
         this.honba = honba;
+        this.oya = oya;
 
         oriScenes = new ArrayList<>();
 
@@ -130,6 +152,8 @@ public class Analyzer implements IAnalyzer {
         stehai.get(position).add(tsumoHai);
         tehai[position][tsumoHai / 4]++;
         prev = tsumoHai;
+
+        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 ツモ" + haiStr[tsumoHai]);
     }
 
     @Override
@@ -138,10 +162,10 @@ public class Analyzer implements IAnalyzer {
         tehai[position][kiriHai / 4]--;
         dahai.get(position).add(kiriHai);
         tedashi.get(position).add(prev != kiriHai);
+        boolean isTenpai = Utils.computeSyanten(tehai[position], naki.get(position).size()) == 0;
 
-        if (position == heroPosition) {
-            saveScene(position);
-        }
+        saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 打" + haiStr[kiriHai]
+                        + (isTenpai ? " (テンパイ)" : ""));
     }
 
     @Override

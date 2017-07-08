@@ -23,10 +23,33 @@ public class Scene {
     int kyotaku;
     ArrayList<Integer> dora;
 
+    private String str;
+
     static final String[] bakazeStr = {"東", "南", "西", "北"};
     static final String[] maStr = {"三", "四"};
 
     public Scene(boolean isSanma, int playerId, String[] players, String[] dan, int[] rate, int[] point, ArrayList<TreeSet<Integer>> stehai, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> dahai, ArrayList<ArrayList<Boolean>> tedashi, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora) {
+        this.isSanma = isSanma;
+        this.playerId = playerId;
+        this.players = players;
+        this.dan = dan;
+        this.rate = rate;
+        this.point = point;
+        this.stehai = stehai;
+        this.naki = naki;
+        this.dahai = dahai;
+        this.tedashi = tedashi;
+        this.reach = reach;
+        this.kita = kita;
+        this.bakaze = bakaze;
+        this.kyoku = kyoku;
+        this.honba = honba;
+        this.kyotaku = kyotaku;
+        this.dora = dora;
+    }
+
+    public Scene(String str, boolean isSanma, int playerId, String[] players, String[] dan, int[] rate, int[] point, ArrayList<TreeSet<Integer>> stehai, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> dahai, ArrayList<ArrayList<Boolean>> tedashi, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora) {
+        this.str = str;
         this.isSanma = isSanma;
         this.playerId = playerId;
         this.players = players;
@@ -53,23 +76,19 @@ public class Scene {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[").append(maStr[isSanma ? 0 : 1]).append("]");
-        sb.append(players[playerId]).append(dan[playerId]);
-        sb.append("(").append(point[playerId]).append("点, ");
-        sb.append(bakazeStr[bakaze]).append(kyoku).append("-");
-        sb.append(honba).append("局");
-        sb.append(dahai.get(playerId).size()).append("巡目)");
+        if (str != null) return str;
 
-        return sb.toString();
+        return "[" + maStr[isSanma ? 0 : 1] + "]" +
+                players[playerId] + dan[playerId] +
+                "(" + point[playerId] + "点, " +
+                bakazeStr[bakaze] + kyoku + "-" +
+                honba + "局" +
+                dahai.get(playerId).size() + "巡目)";
     }
 
 
     public String getBaStr() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(bakazeStr[bakaze]).append(kyoku).append("局");
-        sb.append(honba).append("本場");
-
-        return sb.toString();
+        return bakazeStr[bakaze] + kyoku + "局" +
+                honba + "本場";
     }
 }
