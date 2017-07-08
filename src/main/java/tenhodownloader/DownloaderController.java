@@ -192,4 +192,8 @@ public class DownloaderController implements Initializable {
             }
         }
     }
+
+    public void clearFilterField(ActionEvent actionEvent) {
+        filterField.clear();
+    }
 }

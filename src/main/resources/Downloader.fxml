@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -9,9 +12,9 @@
     <top>
         <VBox>
             <MenuBar>
-                <Menu text="File" />
+                <Menu text="File"/>
                 <Menu text="Tools">
-                    <MenuItem text="Dump" onAction="#dump" />
+                    <MenuItem text="Dump" onAction="#dump"/>
                     <MenuItem text="Export .mjlog file" onAction="#exportMjlog"/>
                 </Menu>
             </MenuBar>
@@ -20,12 +23,12 @@
     <center>
         <GridPane>
             <columnConstraints>
-                <ColumnConstraints percentWidth="25" hgrow="ALWAYS" />
-                <ColumnConstraints percentWidth="75" hgrow="ALWAYS" />
+                <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="75" hgrow="ALWAYS"/>
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints vgrow="ALWAYS" />
-                <RowConstraints vgrow="NEVER" />
+                <RowConstraints vgrow="ALWAYS"/>
+                <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
             <TabPane fx:id="tabPane" GridPane.columnIndex="0" GridPane.rowIndex="0">
                 <Tab fx:id="currentYearTab" text="今年(1日ごと)" closable="false">
@@ -35,20 +38,35 @@
                     <ListView fx:id="hourListView"/>
                 </Tab>
             </TabPane>
-            <Button text="インデックスを追加する" onAction="#downloadIndex"  GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Button text="インデックスを追加する" onAction="#downloadIndex" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
             <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
-                <TextField fx:id="filterField" promptText="天鳳IDを入力"/>
+                <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <TextField fx:id="filterField" promptText="天鳳IDを入力" AnchorPane.bottomAnchor="0.0"
+                               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                    <Button onAction="#clearFilterField" AnchorPane.bottomAnchor="4.0"
+                            AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
+                        <padding>
+                            <Insets/>
+                        </padding>
+                        <graphic>
+                            <ImageView>
+                                <Image requestedWidth="24" requestedHeight="24"
+                                       url="icons/ic_cancel_white_24dp_1x.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </AnchorPane>
                 <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="downloadColumn" text="済" editable="false" />
-                        <TableColumn fx:id="dateTimeColumn" text="対戦日" editable="false" />
-                        <TableColumn fx:id="maColumn" text="麻" editable="false" />
-                        <TableColumn fx:id="souColumn" text="荘" editable="false" />
-                        <TableColumn fx:id="firstColumn" text="1位" editable="false" />
-                        <TableColumn fx:id="secondColumn" text="2位" editable="false" />
-                        <TableColumn fx:id="thirdColumn" text="3位" editable="false" />
-                        <TableColumn fx:id="fourthColumn" text="4位" editable="false" />
+                        <TableColumn fx:id="downloadColumn" text="済" editable="false"/>
+                        <TableColumn fx:id="dateTimeColumn" text="対戦日" editable="false"/>
+                        <TableColumn fx:id="maColumn" text="麻" editable="false"/>
+                        <TableColumn fx:id="souColumn" text="荘" editable="false"/>
+                        <TableColumn fx:id="firstColumn" text="1位" editable="false"/>
+                        <TableColumn fx:id="secondColumn" text="2位" editable="false"/>
+                        <TableColumn fx:id="thirdColumn" text="3位" editable="false"/>
+                        <TableColumn fx:id="fourthColumn" text="4位" editable="false"/>
                     </columns>
                 </TableView>
             </VBox>
@@ -60,7 +78,7 @@
     </center>
     <bottom>
         <ToolBar>
-            <Label fx:id="statusBarLabel" />
+            <Label fx:id="statusBarLabel"/>
         </ToolBar>
     </bottom>
 </BorderPane>

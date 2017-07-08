@@ -39,3 +39,7 @@
 #filterField {
     -fx-prompt-text-fill: #888888;
 }
+
+.button {
+    -fx-background-color: transparent;
+}
