@@ -42,6 +42,7 @@ public interface IAnalyzer {
      * @param kyoku 局
      * @param honba 本場
      * @param firstDoraDisplay 最初の表示牌
+     * todo 供託追加
      */
     void startKyoku(int[] playerPoints, ArrayList<ArrayList<Integer>> playerHaipais, int oya, int bakaze,
                     int kyoku, int honba, int firstDoraDisplay);
@@ -129,6 +130,6 @@ public interface IAnalyzer {
      */
     void addDora(int newDoraDisplay);
 
-    void agari();
+    void agari(int position, int from, ArrayList<String> yaku, int han, int hu, int score, int[] increaseAndDecrease);
     void ryuukyoku();
 }

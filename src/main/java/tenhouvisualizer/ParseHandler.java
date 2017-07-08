@@ -354,7 +354,35 @@ public class ParseHandler extends DefaultHandler {
     }
 
     private void visitAGARI(Attributes attributes) {
-        analyzer.agari();
+        int position = Integer.parseInt(attributes.getValue("who"));
+        int from = Integer.parseInt(attributes.getValue("fromWho"));
+        String scoreCsv = attributes.getValue("ten");
+        String[] splitedScoreCsv = scoreCsv.split(",");
+        int hu = Integer.parseInt(splitedScoreCsv[0]);
+        int score = Integer.parseInt(splitedScoreCsv[1]);
+        int han = Integer.parseInt(splitedScoreCsv[2]);
+        ArrayList<String> yaku = new ArrayList<>();
+        String yakuCsv = attributes.getValue("yaku");
+        String[] splitedYakuCsv = yakuCsv.split(",");
+        for (int i = 0; i < splitedScoreCsv.length; i += 2) {
+            int yakuId = Integer.parseInt(splitedScoreCsv[i]);
+            int n = Integer.parseInt(splitedScoreCsv[i + 1]);
+            if (yakuId < 52) {
+                yaku.add(yakuStr[yakuId]);
+            } else {
+                for (int j = 0; j < n; j++) {
+                    yaku.add(yakuStr[yakuId]);
+                }
+            }
+        }
+        int[] increaseAndDecrease = new int[4];
+        String scCsv = attributes.getValue("sc");
+        String[] splitedScCsv = scCsv.split(",");
+        for (int i = 0; i < 4; i++) {
+            increaseAndDecrease[i] = Integer.parseInt(splitedScCsv[2 * i]) * 100;
+        }
+        analyzer.agari(position, from, yaku, han, hu, score, increaseAndDecrease);
+
         analyzer.endKyoku();
 
         String owariCsv = attributes.getValue("owari");
