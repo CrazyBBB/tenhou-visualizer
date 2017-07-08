@@ -40,6 +40,6 @@
     -fx-prompt-text-fill: #888888;
 }
 
-.button {
+#clearButton {
     -fx-background-color: transparent;
 }

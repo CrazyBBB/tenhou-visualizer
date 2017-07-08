@@ -44,7 +44,7 @@
                 <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <TextField fx:id="filterField" promptText="天鳳IDを入力" AnchorPane.bottomAnchor="0.0"
                                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-                    <Button onAction="#clearFilterField" AnchorPane.bottomAnchor="4.0"
+                    <Button id="clearButton" onAction="#clearFilterField" AnchorPane.bottomAnchor="4.0"
                             AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
                         <padding>
                             <Insets/>
