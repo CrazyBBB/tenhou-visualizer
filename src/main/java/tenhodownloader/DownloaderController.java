@@ -23,6 +23,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class DownloaderController implements Initializable {
@@ -31,11 +32,13 @@ public class DownloaderController implements Initializable {
     private static final DateTimeFormatter minuteFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日H時m分");
 
     public TabPane tabPane;
+    public ListView<Integer> yearListView;
     public ListView<LocalDate> dateListView;
     public ListView<LocalDateTime> hourListView;
     private final DownloadService service = new DownloadService();
     public TableView<InfoSchema> tableView;
     public Label statusBarLabel;
+    public Tab pastYearsTab;
     public Tab currentYearTab;
     public Tab currentWeekTab;
     public TableColumn<InfoSchema, String> downloadColumn;
@@ -50,6 +53,17 @@ public class DownloaderController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.yearListView.setCellFactory(e -> new ListCell<Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item + "年");
+                }
+            }
+        });
         this.dateListView.setCellFactory(e -> new ListCell<LocalDate>() {
             @Override
             protected void updateItem(LocalDate item, boolean empty) {
@@ -72,6 +86,13 @@ public class DownloaderController implements Initializable {
                 }
             }
         });
+        {
+            int from = 2009;
+            int to = LocalDate.now().getYear();
+            for (int i = from; i < to; i++) {
+                this.yearListView.getItems().add(i);
+            }
+        }
         {
             LocalDate from = LocalDate.of(2017, 1, 1);
             LocalDate to = LocalDate.now().minusDays(7);
@@ -131,7 +152,18 @@ public class DownloaderController implements Initializable {
     }
 
     public void downloadIndex(ActionEvent actionEvent) {
-        if (tabPane.getSelectionModel().getSelectedItem() == currentYearTab) {
+        if (tabPane.getSelectionModel().getSelectedItem() == pastYearsTab) {
+            if (yearListView.getSelectionModel().getSelectedItem() != null) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                String str = "昨年以前のインデックスは年単位でダウンロードするので" +
+                        "時間がかかります。よろしいですか？";
+                alert.setContentText(str);
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    this.service.downloadYear(yearListView.getSelectionModel().getSelectedItem());
+                }
+            }
+        } else if (tabPane.getSelectionModel().getSelectedItem() == currentYearTab) {
             if (dateListView.getSelectionModel().getSelectedItem() != null) {
                 this.service.downloadDate(dateListView.getSelectionModel().getSelectedItem());
             }

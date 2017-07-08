@@ -32,11 +32,14 @@
                 <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
             <TabPane fx:id="tabPane" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Tab fx:id="currentWeekTab" text="今週(1時間ごと)" closable="false">
+                    <ListView fx:id="hourListView"/>
+                </Tab>
                 <Tab fx:id="currentYearTab" text="今年(1日ごと)" closable="false">
                     <ListView fx:id="dateListView"/>
                 </Tab>
-                <Tab fx:id="currentWeekTab" text="今週(1時間ごと)" closable="false">
-                    <ListView fx:id="hourListView"/>
+                <Tab fx:id="pastYearsTab" text="昨年以前(1年ごと)" closable="false">
+                    <ListView fx:id="yearListView"/>
                 </Tab>
             </TabPane>
             <Button text="インデックスを追加する" onAction="#downloadIndex" GridPane.columnIndex="0" GridPane.rowIndex="1"/>

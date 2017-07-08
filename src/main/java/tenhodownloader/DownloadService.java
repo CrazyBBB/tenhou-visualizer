@@ -31,6 +31,11 @@ public class DownloadService {
         this.storedInfoSchemaIds.addAll(Main.databaseService.findAllMjlogIds());
     }
 
+    void downloadYear(int year) {
+        String url = "http://tenhou.net/sc/raw/scraw" + year + ".zip";
+        System.out.println(url);
+    }
+
     void downloadDate(LocalDate localDate) {
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
         String urlPrefix = "http://tenhou.net/sc/raw/dat/2017/scc";
