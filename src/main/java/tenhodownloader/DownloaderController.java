@@ -125,6 +125,8 @@ public class DownloaderController implements Initializable {
         });
 
         this.statusBarLabel.textProperty().bind(Bindings.convert(Bindings.size(this.tableView.getItems())));
+
+        this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this));
     }
 
     public void downloadIndex(ActionEvent actionEvent) {
