@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import tenhouvisualizer.Main;
 
 import java.io.ByteArrayInputStream;
@@ -126,7 +127,7 @@ public class DownloaderController implements Initializable {
 
         this.statusBarLabel.textProperty().bind(Bindings.convert(Bindings.size(this.tableView.getItems())));
 
-        this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this));
+        this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this, this.service));
     }
 
     public void downloadIndex(ActionEvent actionEvent) {
@@ -195,5 +196,10 @@ public class DownloaderController implements Initializable {
 
     public void clearFilterField(ActionEvent actionEvent) {
         filterField.clear();
+    }
+
+    public void onExit(ActionEvent actionEvent) {
+        Stage stage = (Stage) this.tabPane.getScene().getWindow();
+        stage.close();
     }
 }
