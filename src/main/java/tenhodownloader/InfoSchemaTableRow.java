@@ -2,13 +2,16 @@ package tenhodownloader;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableRow;
 
 public class InfoSchemaTableRow extends TableRow<InfoSchema> {
     private final DownloaderController controller;
+    private final DownloadService service;
 
-    public InfoSchemaTableRow(DownloaderController downloaderController) {
-        this.controller = downloaderController;
+    public InfoSchemaTableRow(DownloaderController controller, DownloadService service) {
+        this.controller = controller;
+        this.service = service;
     }
 
     @Override
@@ -18,15 +21,25 @@ public class InfoSchemaTableRow extends TableRow<InfoSchema> {
             this.setContextMenu(null);
         } else {
             ContextMenu contextMenu = new ContextMenu();
-            MenuItem filterWithFirst = new MenuItem("Filter with " + item.first);
+            if (!this.service.isDownloaded(item)) {
+                MenuItem downloadMjlog = new MenuItem("牌譜をデータベースに追加する");
+                downloadMjlog.setOnAction(e -> this.controller.downloadMjlog(null));
+                contextMenu.getItems().add(downloadMjlog);
+            } else {
+                MenuItem removeMjlog = new MenuItem("牌譜をデータベースから削除する");
+                removeMjlog.setOnAction(e -> this.controller.removeMjlog(null));
+                contextMenu.getItems().add(removeMjlog);
+            }
+            contextMenu.getItems().add(new SeparatorMenuItem());
+            MenuItem filterWithFirst = new MenuItem("「" + item.first + "」で検索");
             filterWithFirst.setOnAction(e -> updateFilter(item.first));
-            MenuItem filterWithSecond = new MenuItem("Filter with " + item.second);
+            MenuItem filterWithSecond = new MenuItem("「 " + item.second + "」で検索");
             filterWithSecond.setOnAction(e -> updateFilter(item.second));
-            MenuItem filterWithThird = new MenuItem("Filter with " + item.third);
+            MenuItem filterWithThird = new MenuItem("「 " + item.third + "」で検索");
             filterWithThird.setOnAction(e -> updateFilter(item.third));
             contextMenu.getItems().addAll(filterWithFirst, filterWithSecond, filterWithThird);
             if (!"".equals(item.fourth)) {
-                MenuItem filterWithFourth = new MenuItem("Filter with " + item.fourth);
+                MenuItem filterWithFourth = new MenuItem("「 " + item.fourth + "」で検索");
                 filterWithFourth.setOnAction(e -> updateFilter(item.fourth));
                 contextMenu.getItems().add(filterWithFourth);
             }

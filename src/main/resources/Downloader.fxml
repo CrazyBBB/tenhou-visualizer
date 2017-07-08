@@ -12,10 +12,11 @@
     <top>
         <VBox>
             <MenuBar>
-                <Menu text="File"/>
-                <Menu text="Tools">
-                    <MenuItem text="Dump" onAction="#dump"/>
-                    <MenuItem text="Export .mjlog file" onAction="#exportMjlog"/>
+                <Menu text="ファイル">
+                    <MenuItem text="閉じる" onAction="#onExit"/></Menu>
+                <Menu text="ツール">
+                    <MenuItem text="データベースごと出力" onAction="#dump"/>
+                    <MenuItem text="mjlogファイルを出力" onAction="#exportMjlog"/>
                 </Menu>
             </MenuBar>
         </VBox>
