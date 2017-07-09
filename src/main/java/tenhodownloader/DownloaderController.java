@@ -153,6 +153,7 @@ public class DownloaderController implements Initializable {
     }
 
     void initInfoSchemas() {
+        this.service.infoSchemas.clear();
         List<InfoSchema> list = Main.databaseService.findAllInfos();
         this.service.infoSchemas.addAll(list);
     }
