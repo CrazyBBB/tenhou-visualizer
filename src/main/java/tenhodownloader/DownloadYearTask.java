@@ -51,7 +51,6 @@ public class DownloadYearTask extends Task {
     }
 
     private void downloadZipAndAddIndices(URL url, File tmpFile) throws IOException {
-        System.out.println("download start: " + url);
         Platform.runLater(() -> progressLabel.setText("ダウンロード中..."));
         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(url.openStream());
              FileOutputStream fileOutputStream = new FileOutputStream(tmpFile)) {
@@ -66,11 +65,8 @@ public class DownloadYearTask extends Task {
                 fileOutputStream.write(buffer, 0, length);
                 updateProgress(workDone, workMax);
             }
-            System.out.println("download end: " + url);
 
-            System.out.println("add indices start");
             addIndices(tmpFile);
-            System.out.println("add indices end");
         } catch (Exception e) {
             Platform.runLater(() -> progressLabel.setText(""));
             throw new RuntimeException(e);
