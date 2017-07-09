@@ -12,6 +12,10 @@
     -fx-text-fill: #bbbbbb;
 }
 
+.dialog-pane .button:default {
+    -fx-text-fill: #444444;
+}
+
 .tool-bar {
     -fx-background-color: rgb(60, 63, 65);
 }

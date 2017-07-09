@@ -155,6 +155,8 @@ public class DownloaderController implements Initializable {
         if (tabPane.getSelectionModel().getSelectedItem() == pastYearsTab) {
             if (yearListView.getSelectionModel().getSelectedItem() != null) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setHeaderText("ダウンロードの確認");
+                alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
                 String str = "昨年以前のインデックスは年単位でダウンロードするので" +
                         "時間がかかります。よろしいですか？";
                 alert.setContentText(str);
