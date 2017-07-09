@@ -2,6 +2,7 @@ package tenhodownloader;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import tenhouvisualizer.Main;
 
@@ -22,18 +23,21 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 public class DownloadService {
+    private final DownloaderController controller;
     final ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
     private final Set<String> storedInfoSchemaIds = new HashSet<>();
     private final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
     private final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
 
-    DownloadService() {
+    DownloadService(DownloaderController downloaderController) {
+        this.controller = downloaderController;
         this.storedInfoSchemaIds.addAll(Main.databaseService.findAllMjlogIds());
     }
 
     void downloadYear(int year) {
-        String url = "http://tenhou.net/sc/raw/scraw" + year + ".zip";
-        System.out.println(url);
+        Task task = new DownloadYearTask(year);
+        this.controller.progressBar.progressProperty().bind(task.progressProperty());
+        new Thread(task).start();
     }
 
     void downloadDate(LocalDate localDate) {
@@ -60,27 +64,7 @@ public class DownloadService {
                 String line;
                 while ((line = br.readLine()) != null) {
                     if (!line.isEmpty()) {
-                        String[] columns = line.split(" \\| ");
-                        Matcher matcher = mjlogPattern.matcher(columns[3]);
-                        if (matcher.find()) {
-                            String id = matcher.group(1);
-                            if (Main.databaseService.existsIdInINFO(id)) continue;
-
-                            String ma = columns[2].substring(0, 1);
-                            String sou = columns[2].substring(2, 3);
-                            String[] playerAndScore = columns[4].split(" ");
-                            String[] players = new String[4];
-                            for (int i = 0; i < playerAndScore.length; i++) {
-                                Matcher playerMatcher = playerPattern.matcher(playerAndScore[i]);
-                                if (playerMatcher.find()) players[i] = playerMatcher.group(1);
-                            }
-                            if (players[3] == null) players[3] = "";
-                            LocalTime localTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(columns[0]));
-                            LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-                            InfoSchema infoSchema = new InfoSchema(id, ma, sou, players[0], players[1], players[2], players[3], localDateTime);
-                            infoSchemas.add(infoSchema);
-                            Main.databaseService.saveInfo(infoSchema);
-                        }
+                        addIndex(line, localDate);
                     }
                 }
             }
@@ -91,6 +75,30 @@ public class DownloadService {
             alert.getDialogPane().setContentText("インデックスを追加することができませんでした");
             alert.show();
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private void addIndex(String line, LocalDate localDate) {
+        String[] columns = line.split(" \\| ");
+        Matcher matcher = mjlogPattern.matcher(columns[3]);
+        if (matcher.find()) {
+            String id = matcher.group(1);
+            if (Main.databaseService.existsIdInINFO(id)) return;
+
+            String ma = columns[2].substring(0, 1);
+            String sou = columns[2].substring(2, 3);
+            String[] playerAndScore = columns[4].split(" ");
+            String[] players = new String[4];
+            for (int i = 0; i < playerAndScore.length; i++) {
+                Matcher playerMatcher = playerPattern.matcher(playerAndScore[i]);
+                if (playerMatcher.find()) players[i] = playerMatcher.group(1);
+            }
+            if (players[3] == null) players[3] = "";
+            LocalTime localTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(columns[0]));
+            LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+            InfoSchema infoSchema = new InfoSchema(id, ma, sou, players[0], players[1], players[2], players[3], localDateTime);
+            infoSchemas.add(infoSchema);
+            Main.databaseService.saveInfo(infoSchema);
         }
     }
 

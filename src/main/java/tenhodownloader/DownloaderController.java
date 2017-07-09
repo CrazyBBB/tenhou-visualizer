@@ -35,7 +35,7 @@ public class DownloaderController implements Initializable {
     public ListView<Integer> yearListView;
     public ListView<LocalDate> dateListView;
     public ListView<LocalDateTime> hourListView;
-    private final DownloadService service = new DownloadService();
+    private final DownloadService service = new DownloadService(this);
     public TableView<InfoSchema> tableView;
     public Label statusBarLabel;
     public Tab pastYearsTab;
@@ -50,6 +50,7 @@ public class DownloaderController implements Initializable {
     public TableColumn<InfoSchema, String>  maColumn;
     public TableColumn<InfoSchema, String> souColumn;
     public TextField filterField;
+    public ProgressBar progressBar;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -94,7 +95,7 @@ public class DownloaderController implements Initializable {
             }
         }
         {
-            LocalDate from = LocalDate.of(2017, 1, 1);
+            LocalDate from = LocalDate.of(LocalDate.now().getYear(), 1, 1);
             LocalDate to = LocalDate.now().minusDays(7);
             for (LocalDate i = from; to.isAfter(i); i = i.plusDays(1)) {
                 this.dateListView.getItems().add(i);

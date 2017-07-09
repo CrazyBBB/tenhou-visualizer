@@ -83,6 +83,8 @@
     <bottom>
         <ToolBar>
             <Label fx:id="statusBarLabel"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <ProgressBar fx:id="progressBar" progress="0" />
         </ToolBar>
     </bottom>
 </BorderPane>
