@@ -51,6 +51,7 @@ public class DownloaderController implements Initializable {
     public TableColumn<InfoSchema, String> souColumn;
     public TextField filterField;
     public ProgressBar progressBar;
+    public Label progressLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -110,8 +111,7 @@ public class DownloaderController implements Initializable {
             }
         }
 
-        List<InfoSchema> list = Main.databaseService.findAllInfos();
-        this.service.infoSchemas.addAll(list);
+        initInfoSchemas();
         this.tableView.setItems(this.service.infoSchemas);
 
         this.downloadColumn.setCellValueFactory(e ->
@@ -150,6 +150,11 @@ public class DownloaderController implements Initializable {
         this.statusBarLabel.textProperty().bind(Bindings.convert(Bindings.size(this.tableView.getItems())));
 
         this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this, this.service));
+    }
+
+    void initInfoSchemas() {
+        List<InfoSchema> list = Main.databaseService.findAllInfos();
+        this.service.infoSchemas.addAll(list);
     }
 
     public void downloadIndex(ActionEvent actionEvent) {

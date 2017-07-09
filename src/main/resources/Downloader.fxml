@@ -84,6 +84,7 @@
         <ToolBar>
             <Label fx:id="statusBarLabel"/>
             <Pane HBox.hgrow="ALWAYS"/>
+            <Label fx:id="progressLabel"/>
             <ProgressBar fx:id="progressBar" progress="0" />
         </ToolBar>
     </bottom>

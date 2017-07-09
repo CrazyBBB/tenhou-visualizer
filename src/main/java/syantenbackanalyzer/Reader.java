@@ -8,7 +8,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-class Reader {
+public class Reader {
 
     static ArrayList<MjlogFile> unzip(File file) throws IOException {
         ArrayList<MjlogFile> list = new ArrayList<>();
@@ -18,8 +18,13 @@ class Reader {
         while ((entry = zis.getNextEntry()) != null) {
             int size = (int) entry.getSize();
             if (size < 0) continue;
+
             byte[] buf = new byte[size];
-            zis.read(buf);
+            int readSize;
+            int offset = 0;
+            while ((readSize = zis.read(buf, offset, size - offset)) > 0) {
+                offset += readSize;
+            }
 
             String path = entry.toString();
             //                                                         *
@@ -33,7 +38,7 @@ class Reader {
         return list;
     }
 
-    static byte[] gunzip(byte[] str) throws IOException {
+    public static byte[] gunzip(byte[] str) throws IOException {
         InputStream is = new ByteArrayInputStream(str);
         byte[] ba = null;
         try {

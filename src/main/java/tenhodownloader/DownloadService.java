@@ -35,8 +35,9 @@ public class DownloadService {
     }
 
     void downloadYear(int year) {
-        Task task = new DownloadYearTask(year);
+        Task task = new DownloadYearTask(this.controller.progressLabel, year);
         this.controller.progressBar.progressProperty().bind(task.progressProperty());
+        task.setOnSucceeded(a -> controller.initInfoSchemas());
         new Thread(task).start();
     }
 
