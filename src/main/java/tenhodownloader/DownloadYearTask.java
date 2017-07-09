@@ -40,8 +40,8 @@ public class DownloadYearTask extends Task {
             connection = url.openConnection();
             connection.connect();
 
-            File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-            File tmpFile = File.createTempFile("mjlog", ".zip", tmpDir);
+            File tmpFile = File.createTempFile("mjlog", ".zip");
+            tmpFile.deleteOnExit();
 
             downloadZipAndAddIndices(url, tmpFile);
         } catch (IOException e) {
@@ -74,10 +74,6 @@ public class DownloadYearTask extends Task {
         } catch (Exception e) {
             Platform.runLater(() -> progressLabel.setText(""));
             throw new RuntimeException(e);
-        } finally {
-            if (tmpFile.delete()) {
-                System.out.println("delete temp file");
-            }
         }
     }
 
