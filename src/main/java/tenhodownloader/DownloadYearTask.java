@@ -60,7 +60,7 @@ public class DownloadYearTask extends Task {
                 workDone += length;
                 fileOutputStream.write(buffer, 0, length);
                 updateProgress(workDone, workMax);
-                updateMessage("ダウンロード中 " + (1000 * workDone / workMax / 10.0) + "%");
+                updateMessage("ダウンロード中 " + String.format("%.1f", 100.0 * workDone / workMax) + "%");
             }
 
             addIndices(tmpFile);
@@ -98,7 +98,7 @@ public class DownloadYearTask extends Task {
                 if (htmlFileName.startsWith("scc")) {
                     workDone++;
                     updateProgress(workDone, workMax);
-                    updateMessage("インデックス追加中 " + (1000 * workDone / workMax / 10.0) + "%");
+                    updateMessage("インデックス追加中 " + String.format("%.1f", 100.0 * workDone / workMax) + "%");
 
                     //    ********
                     // scc20100813.html
