@@ -1,8 +1,6 @@
 package tenhodownloader;
 
-import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.scene.control.Label;
 import tenhouvisualizer.Main;
 
 import java.io.*;
@@ -12,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -19,17 +18,15 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class DownloadYearTask extends Task {
-    private Label progressLabel;
     private int year;
 
     private URLConnection connection;
 
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
-    private final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
+    private static final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
 
-    DownloadYearTask(Label progressLabel, int year) {
-        this.progressLabel = progressLabel;
+    DownloadYearTask(int year) {
         this.year = year;
     }
 
@@ -51,7 +48,6 @@ public class DownloadYearTask extends Task {
     }
 
     private void downloadZipAndAddIndices(URL url, File tmpFile) throws IOException {
-        Platform.runLater(() -> progressLabel.setText("ダウンロード中..."));
         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(url.openStream());
              FileOutputStream fileOutputStream = new FileOutputStream(tmpFile)) {
             long workDone = 0;
@@ -64,28 +60,31 @@ public class DownloadYearTask extends Task {
                 workDone += length;
                 fileOutputStream.write(buffer, 0, length);
                 updateProgress(workDone, workMax);
+                updateMessage("ダウンロード中 " + (1000 * workDone / workMax / 10.0) + "%");
             }
 
             addIndices(tmpFile);
         } catch (Exception e) {
-            Platform.runLater(() -> progressLabel.setText(""));
+            updateMessage("");
             throw new RuntimeException(e);
         }
     }
 
     private void addIndices(File tmpFile) {
-        Platform.runLater(() -> progressLabel.setText("インデックス追加中..."));
         try (FileInputStream fileInputStream = new FileInputStream(tmpFile);
              ZipInputStream zipInputStream = new ZipInputStream(fileInputStream)) {
             ZipFile zipFile = new ZipFile(tmpFile);
             long workDone = 0;
-            long workMax = zipFile.size();
+            long workMax = 0;
+            Enumeration enumeration = zipFile.entries();
+            while(enumeration.hasMoreElements()){
+                ZipEntry zipEntry = (ZipEntry)enumeration.nextElement();
+                String htmlFileName = new File(zipEntry.getName()).getName();
+                if (htmlFileName.startsWith("scc")) workMax++;
+            }
 
             ZipEntry entry;
             while ((entry = zipInputStream.getNextEntry()) != null) {
-                workDone++;
-                updateProgress(workDone, workMax);
-
                 String htmlFileName = new File(entry.getName()).getName();
 
                 int size = (int) entry.getSize();
@@ -97,6 +96,10 @@ public class DownloadYearTask extends Task {
                 }
 
                 if (htmlFileName.startsWith("scc")) {
+                    workDone++;
+                    updateProgress(workDone, workMax);
+                    updateMessage("インデックス追加中 " + (1000 * workDone / workMax / 10.0) + "%");
+
                     //    ********
                     // scc20100813.html
                     String dateString = htmlFileName.substring(3, 11);
@@ -117,10 +120,9 @@ public class DownloadYearTask extends Task {
                     }
                 }
             }
-
-            Platform.runLater(() -> progressLabel.setText(""));
+            updateMessage("");
         } catch (IOException e) {
-            Platform.runLater(() -> progressLabel.setText(""));
+            updateMessage("");
             throw new RuntimeException(e);
         }
     }

@@ -4,6 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -35,7 +36,7 @@ public class DownloaderController implements Initializable {
     public ListView<Integer> yearListView;
     public ListView<LocalDate> dateListView;
     public ListView<LocalDateTime> hourListView;
-    private final DownloadService service = new DownloadService(this);
+    private final DownloadService service = new DownloadService();
     public TableView<InfoSchema> tableView;
     public Label statusBarLabel;
     public Tab pastYearsTab;
@@ -169,7 +170,11 @@ public class DownloaderController implements Initializable {
                 alert.setContentText(str);
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    this.service.downloadYear(yearListView.getSelectionModel().getSelectedItem());
+                    Task task = this.service.createDownloadYearTask(yearListView.getSelectionModel().getSelectedItem());
+                    this.progressBar.progressProperty().bind(task.progressProperty());
+                    this.progressLabel.textProperty().bind(task.messageProperty());
+                    task.setOnSucceeded(a -> this.initInfoSchemas());
+                    new Thread(task).start();
                 }
             }
         } else if (tabPane.getSelectionModel().getSelectedItem() == currentYearTab) {

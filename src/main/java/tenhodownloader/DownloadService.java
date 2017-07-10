@@ -23,22 +23,17 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 public class DownloadService {
-    private final DownloaderController controller;
     final ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
     private final Set<String> storedInfoSchemaIds = new HashSet<>();
     private final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
     private final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
 
-    DownloadService(DownloaderController downloaderController) {
-        this.controller = downloaderController;
+    DownloadService() {
         this.storedInfoSchemaIds.addAll(Main.databaseService.findAllMjlogIds());
     }
 
-    void downloadYear(int year) {
-        Task task = new DownloadYearTask(this.controller.progressLabel, year);
-        this.controller.progressBar.progressProperty().bind(task.progressProperty());
-        task.setOnSucceeded(a -> controller.initInfoSchemas());
-        new Thread(task).start();
+    Task createDownloadYearTask(int year) {
+        return new DownloadYearTask(year);
     }
 
     void downloadDate(LocalDate localDate) {
