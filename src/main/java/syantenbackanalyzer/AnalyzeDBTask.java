@@ -16,18 +16,18 @@ import java.util.List;
 
 public class AnalyzeDBTask extends Task<List<Scene>> {
     private ListView<Scene> listView;
-    private Label label;
-    AnalyzeDBTask(ListView<Scene> listView, Label label) {
+
+    AnalyzeDBTask(ListView<Scene> listView) {
         this.listView = listView;
-        this.label = label;
     }
+
     @Override
     protected List<Scene> call() throws Exception {
         Platform.runLater(() -> this.listView.getItems().clear());
 
         List<String> list = Main.databaseService.findAllMjlogContents();
         if (list.size() == 0) {
-            Platform.runLater(() -> label.setText("0/0"));
+            updateMessage("0/0");
             updateProgress(0, 0);
             return null;
         }
@@ -42,11 +42,8 @@ public class AnalyzeDBTask extends Task<List<Scene>> {
             saxParser.parse(new ByteArrayInputStream(content.getBytes()), parseHandler);
             ArrayList<Scene> scenes = analyzer.getOriScenes();
             workDone++;
-            final long tmp = workDone;
-            Platform.runLater(() -> {
-                listView.getItems().addAll(scenes);
-                label.setText(tmp + "/" + workMax);
-            });
+            Platform.runLater(() -> listView.getItems().addAll(scenes));
+            updateMessage(workDone + "/" + workMax);
             updateProgress(workDone, workMax);
         }
         return null;

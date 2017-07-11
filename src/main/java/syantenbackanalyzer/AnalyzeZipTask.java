@@ -19,12 +19,12 @@ import java.util.Objects;
 public class AnalyzeZipTask extends Task<List<Scene>> {
     private final File selectedFile;
     private ListView<Scene> listView;
-    private Label label;
-    AnalyzeZipTask(File selectedFile, ListView<Scene> listView, Label label) {
+
+    AnalyzeZipTask(File selectedFile, ListView<Scene> listView) {
         this.selectedFile = Objects.requireNonNull(selectedFile);
         this.listView = listView;
-        this.label = label;
     }
+
     @Override
     protected List<Scene> call() throws Exception {
         Platform.runLater(() -> this.listView.getItems().clear());
@@ -42,11 +42,8 @@ public class AnalyzeZipTask extends Task<List<Scene>> {
             saxParser.parse(new ByteArrayInputStream(gunzipedXml), parseHandler);
             ArrayList<Scene> scenes = analyzer.getOriScenes();
             workDone++;
-            final long tmp = workDone;
-            Platform.runLater(() -> {
-                listView.getItems().addAll(scenes);
-                label.setText(tmp + "/" + workMax);
-            });
+            Platform.runLater(() -> listView.getItems().addAll(scenes));
+            updateMessage(workDone + "/" + workMax);
             updateProgress(workDone, workMax);
         }
         return null;

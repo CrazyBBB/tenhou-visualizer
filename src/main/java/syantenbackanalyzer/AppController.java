@@ -1,6 +1,5 @@
 package syantenbackanalyzer;
 
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,7 +29,7 @@ public class AppController implements Initializable {
     @FXML
     private Label label;
     @FXML
-    private Label label2;
+    private Label progressLabel;
     @FXML
     private ListView<Scene> listView;
     @FXML
@@ -41,7 +40,7 @@ public class AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.boardControl.drawScene();
-//        this.label2.textProperty().bind(Bindings.concat(
+//        this.progressLabel.textProperty().bind(Bindings.concat(
 //                Bindings.convert(Bindings.size(this.listView.getItems())),
 //                new SimpleStringProperty("/"),
 //                new SimpleStringProperty("NaN")) );
@@ -59,7 +58,7 @@ public class AppController implements Initializable {
 //    }
 
     @FXML
-    public void analyzeZIP(ActionEvent e) throws IOException, ParserConfigurationException, SAXException {
+    public void analyzeZIP(ActionEvent actionEvent) throws IOException, ParserConfigurationException, SAXException {
         FileChooser fc = new FileChooser();
         fc.setInitialDirectory(lastSelectedFile == null ? new File(".") : lastSelectedFile);
         File selectedFile = fc.showOpenDialog(root.getScene().getWindow());
@@ -67,8 +66,9 @@ public class AppController implements Initializable {
         if (selectedFile != null) {
             lastSelectedFile = new File(selectedFile.getParent());
 
-            Task<List<Scene>> task = new AnalyzeZipTask(selectedFile, listView, label2);
+            Task<List<Scene>> task = new AnalyzeZipTask(selectedFile, listView);
             this.progressBar.progressProperty().bind(task.progressProperty());
+            this.progressLabel.textProperty().bind(task.messageProperty());
             task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));
             task.setOnRunning(a -> this.openMenuItem.setDisable(true));
             new Thread(task).start();
@@ -77,8 +77,9 @@ public class AppController implements Initializable {
 
     @FXML
     public void analyzeDB(ActionEvent actionEvent) {
-        Task<List<Scene>> task = new AnalyzeDBTask(listView, label2);
+        Task<List<Scene>> task = new AnalyzeDBTask(listView);
         this.progressBar.progressProperty().bind(task.progressProperty());
+        this.progressLabel.textProperty().bind(task.messageProperty());
         task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));
         task.setOnRunning(a -> this.openMenuItem.setDisable(true));
         new Thread(task).start();
