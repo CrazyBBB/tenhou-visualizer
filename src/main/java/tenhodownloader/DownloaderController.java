@@ -114,6 +114,7 @@ public class DownloaderController implements Initializable {
 
         initInfoSchemas();
         this.tableView.setItems(this.service.infoSchemas);
+        this.statusBarLabel.setText(String.valueOf(this.service.infoSchemas.size()));
 
         this.downloadColumn.setCellValueFactory(e ->
                 new SimpleStringProperty(this.service.isDownloaded(e.getValue()) ? "✓" : "")
@@ -144,16 +145,15 @@ public class DownloaderController implements Initializable {
                         filteredList.add(infoSchema);
                     }
                 }
-                tableView.setItems(filteredList);
+                this.tableView.setItems(filteredList);
+                this.statusBarLabel.setText(String.valueOf(filteredList.size()));
             }
         });
-
-        this.statusBarLabel.textProperty().bind(Bindings.convert(Bindings.size(this.tableView.getItems())));
 
         this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this, this.service));
     }
 
-    void initInfoSchemas() {
+    private void initInfoSchemas() {
         this.service.infoSchemas.clear();
         List<InfoSchema> list = Main.databaseService.findAllInfos();
         this.service.infoSchemas.addAll(list);
