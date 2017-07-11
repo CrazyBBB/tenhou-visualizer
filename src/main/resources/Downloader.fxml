@@ -42,7 +42,7 @@
                     <ListView fx:id="yearListView"/>
                 </Tab>
             </TabPane>
-            <Button text="インデックスを追加する" onAction="#downloadIndex" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Button fx:id="indexButton" text="インデックスを追加する" onAction="#downloadIndex" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
             <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
                 <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

@@ -17,25 +17,27 @@ import java.util.Set;
 public class DatabaseService implements Closeable {
     private final Connection connection;
     private final PreparedStatement insertMjlogStatement;
-    private final PreparedStatement insertInfoStatement;
     private final PreparedStatement findAllMjlogStatement;
     private final PreparedStatement findAllMjlogContent;
     private final PreparedStatement findMjlogByIdStatement;
     private final PreparedStatement removeMjlogByIdStatement;
+    private final PreparedStatement insertInfoStatement;
     private final PreparedStatement findAllInfoStatement;
     private final PreparedStatement findAllExistsInfoStatement;
+    private final PreparedStatement insertMjlogIndexStatement;
     public DatabaseService(@Nullable File file) throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + (file == null ? "" : file));
         initialize();
         this.insertMjlogStatement = connection.prepareStatement("INSERT INTO MJLOG VALUES(?, ?);");
-        this.insertInfoStatement = connection.prepareStatement("INSERT INTO INFO VALUES(?, ?, ?, ?, ?, ?, ?, ?);");
         this.findAllMjlogStatement = connection.prepareStatement("SELECT id FROM MJLOG;");
         this.findAllMjlogContent = connection.prepareStatement("SELECT content FROM MJLOG;");
         this.findMjlogByIdStatement = connection.prepareStatement("SELECT content FROM MJLOG WHERE id = ?;");
         this.removeMjlogByIdStatement = connection.prepareStatement("DELETE FROM MJLOG WHERE id = ?;");
+        this.insertInfoStatement = connection.prepareStatement("INSERT INTO INFO VALUES(?, ?, ?, ?, ?, ?, ?, ?);");
         this.findAllInfoStatement = connection.prepareStatement("SELECT * FROM INFO;");
         this.findAllExistsInfoStatement = connection.prepareStatement("SELECT * FROM INFO WHERE id in (SELECT id FROM MJLOG);");
+        this.insertMjlogIndexStatement = connection.prepareStatement("INSERT INTO MJLOGINDEX VALUES(?);");
     }
 
     private void initialize() throws SQLException {
@@ -44,7 +46,11 @@ public class DatabaseService implements Closeable {
         statement.execute(sql);
 
         sql = "CREATE TABLE IF NOT EXISTS INFO(id TEXT PRIMARY KEY, ma TEXT, sou TEXT," +
-                                                    " first TEXT, second TEXT, third TEXT, fourth TEXT, date_time TEXT);";
+                " first TEXT, second TEXT, third TEXT, fourth TEXT, date_time TEXT);";
+        statement = this.connection.createStatement();
+        statement.execute(sql);
+
+        sql = "CREATE TABLE IF NOT EXISTS MJLOGINDEX(id TEXT PRIMARY KEY);";
         statement = this.connection.createStatement();
         statement.execute(sql);
     }
@@ -68,6 +74,15 @@ public class DatabaseService implements Closeable {
             this.insertInfoStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException();
+        }
+    }
+
+    void saveMjlogIndex(String id) {
+        try {
+            this.insertMjlogIndexStatement.setString(1, id);
+            this.insertMjlogIndexStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -170,6 +185,11 @@ public class DatabaseService implements Closeable {
 
     public boolean existsIdInINFO(String id) {
         String sqlStr = "SELECT id FROM INFO WHERE id = ?;";
+        return existsId(id, sqlStr);
+    }
+
+    public boolean existsIdInMJLOGINDEX(String id) {
+        String sqlStr = "SELECT id FROM MJLOGINDEX WHERE id = ?;";
         return existsId(id, sqlStr);
     }
 

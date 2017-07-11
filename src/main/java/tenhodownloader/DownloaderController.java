@@ -1,6 +1,5 @@
 package tenhodownloader;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -53,6 +52,7 @@ public class DownloaderController implements Initializable {
     public TextField filterField;
     public ProgressBar progressBar;
     public Label progressLabel;
+    public Button indexButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -114,7 +114,6 @@ public class DownloaderController implements Initializable {
 
         initInfoSchemas();
         this.tableView.setItems(this.service.infoSchemas);
-        this.statusBarLabel.setText(String.valueOf(this.service.infoSchemas.size()));
 
         this.downloadColumn.setCellValueFactory(e ->
                 new SimpleStringProperty(this.service.isDownloaded(e.getValue()) ? "✓" : "")
@@ -157,11 +156,14 @@ public class DownloaderController implements Initializable {
         this.service.infoSchemas.clear();
         List<InfoSchema> list = Main.databaseService.findAllInfos();
         this.service.infoSchemas.addAll(list);
+        this.statusBarLabel.setText(String.valueOf(list.size()));
     }
 
     public void downloadIndex(ActionEvent actionEvent) {
         if (tabPane.getSelectionModel().getSelectedItem() == pastYearsTab) {
-            if (yearListView.getSelectionModel().getSelectedItem() != null) {
+            Integer year = yearListView.getSelectionModel().getSelectedItem();
+            if (year != null) {
+                if (Main.databaseService.existsIdInMJLOGINDEX(year.toString())) return;
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setHeaderText("ダウンロードの確認");
                 alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
@@ -170,20 +172,36 @@ public class DownloaderController implements Initializable {
                 alert.setContentText(str);
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    Task task = this.service.createDownloadYearTask(yearListView.getSelectionModel().getSelectedItem());
+                    Task task = this.service.createDownloadYearTask(year);
                     this.progressBar.progressProperty().bind(task.progressProperty());
                     this.progressLabel.textProperty().bind(task.messageProperty());
-                    task.setOnSucceeded(a -> this.initInfoSchemas());
+                    task.setOnRunning(a -> this.indexButton.setDisable(true));
+                    task.setOnSucceeded(a -> {
+                        this.initInfoSchemas();
+                        Main.databaseService.saveMjlogIndex(year.toString());
+                        this.indexButton.setDisable(false);
+                    });
                     new Thread(task).start();
                 }
             }
         } else if (tabPane.getSelectionModel().getSelectedItem() == currentYearTab) {
-            if (dateListView.getSelectionModel().getSelectedItem() != null) {
-                this.service.downloadDate(dateListView.getSelectionModel().getSelectedItem());
+            LocalDate localDate = dateListView.getSelectionModel().getSelectedItem();
+            if (localDate != null) {
+                if (Main.databaseService.existsIdInMJLOGINDEX(localDate.toString())) return;
+                this.service.downloadDate(localDate);
+                Main.databaseService.saveMjlogIndex(localDate.toString());
+                this.statusBarLabel.setText(String.valueOf(this.tableView.getItems().size()));
             }
         } else if (tabPane.getSelectionModel().getSelectedItem() == currentWeekTab) {
-            if (hourListView.getSelectionModel().getSelectedItem() != null) {
-                this.service.downloadHour(hourListView.getSelectionModel().getSelectedItem());
+            LocalDateTime localDateTime = hourListView.getSelectionModel().getSelectedItem();
+            if (localDateTime != null) {
+                if (Main.databaseService.existsIdInMJLOGINDEX(localDateTime.toString())) {
+                    System.out.println("already downloaded: " + localDateTime.toString());
+                    return;
+                }
+                this.service.downloadHour(localDateTime);
+                Main.databaseService.saveMjlogIndex(localDateTime.toString());
+                this.statusBarLabel.setText(String.valueOf(this.tableView.getItems().size()));
             }
         }
         this.tableView.setItems(this.service.infoSchemas);
