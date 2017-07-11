@@ -92,11 +92,6 @@ public class Analyzer implements IAnalyzer {
     }
 
     @Override
-    public void endGame(int[] playerPoints) {
-
-    }
-
-    @Override
     public void startKyoku(int[] playerPoints, ArrayList<ArrayList<Integer>> playerHaipais, int oya, int bakaze, int kyoku, int honba, int firstDoraDisplay) {
         this.playerPoints = playerPoints;
         this.bakaze = bakaze;
@@ -129,11 +124,6 @@ public class Analyzer implements IAnalyzer {
                 tehai[i][hai / 4]++;
             }
         }
-    }
-
-    @Override
-    public void endKyoku() {
-
     }
 
     @Override
@@ -278,20 +268,5 @@ public class Analyzer implements IAnalyzer {
         } else {
             playerPoints[position] -= 1000;
         }
-    }
-
-    @Override
-    public void addDora(int newDoraDisplay) {
-        doraDisplays.add(newDoraDisplay);
-    }
-
-    @Override
-    public void agari(int position, int from, ArrayList<String> yaku, int han, int hu, int score, int[] increaseAndDecrease) {
-
-    }
-
-    @Override
-    public void ryuukyoku() {
-
     }
 }
