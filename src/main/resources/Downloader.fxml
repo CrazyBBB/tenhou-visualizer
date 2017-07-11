@@ -8,7 +8,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="tenhodownloader.DownloaderController"
-            prefHeight="600.0" prefWidth="800.0">
+            prefHeight="600.0" prefWidth="1000.0">
     <top>
         <VBox>
             <MenuBar>

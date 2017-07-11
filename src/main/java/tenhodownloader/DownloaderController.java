@@ -28,9 +28,9 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 public class DownloaderController implements Initializable {
-    private static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日");
-    private static final DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日H時台");
-    private static final DateTimeFormatter minuteFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日H時m分");
+    private static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
+    private static final DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日HH時台");
+    private static final DateTimeFormatter minuteFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 
     public TabPane tabPane;
     public ListView<Integer> yearListView;
@@ -134,14 +134,14 @@ public class DownloaderController implements Initializable {
         this.thirdColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().third));
         this.fourthColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().fourth));
 
-        this.downloadColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
-        this.dateTimeColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
-        this.maColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
-        this.souColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
-        this.firstColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-        this.secondColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-        this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-        this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+//        this.downloadColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
+//        this.dateTimeColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
+//        this.maColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
+//        this.souColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
+//        this.firstColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+//        this.secondColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+//        this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+//        this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
         this.filterField.textProperty().addListener((obs, oldText, newText) -> {
             if (newText != null) {
                 newText = newText.toLowerCase();
@@ -158,6 +158,9 @@ public class DownloaderController implements Initializable {
         });
 
         this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this, this.service));
+
+        this.dateTimeColumn.setSortType(TableColumn.SortType.DESCENDING);
+        this.tableView.getSortOrder().add(dateTimeColumn);
     }
 
     private void initInfoSchemas() {
