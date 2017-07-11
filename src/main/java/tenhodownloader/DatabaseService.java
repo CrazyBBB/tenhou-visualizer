@@ -25,6 +25,7 @@ public class DatabaseService implements Closeable {
     private final PreparedStatement findAllInfoStatement;
     private final PreparedStatement findAllExistsInfoStatement;
     private final PreparedStatement insertMjlogIndexStatement;
+    private final PreparedStatement findAllMjlogIndexStatement;
     public DatabaseService(@Nullable File file) throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + (file == null ? "" : file));
@@ -38,6 +39,7 @@ public class DatabaseService implements Closeable {
         this.findAllInfoStatement = connection.prepareStatement("SELECT * FROM INFO;");
         this.findAllExistsInfoStatement = connection.prepareStatement("SELECT * FROM INFO WHERE id in (SELECT id FROM MJLOG);");
         this.insertMjlogIndexStatement = connection.prepareStatement("INSERT INTO MJLOGINDEX VALUES(?);");
+        this.findAllMjlogIndexStatement = connection.prepareStatement("SELECT id FROM MJLOGINDEX;");
     }
 
     private void initialize() throws SQLException {
@@ -102,6 +104,18 @@ public class DatabaseService implements Closeable {
     public List<String> findAllMjlogContents() {
         try (ResultSet rs = this.findAllMjlogContent.executeQuery()) {
             List<String> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(rs.getString(1));
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Set<String> findAllMjlogIndexIds() {
+        try (ResultSet rs = this.findAllMjlogIndexStatement.executeQuery()) {
+            HashSet<String> result = new HashSet<>();
             while (rs.next()) {
                 result.add(rs.getString(1));
             }

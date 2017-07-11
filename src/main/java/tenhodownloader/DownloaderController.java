@@ -25,6 +25,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class DownloaderController implements Initializable {
     private static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日");
@@ -89,18 +90,23 @@ public class DownloaderController implements Initializable {
                 }
             }
         });
+        Set<String> mjlogIndexIds = Main.databaseService.findAllMjlogIndexIds();
         {
             int from = 2009;
             int to = LocalDate.now().getYear();
-            for (int i = from; i < to; i++) {
-                this.yearListView.getItems().add(i);
+            for (Integer i = from; i < to; i++) {
+                if (!mjlogIndexIds.contains(i.toString())) {
+                    this.yearListView.getItems().add(i);
+                }
             }
         }
         {
             LocalDate from = LocalDate.of(LocalDate.now().getYear(), 1, 1);
             LocalDate to = LocalDate.now().minusDays(7);
             for (LocalDate i = from; to.isAfter(i); i = i.plusDays(1)) {
-                this.dateListView.getItems().add(i);
+                if (!mjlogIndexIds.contains(i.toString())) {
+                    this.dateListView.getItems().add(i);
+                }
             }
         }
 
@@ -108,7 +114,9 @@ public class DownloaderController implements Initializable {
             LocalDateTime from = LocalDateTime.of(LocalDate.now().minusDays(7), LocalTime.MIN);
             LocalDateTime to = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS);
             for (LocalDateTime i = from; to.isAfter(i); i = i.plusHours(1)) {
-                this.hourListView.getItems().add(i);
+                if (!mjlogIndexIds.contains(i.toString())) {
+                    this.hourListView.getItems().add(i);
+                }
             }
         }
 
@@ -179,6 +187,7 @@ public class DownloaderController implements Initializable {
                     task.setOnSucceeded(a -> {
                         this.initInfoSchemas();
                         Main.databaseService.saveMjlogIndex(year.toString());
+                        this.yearListView.getItems().remove(year);
                         this.indexButton.setDisable(false);
                     });
                     new Thread(task).start();
@@ -191,17 +200,18 @@ public class DownloaderController implements Initializable {
                 this.service.downloadDate(localDate);
                 Main.databaseService.saveMjlogIndex(localDate.toString());
                 this.statusBarLabel.setText(String.valueOf(this.tableView.getItems().size()));
+                this.dateListView.getItems().remove(localDate);
+                this.dateListView.getSelectionModel().clearSelection();
             }
         } else if (tabPane.getSelectionModel().getSelectedItem() == currentWeekTab) {
             LocalDateTime localDateTime = hourListView.getSelectionModel().getSelectedItem();
             if (localDateTime != null) {
-                if (Main.databaseService.existsIdInMJLOGINDEX(localDateTime.toString())) {
-                    System.out.println("already downloaded: " + localDateTime.toString());
-                    return;
-                }
+                if (Main.databaseService.existsIdInMJLOGINDEX(localDateTime.toString())) return;
                 this.service.downloadHour(localDateTime);
                 Main.databaseService.saveMjlogIndex(localDateTime.toString());
                 this.statusBarLabel.setText(String.valueOf(this.tableView.getItems().size()));
+                this.hourListView.getItems().remove(localDateTime);
+                this.hourListView.getSelectionModel().clearSelection();
             }
         }
         this.tableView.setItems(this.service.infoSchemas);
