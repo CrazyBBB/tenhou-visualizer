@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AnalyzeZipTask extends Task<List<Scene>> {
+public class AnalyzeZipTask extends Task {
     private final File selectedFile;
     private ListView<Scene> listView;
 
@@ -26,7 +26,7 @@ public class AnalyzeZipTask extends Task<List<Scene>> {
     }
 
     @Override
-    protected List<Scene> call() throws Exception {
+    protected Void call() throws Exception {
         Platform.runLater(() -> this.listView.getItems().clear());
 
         ArrayList<MjlogFile> list = Reader.unzip(selectedFile);

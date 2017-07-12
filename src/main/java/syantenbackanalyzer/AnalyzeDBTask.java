@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnalyzeDBTask extends Task<List<Scene>> {
+public class AnalyzeDBTask extends Task {
     private ListView<Scene> listView;
 
     AnalyzeDBTask(ListView<Scene> listView) {
@@ -22,7 +22,7 @@ public class AnalyzeDBTask extends Task<List<Scene>> {
     }
 
     @Override
-    protected List<Scene> call() throws Exception {
+    protected Void call() throws Exception {
         Platform.runLater(() -> this.listView.getItems().clear());
 
         List<String> list = Main.databaseService.findAllMjlogContents();

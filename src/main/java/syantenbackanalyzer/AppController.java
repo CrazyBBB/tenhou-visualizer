@@ -66,7 +66,7 @@ public class AppController implements Initializable {
         if (selectedFile != null) {
             lastSelectedFile = new File(selectedFile.getParent());
 
-            Task<List<Scene>> task = new AnalyzeZipTask(selectedFile, listView);
+            Task task = new AnalyzeZipTask(selectedFile, listView);
             this.progressBar.progressProperty().bind(task.progressProperty());
             this.progressLabel.textProperty().bind(task.messageProperty());
             task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));
@@ -77,7 +77,7 @@ public class AppController implements Initializable {
 
     @FXML
     public void analyzeDB(ActionEvent actionEvent) {
-        Task<List<Scene>> task = new AnalyzeDBTask(listView);
+        Task task = new AnalyzeDBTask(listView);
         this.progressBar.progressProperty().bind(task.progressProperty());
         this.progressLabel.textProperty().bind(task.messageProperty());
         task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));
