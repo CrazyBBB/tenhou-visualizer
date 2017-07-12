@@ -1,8 +1,4 @@
-title: Cayman theme
-description: Cayman is a clean, responsive theme for GitHub Pages.
-show_downloads: true
-google_analytics:
-theme:
 title: Tenhou Visualizer
 description: 天鳳牌譜可視化ツール
+theme: jekyll-theme-cayman
 show_downloads: false
