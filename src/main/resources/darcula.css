@@ -8,7 +8,7 @@
     -fx-background-color: rgb(60, 63, 65);
 }
 
-.label, .cell, .button, .tab-label {
+.label, .cell, .button, .tab-label, .check-box {
     -fx-text-fill: #bbbbbb;
 }
 
