@@ -54,6 +54,8 @@ public class DownloaderController implements Initializable {
     public ProgressBar progressBar;
     public Label progressLabel;
     public Button indexButton;
+    public Button prevButton;
+    public Button nextButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

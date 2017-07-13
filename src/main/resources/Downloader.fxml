@@ -62,7 +62,7 @@
                 </Tab>
             </TabPane>
             <Button fx:id="indexButton" onAction="#downloadIndex" text="インデックスを追加する" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
+            <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
                 <HBox>
                     <HBox spacing="7">
                         <padding>
@@ -102,11 +102,19 @@
                     </columns>
                 </TableView>
             </VBox>
+            <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <padding>
+                    <Insets left="5" right="5"/>
+                </padding>
+                <Label fx:id="statusBarLabel" />
+                <Pane HBox.hgrow="ALWAYS" />
+                <Button fx:id="prevButton" text="◀︎" />
+                <Button fx:id="nextButton" text="▶︎" />
+            </HBox>
         </GridPane>
     </center>
     <bottom>
         <ToolBar>
-            <Label fx:id="statusBarLabel" />
             <Pane HBox.hgrow="ALWAYS" />
             <Label fx:id="progressLabel" />
             <ProgressBar fx:id="progressBar" progress="0" />
