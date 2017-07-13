@@ -192,21 +192,57 @@ public class DatabaseService implements Closeable {
         }
     }
 
-    public List<InfoSchema> findInfosByCriteria(int pageIndex, boolean isContentSanma, boolean isContentYonma, boolean isContentTonPu, boolean isContentTonnan) {
+    public List<InfoSchema> findInfosByCriteria(boolean isContentSanma, boolean isContentYonma,
+                                                boolean isContentTonPu, boolean isContentTonnan, int limit, int offset) {
         List<InfoSchema> result = new ArrayList<>();
         String maCriterionString;
         if (isContentSanma) {
             if (isContentYonma) {
-                maCriterionString = "TRUE";
+                maCriterionString = "1 = 1";
             } else {
                 maCriterionString = "ma = '三'";
             }
         } else {
             if (isContentYonma) {
-
+                maCriterionString = "ma = '四'";
             } else {
                 return result;
             }
+        }
+
+        String souCriterionString;
+        if (isContentTonPu) {
+            if (isContentTonnan) {
+                souCriterionString = "1 = 1";
+            } else {
+                souCriterionString = "sou = '東'";
+            }
+        } else {
+            if (isContentYonma) {
+                souCriterionString = "sou = '南'";
+            } else {
+                return result;
+            }
+        }
+
+        String sqlStr = "SELECT * FROM INFO WHERE " + souCriterionString + " AND " +
+                maCriterionString + " LIMIT " + limit + " OFFSET " + offset + ";";
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement(sqlStr)) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                result.add(new InfoSchema(
+                        rs.getString("id"),
+                        rs.getString("ma"),
+                        rs.getString("sou"),
+                        rs.getString("first"),
+                        rs.getString("second"),
+                        rs.getString("third"),
+                        rs.getString("fourth"),
+                        LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(rs.getString("date_time")))
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
         return result;
@@ -232,6 +268,49 @@ public class DatabaseService implements Closeable {
             preparedStatement.setString(1, id);
             ResultSet rs = preparedStatement.executeQuery();
             return rs.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int countInfosByCriteria(boolean isContentSanma, boolean isContentYonma, boolean isContentTonPu, boolean isContentTonnan) {
+        String maCriterionString;
+        if (isContentSanma) {
+            if (isContentYonma) {
+                maCriterionString = "1 = 1";
+            } else {
+                maCriterionString = "ma = '三'";
+            }
+        } else {
+            if (isContentYonma) {
+                maCriterionString = "ma = '四'";
+            } else {
+                return 0;
+            }
+        }
+
+        String souCriterionString;
+        if (isContentTonPu) {
+            if (isContentTonnan) {
+                souCriterionString = "1 = 1";
+            } else {
+                souCriterionString = "sou = '東'";
+            }
+        } else {
+            if (isContentYonma) {
+                souCriterionString = "sou = '南'";
+            } else {
+                return 0;
+            }
+        }
+        String sqlStr = "SELECT count(*) FROM INFO WHERE " + souCriterionString + " AND " + maCriterionString + ";";
+        try (PreparedStatement countMaxPagesStatement = connection.prepareStatement(sqlStr)) {
+            ResultSet resultSet = countMaxPagesStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            } else {
+                throw new RuntimeException();
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

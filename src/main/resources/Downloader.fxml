@@ -46,10 +46,10 @@
                         <padding>
                             <Insets left="5" right="5"/>
                         </padding>
-                        <CheckBox prefHeight="32.0" prefWidth="0.0" text="三" selected="true"/>
-                        <CheckBox prefHeight="32.0" prefWidth="0.0" text="四" selected="true" />
-                        <CheckBox prefHeight="32.0" prefWidth="50.0" text="東風" selected="true" />
-                        <CheckBox prefHeight="32.0" prefWidth="50.0" text="東南" selected="true" />
+                        <CheckBox fx:id="sanmaCheckBox" prefHeight="32.0" prefWidth="0.0" text="三" selected="true"/>
+                        <CheckBox fx:id="yonmaCheckBox" prefHeight="32.0" prefWidth="0.0" text="四" selected="true" />
+                        <CheckBox fx:id="tonpuCheckBox" prefHeight="32.0" prefWidth="50.0" text="東風" selected="true" />
+                        <CheckBox fx:id="tonnanCheckBox" prefHeight="32.0" prefWidth="50.0" text="東南" selected="true" />
                     </HBox>
                     <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
                         <TextField fx:id="filterField" promptText="天鳳IDを入力" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
@@ -59,8 +59,8 @@
                             </graphic>
                         </Button>
                     </AnchorPane>
-                    <Button prefHeight="32.0" text="検索" />
-                    <Button prefHeight="32.0" text="クリア" />
+                    <Button prefHeight="32.0" onAction="#search" text="検索" />
+                    <Button prefHeight="32.0" onAction="#clear" text="クリア" />
                 </HBox>
                 <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
                     <columns>
@@ -81,12 +81,12 @@
                 </padding>
                 <Label fx:id="statusBarLabel" />
                 <Pane HBox.hgrow="ALWAYS" />
-                <Button fx:id="prevButton">
+                <Button fx:id="prevButton" onAction="#goPrevPage">
                     <graphic>
                         <FontAwesomeIconView glyphName="ARROW_LEFT" styleClass="gryph-icon"/>
                     </graphic>
                 </Button>
-                <Button fx:id="nextButton">
+                <Button fx:id="nextButton" onAction="#goNextPage">
                     <graphic>
                         <FontAwesomeIconView glyphName="ARROW_RIGHT" styleClass="gryph-icon"/>
                     </graphic>

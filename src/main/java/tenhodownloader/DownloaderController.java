@@ -2,8 +2,6 @@ package tenhodownloader;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -29,10 +27,12 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 public class DownloaderController implements Initializable {
+    private static final int maxInfosPerPage = 100;
     private static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
     private static final DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日HH時台");
     private static final DateTimeFormatter minuteFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 
+    private DatabaseService databaseService;
     public TabPane tabPane;
     public ListView<Integer> yearListView;
     public ListView<LocalDate> dateListView;
@@ -45,11 +45,11 @@ public class DownloaderController implements Initializable {
     public Tab currentWeekTab;
     public TableColumn<InfoSchema, String> downloadColumn;
     public TableColumn<InfoSchema, String> dateTimeColumn;
-    public TableColumn<InfoSchema, String>  firstColumn;
-    public TableColumn<InfoSchema, String>  secondColumn;
-    public TableColumn<InfoSchema, String>  thirdColumn;
-    public TableColumn<InfoSchema, String>  fourthColumn;
-    public TableColumn<InfoSchema, String>  maColumn;
+    public TableColumn<InfoSchema, String> firstColumn;
+    public TableColumn<InfoSchema, String> secondColumn;
+    public TableColumn<InfoSchema, String> thirdColumn;
+    public TableColumn<InfoSchema, String> fourthColumn;
+    public TableColumn<InfoSchema, String> maColumn;
     public TableColumn<InfoSchema, String> souColumn;
     public TextField filterField;
     public ProgressBar progressBar;
@@ -57,9 +57,12 @@ public class DownloaderController implements Initializable {
     public Button indexButton;
     public Button prevButton;
     public Button nextButton;
-
-    private final int INFO_MAX = 100;
     public Button clearButton;
+    public CheckBox sanmaCheckBox;
+    public CheckBox yonmaCheckBox;
+    public CheckBox tonpuCheckBox;
+    public CheckBox tonnanCheckBox;
+
     private int pageIndex = 0;
     private boolean isContentSanma = true;
     private boolean isContentYonma = true;
@@ -68,6 +71,8 @@ public class DownloaderController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.databaseService = Main.databaseService;
+
         this.clearButton.visibleProperty().bind(Bindings.isNotEmpty(this.filterField.textProperty()));
         this.yearListView.setCellFactory(e -> new ListCell<Integer>() {
             @Override
@@ -102,7 +107,7 @@ public class DownloaderController implements Initializable {
                 }
             }
         });
-        Set<String> mjlogIndexIds = Main.databaseService.findAllMjlogIndexIds();
+        Set<String> mjlogIndexIds = databaseService.findAllMjlogIndexIds();
         {
             int from = 2009;
             int to = LocalDate.now().getYear();
@@ -132,7 +137,7 @@ public class DownloaderController implements Initializable {
             }
         }
 
-        initInfoSchemas();
+        changeResult();
         this.tableView.setItems(this.service.infoSchemas);
 
         this.downloadColumn.setCellValueFactory(e ->
@@ -154,39 +159,17 @@ public class DownloaderController implements Initializable {
 //        this.secondColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
 //        this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
 //        this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-        this.filterField.textProperty().addListener((obs, oldText, newText) -> {
-            if (newText != null) {
-                newText = newText.toLowerCase();
-                ObservableList<InfoSchema> filteredList = FXCollections.observableArrayList();
-                for (InfoSchema infoSchema : this.service.infoSchemas) {
-                    if (infoSchema.first.toLowerCase().contains(newText) || infoSchema.second.toLowerCase().contains(newText)
-                            || infoSchema.third.toLowerCase().contains(newText) || infoSchema.fourth.toLowerCase().contains(newText)) {
-                        filteredList.add(infoSchema);
-                    }
-                }
-                this.tableView.setItems(filteredList);
-                this.statusBarLabel.setText(String.valueOf(filteredList.size()));
-            }
-        });
-
         this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this, this.service));
 
         this.dateTimeColumn.setSortType(TableColumn.SortType.DESCENDING);
         this.tableView.getSortOrder().add(dateTimeColumn);
     }
 
-    private void initInfoSchemas() {
-        this.service.infoSchemas.clear();
-        List<InfoSchema> list = Main.databaseService.findAllInfos();
-        this.service.infoSchemas.addAll(list);
-        this.statusBarLabel.setText(String.valueOf(list.size()));
-    }
-
     public void downloadIndex(ActionEvent actionEvent) {
         if (tabPane.getSelectionModel().getSelectedItem() == pastYearsTab) {
             Integer year = yearListView.getSelectionModel().getSelectedItem();
             if (year != null) {
-                if (Main.databaseService.existsIdInMJLOGINDEX(year.toString())) return;
+                if (databaseService.existsIdInMJLOGINDEX(year.toString())) return;
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setHeaderText("ダウンロードの確認");
                 alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
@@ -200,8 +183,8 @@ public class DownloaderController implements Initializable {
                     this.progressLabel.textProperty().bind(task.messageProperty());
                     task.setOnRunning(a -> this.indexButton.setDisable(true));
                     task.setOnSucceeded(a -> {
-                        this.initInfoSchemas();
-                        Main.databaseService.saveMjlogIndex(year.toString());
+                        this.changeResult();
+                        databaseService.saveMjlogIndex(year.toString());
                         this.yearListView.getItems().remove(year);
                         this.indexButton.setDisable(false);
                     });
@@ -211,20 +194,18 @@ public class DownloaderController implements Initializable {
         } else if (tabPane.getSelectionModel().getSelectedItem() == currentYearTab) {
             LocalDate localDate = dateListView.getSelectionModel().getSelectedItem();
             if (localDate != null) {
-                if (Main.databaseService.existsIdInMJLOGINDEX(localDate.toString())) return;
+                if (databaseService.existsIdInMJLOGINDEX(localDate.toString())) return;
                 this.service.downloadDate(localDate);
-                Main.databaseService.saveMjlogIndex(localDate.toString());
-                this.statusBarLabel.setText(String.valueOf(this.tableView.getItems().size()));
+                databaseService.saveMjlogIndex(localDate.toString());
                 this.dateListView.getItems().remove(localDate);
                 this.dateListView.getSelectionModel().clearSelection();
             }
         } else if (tabPane.getSelectionModel().getSelectedItem() == currentWeekTab) {
             LocalDateTime localDateTime = hourListView.getSelectionModel().getSelectedItem();
             if (localDateTime != null) {
-                if (Main.databaseService.existsIdInMJLOGINDEX(localDateTime.toString())) return;
+                if (databaseService.existsIdInMJLOGINDEX(localDateTime.toString())) return;
                 this.service.downloadHour(localDateTime);
-                Main.databaseService.saveMjlogIndex(localDateTime.toString());
-                this.statusBarLabel.setText(String.valueOf(this.tableView.getItems().size()));
+                databaseService.saveMjlogIndex(localDateTime.toString());
                 this.hourListView.getItems().remove(localDateTime);
                 this.hourListView.getSelectionModel().clearSelection();
             }
@@ -235,7 +216,7 @@ public class DownloaderController implements Initializable {
     public void downloadMjlog(ActionEvent actionEvent) {
         if (tableView.getSelectionModel().getSelectedItem() != null) {
             InfoSchema infoSchema = tableView.getSelectionModel().getSelectedItem();
-            if (!Main.databaseService.existsIdInMJLOG(infoSchema.id)) {
+            if (!databaseService.existsIdInMJLOG(infoSchema.id)) {
                 this.service.downloadMjlogToDatabase(infoSchema);
                 tableView.getItems().set(tableView.getSelectionModel().getFocusedIndex(), infoSchema);
             }
@@ -250,14 +231,14 @@ public class DownloaderController implements Initializable {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showSaveDialog(this.dateListView.getScene().getWindow());
         if (selectedFile != null) {
-            Main.databaseService.dump(selectedFile);
+            databaseService.dump(selectedFile);
         }
     }
 
     public void exportMjlog(ActionEvent actionEvent) throws IOException {
         if (tableView.getSelectionModel().getSelectedItem() != null) {
             InfoSchema infoSchema = tableView.getSelectionModel().getSelectedItem();
-            String content = Main.databaseService.findMjlogById(infoSchema.getId());
+            String content = databaseService.findMjlogById(infoSchema.getId());
             if (content != null) {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setInitialFileName(infoSchema.id);
@@ -275,8 +256,8 @@ public class DownloaderController implements Initializable {
     public void removeMjlog(ActionEvent actionEvent) {
         if (tableView.getSelectionModel().getSelectedItem() != null) {
             InfoSchema infoSchema = tableView.getSelectionModel().getSelectedItem();
-            if (Main.databaseService.existsIdInMJLOG(infoSchema.id)) {
-                Main.databaseService.removeMjlogById(infoSchema.id);
+            if (databaseService.existsIdInMJLOG(infoSchema.id)) {
+                databaseService.removeMjlogById(infoSchema.id);
                 this.service.removeInfoSchema(infoSchema);
                 tableView.getItems().set(tableView.getSelectionModel().getFocusedIndex(), infoSchema);
             }
@@ -288,12 +269,56 @@ public class DownloaderController implements Initializable {
         filterField.requestFocus();
     }
 
-    private void changeResult() {
-
-    }
-
     public void onExit(ActionEvent actionEvent) {
         Stage stage = (Stage) this.tabPane.getScene().getWindow();
         stage.close();
+    }
+
+    public void goPrevPage(ActionEvent actionEvent) {
+        pageIndex--;
+        changeResult();
+    }
+
+    public void goNextPage(ActionEvent actionEvent) {
+        pageIndex++;
+        changeResult();
+    }
+
+    private void changeResult() {
+        if (pageIndex <= 0) {
+            prevButton.setDisable(true);
+        } else {
+            prevButton.setDisable(false);
+        }
+        int count = databaseService.countInfosByCriteria(isContentSanma, isContentYonma, isContentTonPu, isContentTonnan);
+        if (pageIndex + 1 >= (count + maxInfosPerPage - 1) / maxInfosPerPage) {
+            nextButton.setDisable(true);
+        } else {
+            nextButton.setDisable(false);
+        }
+        this.service.infoSchemas.clear();
+        List<InfoSchema> list = databaseService.findInfosByCriteria(isContentSanma, isContentYonma,
+                isContentTonPu, isContentTonnan, maxInfosPerPage, pageIndex * maxInfosPerPage);
+        this.service.infoSchemas.addAll(list);
+        int start = count == 0 ? 0 : pageIndex * maxInfosPerPage + 1;
+        int end = start + maxInfosPerPage - 1 < count ? start + maxInfosPerPage - 1 : count;
+        this.statusBarLabel.setText(count + "件中" + start + "件~" + end + "件");
+    }
+
+    public void search(ActionEvent actionEvent) {
+        pageIndex = 0;
+        isContentSanma = this.sanmaCheckBox.selectedProperty().get();
+        isContentYonma = this.yonmaCheckBox.selectedProperty().get();
+        isContentTonPu = this.tonpuCheckBox.selectedProperty().get();
+        isContentTonnan = this.tonnanCheckBox.selectedProperty().get();
+        changeResult();
+    }
+
+    public void clear(ActionEvent actionEvent) {
+        this.sanmaCheckBox.selectedProperty().setValue(true);
+        this.yonmaCheckBox.selectedProperty().setValue(true);
+        this.tonpuCheckBox.selectedProperty().setValue(true);
+        this.tonnanCheckBox.selectedProperty().setValue(true);
+        search(null);
     }
 }
