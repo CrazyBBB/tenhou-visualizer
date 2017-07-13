@@ -66,6 +66,7 @@ public class DownloaderController implements Initializable {
     public CheckBox tonnanCheckBox;
 
     private int pageIndex = 0;
+    private String playerName = "";
     private boolean isContentSanma = true;
     private boolean isContentYonma = true;
     private boolean isContentTonPu = true;
@@ -162,9 +163,6 @@ public class DownloaderController implements Initializable {
 //        this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
 //        this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
         this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this, this.service));
-
-        this.dateTimeColumn.setSortType(TableColumn.SortType.DESCENDING);
-        this.tableView.getSortOrder().add(dateTimeColumn);
     }
 
     public void downloadIndex(ActionEvent actionEvent) {
@@ -292,14 +290,14 @@ public class DownloaderController implements Initializable {
         } else {
             prevButton.setDisable(false);
         }
-        int count = databaseService.countInfosByCriteria(isContentSanma, isContentYonma, isContentTonPu, isContentTonnan);
+        int count = databaseService.countInfosByCriteria(playerName, isContentSanma, isContentYonma, isContentTonPu, isContentTonnan);
         if (pageIndex + 1 >= (count + maxInfosPerPage - 1) / maxInfosPerPage) {
             nextButton.setDisable(true);
         } else {
             nextButton.setDisable(false);
         }
         this.service.infoSchemas.clear();
-        List<InfoSchema> list = databaseService.findInfosByCriteria(isContentSanma, isContentYonma,
+        List<InfoSchema> list = databaseService.findInfosByCriteria(playerName, isContentSanma, isContentYonma,
                 isContentTonPu, isContentTonnan, maxInfosPerPage, pageIndex * maxInfosPerPage);
         this.service.infoSchemas.addAll(list);
         int start = count == 0 ? 0 : pageIndex * maxInfosPerPage + 1;
@@ -309,6 +307,7 @@ public class DownloaderController implements Initializable {
 
     public void search(ActionEvent actionEvent) {
         pageIndex = 0;
+        playerName = this.filterField.getText();
         isContentSanma = this.sanmaCheckBox.selectedProperty().get();
         isContentYonma = this.yonmaCheckBox.selectedProperty().get();
         isContentTonPu = this.tonpuCheckBox.selectedProperty().get();
@@ -317,6 +316,7 @@ public class DownloaderController implements Initializable {
     }
 
     public void clear(ActionEvent actionEvent) {
+        this.filterField.clear();
         this.sanmaCheckBox.selectedProperty().setValue(true);
         this.yonmaCheckBox.selectedProperty().setValue(true);
         this.tonpuCheckBox.selectedProperty().setValue(true);

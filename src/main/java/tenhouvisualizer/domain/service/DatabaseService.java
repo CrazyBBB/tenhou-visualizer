@@ -193,7 +193,7 @@ public class DatabaseService implements Closeable {
         }
     }
 
-    public List<InfoSchema> findInfosByCriteria(boolean isContentSanma, boolean isContentYonma,
+    public List<InfoSchema> findInfosByCriteria(String playerName, boolean isContentSanma, boolean isContentYonma,
                                                 boolean isContentTonPu, boolean isContentTonnan, int limit, int offset) {
         List<InfoSchema> result = new ArrayList<>();
         String maCriterionString;
@@ -226,9 +226,22 @@ public class DatabaseService implements Closeable {
             }
         }
 
+        String playerCriterionString;
+        if ("".equals(playerName)) {
+            playerCriterionString = "";
+        } else {
+            playerCriterionString = " AND (first = ? OR second = ? OR third = ? OR fourth = ?)";
+        }
+
         String sqlStr = "SELECT * FROM INFO WHERE " + souCriterionString + " AND " +
-                maCriterionString + " LIMIT " + limit + " OFFSET " + offset + ";";
+                maCriterionString + playerCriterionString + " ORDER BY date_time DESC LIMIT " + limit + " OFFSET " + offset + ";";
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sqlStr)) {
+            if (!"".equals(playerName)) {
+                preparedStatement.setString(1, playerName);
+                preparedStatement.setString(2, playerName);
+                preparedStatement.setString(3, playerName);
+                preparedStatement.setString(4, playerName);
+            }
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 result.add(new InfoSchema(
@@ -274,7 +287,7 @@ public class DatabaseService implements Closeable {
         }
     }
 
-    public int countInfosByCriteria(boolean isContentSanma, boolean isContentYonma, boolean isContentTonPu, boolean isContentTonnan) {
+    public int countInfosByCriteria(String playerName, boolean isContentSanma, boolean isContentYonma, boolean isContentTonPu, boolean isContentTonnan) {
         String maCriterionString;
         if (isContentSanma) {
             if (isContentYonma) {
@@ -304,8 +317,23 @@ public class DatabaseService implements Closeable {
                 return 0;
             }
         }
-        String sqlStr = "SELECT count(*) FROM INFO WHERE " + souCriterionString + " AND " + maCriterionString + ";";
+
+        String playerCriterionString;
+        if ("".equals(playerName)) {
+            playerCriterionString = "";
+        } else {
+            playerCriterionString = " AND (first = ? OR second = ? OR third = ? OR fourth = ?)";
+        }
+
+        String sqlStr = "SELECT count(*) FROM INFO WHERE " + souCriterionString + " AND " + maCriterionString
+                + playerCriterionString + ";";
         try (PreparedStatement countMaxPagesStatement = connection.prepareStatement(sqlStr)) {
+            if (!"".equals(playerName)) {
+                countMaxPagesStatement.setString(1, playerName);
+                countMaxPagesStatement.setString(2, playerName);
+                countMaxPagesStatement.setString(3, playerName);
+                countMaxPagesStatement.setString(4, playerName);
+            }
             ResultSet resultSet = countMaxPagesStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt(1);

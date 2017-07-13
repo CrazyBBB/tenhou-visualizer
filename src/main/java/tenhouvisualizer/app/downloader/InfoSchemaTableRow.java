@@ -50,6 +50,7 @@ public class InfoSchemaTableRow extends TableRow<InfoSchema> {
 
     private void updateFilter(String filter) {
         this.controller.filterField.setText(filter);
+        this.controller.search(null);
     }
 
 }
