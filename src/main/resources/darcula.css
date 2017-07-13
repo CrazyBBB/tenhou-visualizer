@@ -47,3 +47,8 @@
 #clearButton {
     -fx-background-color: transparent;
 }
+
+.gryph-icon {
+    -fx-fill: #bbbbbb;
+    -glyph-size: 15px;
+}

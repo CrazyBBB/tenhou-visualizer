@@ -1,31 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <BorderPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tenhodownloader.DownloaderController">
     <top>
         <VBox>
@@ -75,14 +53,9 @@
                     </HBox>
                     <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
                         <TextField fx:id="filterField" promptText="天鳳IDを入力" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <Button id="clearButton" onAction="#clearFilterField" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
-                            <padding>
-                                <Insets />
-                            </padding>
+                        <Button fx:id="clearButton" onAction="#clearFilterField" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
                             <graphic>
-                                <ImageView>
-                                    <Image requestedHeight="24" requestedWidth="24" url="icons/ic_cancel_white_24dp_1x.png" />
-                                </ImageView>
+                                <FontAwesomeIconView glyphName="TIMES_CIRCLE" styleClass="gryph-icon"/>
                             </graphic>
                         </Button>
                     </AnchorPane>
@@ -108,8 +81,16 @@
                 </padding>
                 <Label fx:id="statusBarLabel" />
                 <Pane HBox.hgrow="ALWAYS" />
-                <Button fx:id="prevButton" text="◀︎" />
-                <Button fx:id="nextButton" text="▶︎" />
+                <Button fx:id="prevButton">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="ARROW_LEFT" styleClass="gryph-icon"/>
+                    </graphic>
+                </Button>
+                <Button fx:id="nextButton">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="ARROW_RIGHT" styleClass="gryph-icon"/>
+                    </graphic>
+                </Button>
             </HBox>
         </GridPane>
     </center>

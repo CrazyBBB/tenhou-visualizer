@@ -1,5 +1,6 @@
 package tenhodownloader;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -57,8 +58,17 @@ public class DownloaderController implements Initializable {
     public Button prevButton;
     public Button nextButton;
 
+    private final int INFO_MAX = 100;
+    public Button clearButton;
+    private int pageIndex = 0;
+    private boolean isContentSanma = true;
+    private boolean isContentYonma = true;
+    private boolean isContentTonPu = true;
+    private boolean isContentTonnan = true;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.clearButton.visibleProperty().bind(Bindings.isNotEmpty(this.filterField.textProperty()));
         this.yearListView.setCellFactory(e -> new ListCell<Integer>() {
             @Override
             protected void updateItem(Integer item, boolean empty) {
@@ -275,6 +285,11 @@ public class DownloaderController implements Initializable {
 
     public void clearFilterField(ActionEvent actionEvent) {
         filterField.clear();
+        filterField.requestFocus();
+    }
+
+    private void changeResult() {
+
     }
 
     public void onExit(ActionEvent actionEvent) {

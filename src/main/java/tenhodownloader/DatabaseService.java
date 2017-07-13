@@ -192,6 +192,26 @@ public class DatabaseService implements Closeable {
         }
     }
 
+    public List<InfoSchema> findInfosByCriteria(int pageIndex, boolean isContentSanma, boolean isContentYonma, boolean isContentTonPu, boolean isContentTonnan) {
+        List<InfoSchema> result = new ArrayList<>();
+        String maCriterionString;
+        if (isContentSanma) {
+            if (isContentYonma) {
+                maCriterionString = "TRUE";
+            } else {
+                maCriterionString = "ma = '三'";
+            }
+        } else {
+            if (isContentYonma) {
+
+            } else {
+                return result;
+            }
+        }
+
+        return result;
+    }
+
     public boolean existsIdInMJLOG(String id) {
         String sqlStr = "SELECT id FROM MJLOG WHERE id = ?;";
         return existsId(id, sqlStr);

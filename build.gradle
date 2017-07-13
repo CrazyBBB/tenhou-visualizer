@@ -31,6 +31,8 @@ dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 
+    // https://mvnrepository.com/artifact/de.jensd/fontawesomefx
+    compile group: 'de.jensd', name: 'fontawesomefx', version: '8.9'
 }
 
 jar {
