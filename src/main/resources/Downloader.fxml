@@ -52,7 +52,7 @@
                         <CheckBox fx:id="tonnanCheckBox" prefHeight="32.0" prefWidth="50.0" text="東南" selected="true" />
                     </HBox>
                     <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
-                        <TextField fx:id="filterField" promptText="天鳳IDを入力" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TextField fx:id="filterField" onAction="#search" promptText="天鳳IDを入力" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         <Button fx:id="clearButton" onAction="#clearFilterField" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
                             <graphic>
                                 <FontAwesomeIconView glyphName="TIMES_CIRCLE" styleClass="gryph-icon"/>
