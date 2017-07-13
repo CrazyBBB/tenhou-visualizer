@@ -14,6 +14,7 @@
 2. [ファイル]→[開く]でダウンロードしたZIPを選択
 
 ![](screenshot.png)
+
 牌画像は[麻雀豆腐](http://majandofu.com/mahjong-images)のものを使用させてもらいました  
 シャンテン数の計算は[麻雀C言語プログラム集](http://cmj3.web.fc2.com/)を参考にさせてもらいました
 
