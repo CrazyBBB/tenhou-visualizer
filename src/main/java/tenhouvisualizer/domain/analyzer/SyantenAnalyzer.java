@@ -1,15 +1,14 @@
-package syantenbackanalyzer;
+package tenhouvisualizer.domain.analyzer;
 
-import tenhouvisualizer.IAnalyzer;
-import tenhouvisualizer.Naki;
-import tenhouvisualizer.Scene;
-import tenhouvisualizer.Utils;
+import tenhouvisualizer.domain.model.Naki;
+import tenhouvisualizer.domain.model.Scene;
+import tenhouvisualizer.domain.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
 
-public class Analyzer implements IAnalyzer {
+public class SyantenAnalyzer implements IAnalyzer {
 
     private ArrayList<Scene> oriScenes = new ArrayList<>();
 
@@ -39,7 +38,7 @@ public class Analyzer implements IAnalyzer {
 
     private int heroPosition;
 
-    Analyzer(int heroPosition) {
+    public SyantenAnalyzer(int heroPosition) {
         this.heroPosition = heroPosition;
     }
 

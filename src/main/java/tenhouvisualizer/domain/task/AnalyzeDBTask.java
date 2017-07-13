@@ -1,12 +1,12 @@
-package syantenbackanalyzer;
+package tenhouvisualizer.domain.task;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import tenhouvisualizer.Main;
-import tenhouvisualizer.ParseHandler;
-import tenhouvisualizer.Scene;
+import tenhouvisualizer.domain.analyzer.ParseHandler;
+import tenhouvisualizer.domain.model.Scene;
+import tenhouvisualizer.domain.analyzer.SyantenAnalyzer;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -17,7 +17,7 @@ import java.util.List;
 public class AnalyzeDBTask extends Task {
     private ListView<Scene> listView;
 
-    AnalyzeDBTask(ListView<Scene> listView) {
+    public AnalyzeDBTask(ListView<Scene> listView) {
         this.listView = listView;
     }
 
@@ -37,7 +37,7 @@ public class AnalyzeDBTask extends Task {
         for (String content : list) {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
-            Analyzer analyzer = new Analyzer(0);
+            SyantenAnalyzer analyzer = new SyantenAnalyzer(0);
             ParseHandler parseHandler = new ParseHandler(analyzer);
             saxParser.parse(new ByteArrayInputStream(content.getBytes()), parseHandler);
             ArrayList<Scene> scenes = analyzer.getOriScenes();

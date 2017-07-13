@@ -1,9 +1,10 @@
-package tenhodownloader;
+package tenhouvisualizer.app.downloader;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableRow;
+import tenhouvisualizer.domain.service.DownloadService;
 
 public class InfoSchemaTableRow extends TableRow<InfoSchema> {
     private final DownloaderController controller;

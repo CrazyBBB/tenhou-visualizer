@@ -1,4 +1,4 @@
-package syantenbackanalyzer;
+package tenhouvisualizer.app.syantenanalyzer;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -11,17 +11,18 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import org.xml.sax.SAXException;
-import tenhouvisualizer.BoardControl;
-import tenhouvisualizer.Scene;
+import tenhouvisualizer.domain.task.AnalyzeDBTask;
+import tenhouvisualizer.domain.task.AnalyzeZipTask;
+import tenhouvisualizer.app.main.BoardControl;
+import tenhouvisualizer.domain.model.Scene;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
-public class AppController implements Initializable {
+public class SyantenAnalyzerController implements Initializable {
     public ProgressBar progressBar;
     public MenuItem openMenuItem;
     @FXML

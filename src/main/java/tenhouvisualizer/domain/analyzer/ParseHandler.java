@@ -1,4 +1,4 @@
-package tenhouvisualizer;
+package tenhouvisualizer.domain.analyzer;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;

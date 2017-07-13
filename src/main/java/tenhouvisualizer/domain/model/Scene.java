@@ -1,31 +1,31 @@
-package tenhouvisualizer;
+package tenhouvisualizer.domain.model;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
 
 public class Scene {
-    boolean isSanma;
-    int heroPosition;
-    String[] playerNames;
-    String[] playerDans;
-    int[] playerRates;
+    public boolean isSanma;
+    public int heroPosition;
+    public String[] playerNames;
+    public String[] playerDans;
+    public int[] playerRates;
 
-    int[] playerPoints;
-    ArrayList<TreeSet<Integer>> tehaiSets;
-    ArrayList<ArrayList<Naki>> naki;
-    ArrayList<ArrayList<Integer>> stehaiLists;
-    ArrayList<ArrayList<Boolean>> tedashiLists;
-    int[] tsumo;
-    int[] da;
-    boolean daTedasi;
-    boolean daReach;
-    int[] reach;
-    int[] kita;
+    public int[] playerPoints;
+    public ArrayList<TreeSet<Integer>> tehaiSets;
+    public ArrayList<ArrayList<Naki>> naki;
+    public ArrayList<ArrayList<Integer>> stehaiLists;
+    public ArrayList<ArrayList<Boolean>> tedashiLists;
+    public int[] tsumo;
+    public int[] da;
+    public boolean daTedasi;
+    public boolean daReach;
+    public int[] reach;
+    public int[] kita;
     int bakaze;
     int kyoku;
     int honba;
     int kyotaku;
-    ArrayList<Integer> dora;
+    public ArrayList<Integer> dora;
 
     private String str;
 

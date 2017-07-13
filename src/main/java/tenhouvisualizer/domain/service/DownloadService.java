@@ -1,10 +1,12 @@
-package tenhodownloader;
+package tenhouvisualizer.domain.service;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
+import tenhouvisualizer.domain.task.DownloadYearTask;
 import tenhouvisualizer.Main;
+import tenhouvisualizer.app.downloader.InfoSchema;
 
 import java.io.*;
 import java.net.URL;
@@ -23,27 +25,27 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 public class DownloadService {
-    final ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
+    public final ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
     private final Set<String> storedInfoSchemaIds = new HashSet<>();
     private final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
     private final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
 
-    DownloadService() {
+    public DownloadService() {
         this.storedInfoSchemaIds.addAll(Main.databaseService.findAllMjlogIds());
     }
 
-    Task createDownloadYearTask(int year) {
+    public Task createDownloadYearTask(int year) {
         return new DownloadYearTask(year);
     }
 
-    void downloadDate(LocalDate localDate) {
+    public void downloadDate(LocalDate localDate) {
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
         String urlPrefix = "http://tenhou.net/sc/raw/dat/2017/scc";
         String urlPostfix = ".html.gz";
         download(urlPrefix + localDate.format(formatter) + urlPostfix, localDate);
     }
 
-    void downloadHour(LocalDateTime localDateTime) {
+    public void downloadHour(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
         String urlPrefix = "http://tenhou.net/sc/raw/dat/scc";
         String urlPostfix = ".html.gz";
@@ -111,7 +113,7 @@ public class DownloadService {
     }
 
 
-    void downloadMjlogToDatabase(InfoSchema schema) {
+    public void downloadMjlogToDatabase(InfoSchema schema) {
         try {
             URL url = new URL("http://tenhou.net/0/log/?" + schema.id);
             try (InputStream is = url.openStream();
@@ -140,11 +142,11 @@ public class DownloadService {
         return sb.toString();
     }
 
-    boolean isDownloaded(InfoSchema infoSchema) {
+    public boolean isDownloaded(InfoSchema infoSchema) {
         return this.storedInfoSchemaIds.contains(infoSchema.id);
     }
 
-    void removeInfoSchema(InfoSchema infoSchema) {
+    public void removeInfoSchema(InfoSchema infoSchema) {
         this.storedInfoSchemaIds.remove(infoSchema.id);
     }
 }

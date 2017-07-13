@@ -1,6 +1,6 @@
-package syantenbackanalyzer;
+package tenhouvisualizer.domain;
 
-import tenhouvisualizer.MjlogFile;
+import tenhouvisualizer.domain.model.MjlogFile;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -8,9 +8,9 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class Reader {
+public class MjlogReader {
 
-    static ArrayList<MjlogFile> unzip(File file) throws IOException {
+    public static ArrayList<MjlogFile> unzip(File file) throws IOException {
         ArrayList<MjlogFile> list = new ArrayList<>();
         FileInputStream fis = new FileInputStream(file);
         ZipInputStream zis = new ZipInputStream(fis);

@@ -1,4 +1,4 @@
-package tenhouvisualizer;
+package tenhouvisualizer.app.main;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,7 +13,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import tenhodownloader.InfoSchema;
+import tenhouvisualizer.Main;
+import tenhouvisualizer.app.downloader.InfoSchema;
 
 import java.io.IOException;
 import java.net.URL;

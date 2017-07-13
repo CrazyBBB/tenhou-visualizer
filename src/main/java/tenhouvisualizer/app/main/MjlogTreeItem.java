@@ -1,6 +1,7 @@
-package tenhouvisualizer;
+package tenhouvisualizer.app.main;
 
 import javafx.scene.control.TreeItem;
+import tenhouvisualizer.domain.model.Mjlog;
 
 public class MjlogTreeItem extends TreeItem<Mjlog> {
     public MjlogTreeItem(){

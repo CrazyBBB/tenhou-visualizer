@@ -1,4 +1,4 @@
-package tenhodownloader;
+package tenhouvisualizer.app.downloader;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -8,6 +8,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import tenhouvisualizer.domain.service.DatabaseService;
+import tenhouvisualizer.domain.service.DownloadService;
 import tenhouvisualizer.Main;
 
 import java.io.ByteArrayInputStream;

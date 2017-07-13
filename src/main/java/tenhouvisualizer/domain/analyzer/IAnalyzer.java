@@ -1,4 +1,4 @@
-package tenhouvisualizer;
+package tenhouvisualizer.domain.analyzer;
 
 import java.util.ArrayList;
 

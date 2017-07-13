@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import tenhodownloader.DatabaseService;
+import tenhouvisualizer.domain.service.DatabaseService;
 
 import java.io.File;
 import java.io.IOException;

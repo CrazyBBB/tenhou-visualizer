@@ -1,6 +1,8 @@
 package tenhodownloader;
 
 import org.junit.Test;
+import tenhouvisualizer.domain.service.DatabaseService;
+
 import static org.junit.Assert.*;
 
 import java.sql.SQLException;

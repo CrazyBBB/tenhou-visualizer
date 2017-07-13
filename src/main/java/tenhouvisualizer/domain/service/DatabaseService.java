@@ -1,7 +1,8 @@
-package tenhodownloader;
+package tenhouvisualizer.domain.service;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tenhouvisualizer.app.downloader.InfoSchema;
 
 import java.io.Closeable;
 import java.io.File;
@@ -63,7 +64,7 @@ public class DatabaseService implements Closeable {
         this.insertMjlogStatement.executeUpdate();
     }
 
-    void saveInfo(InfoSchema infoSchema) {
+    public void saveInfo(InfoSchema infoSchema) {
         try {
             this.insertInfoStatement.setString(1, infoSchema.id);
             this.insertInfoStatement.setString(2, infoSchema.ma);
@@ -79,7 +80,7 @@ public class DatabaseService implements Closeable {
         }
     }
 
-    void saveMjlogIndex(String id) {
+    public void saveMjlogIndex(String id) {
         try {
             this.insertMjlogIndexStatement.setString(1, id);
             this.insertMjlogIndexStatement.executeUpdate();
@@ -316,7 +317,7 @@ public class DatabaseService implements Closeable {
         }
     }
 
-    void dump(File file) throws SQLException {
+    public void dump(File file) throws SQLException {
         Statement statement = this.connection.createStatement();
         statement.execute("backup to " + file);
     }

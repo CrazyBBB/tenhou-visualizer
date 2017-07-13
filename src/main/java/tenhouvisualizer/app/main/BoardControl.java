@@ -1,9 +1,12 @@
-package tenhouvisualizer;
+package tenhouvisualizer.app.main;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import tenhouvisualizer.domain.model.Naki;
+import tenhouvisualizer.domain.model.Scene;
+import tenhouvisualizer.domain.Utils;
 
 public class BoardControl extends Canvas {
     private GraphicsContext gc;

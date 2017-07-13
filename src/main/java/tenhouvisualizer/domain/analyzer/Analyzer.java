@@ -1,4 +1,9 @@
-package tenhouvisualizer;
+package tenhouvisualizer.domain.analyzer;
+
+import tenhouvisualizer.domain.model.Kyoku;
+import tenhouvisualizer.domain.model.Naki;
+import tenhouvisualizer.domain.model.Scene;
+import tenhouvisualizer.domain.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +57,7 @@ public class Analyzer implements IAnalyzer {
 
     private int heroPosition;
 
-    Analyzer(int heroPosition) {
+    public Analyzer(int heroPosition) {
         this.heroPosition = heroPosition;
     }
 

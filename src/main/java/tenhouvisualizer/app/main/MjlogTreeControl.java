@@ -1,6 +1,11 @@
-package tenhouvisualizer;
+package tenhouvisualizer.app.main;
 
 import javafx.scene.control.TreeView;
+import tenhouvisualizer.domain.analyzer.Analyzer;
+import tenhouvisualizer.domain.analyzer.ParseHandler;
+import tenhouvisualizer.domain.model.Kyoku;
+import tenhouvisualizer.domain.model.Mjlog;
+import tenhouvisualizer.domain.model.Scene;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;

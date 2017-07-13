@@ -1,7 +1,9 @@
-package tenhodownloader;
+package tenhouvisualizer.domain.task;
 
 import javafx.concurrent.Task;
+import tenhouvisualizer.domain.MjlogReader;
 import tenhouvisualizer.Main;
+import tenhouvisualizer.app.downloader.InfoSchema;
 
 import java.io.*;
 import java.net.URL;
@@ -26,7 +28,7 @@ public class DownloadYearTask extends Task {
     private static final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
     private static final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
 
-    DownloadYearTask(int year) {
+    public DownloadYearTask(int year) {
         this.year = year;
     }
 
@@ -106,7 +108,7 @@ public class DownloadYearTask extends Task {
                     final LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
 
                     if (htmlFileName.endsWith("gz")) {
-                         buf = syantenbackanalyzer.Reader.gunzip(buf);
+                         buf = MjlogReader.gunzip(buf);
                     }
 
                     String htmlString = new String(buf);

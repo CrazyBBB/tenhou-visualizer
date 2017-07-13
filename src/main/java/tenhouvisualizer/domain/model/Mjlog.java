@@ -1,4 +1,4 @@
-package tenhouvisualizer;
+package tenhouvisualizer.domain.model;
 
 public class Mjlog {
     private String name;
