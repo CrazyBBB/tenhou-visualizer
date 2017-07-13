@@ -27,11 +27,14 @@ import java.util.zip.GZIPInputStream;
 public class DownloadService {
     public final ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
     private final Set<String> storedInfoSchemaIds = new HashSet<>();
-    private final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
-    private final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
+    private final static Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
+    private final static Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
+
+    private final DatabaseService databaseService;
 
     public DownloadService() {
-        this.storedInfoSchemaIds.addAll(Main.databaseService.findAllMjlogIds());
+        databaseService = Main.databaseService;
+        this.storedInfoSchemaIds.addAll(databaseService.findAllMjlogIds());
     }
 
     public Task createDownloadYearTask(int year) {
@@ -81,7 +84,7 @@ public class DownloadService {
         Matcher matcher = mjlogPattern.matcher(columns[3]);
         if (matcher.find()) {
             String id = matcher.group(1);
-            if (Main.databaseService.existsIdInINFO(id)) return;
+            if (databaseService.existsIdInINFO(id)) return;
 
             String ma = columns[2].substring(0, 1);
             String sou = columns[2].substring(2, 3);
@@ -96,7 +99,7 @@ public class DownloadService {
             LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
             InfoSchema infoSchema = new InfoSchema(id, ma, sou, players[0], players[1], players[2], players[3], localDateTime);
             infoSchemas.add(infoSchema);
-            Main.databaseService.saveInfo(infoSchema);
+            databaseService.saveInfo(infoSchema);
         }
     }
 
@@ -119,7 +122,7 @@ public class DownloadService {
             try (InputStream is = url.openStream();
             InputStreamReader isr = new InputStreamReader(is)) {
                 String content = consumeReader(isr);
-                Main.databaseService.saveMjlog(schema.id, content);
+                databaseService.saveMjlog(schema.id, content);
                 this.storedInfoSchemaIds.add(schema.id);
             }
         } catch (IOException | SQLException e) {

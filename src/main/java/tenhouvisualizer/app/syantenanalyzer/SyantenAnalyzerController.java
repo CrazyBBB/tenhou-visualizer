@@ -67,7 +67,7 @@ public class SyantenAnalyzerController implements Initializable {
         if (selectedFile != null) {
             lastSelectedFile = new File(selectedFile.getParent());
 
-            Task task = new AnalyzeZipTask(selectedFile, listView);
+            Task task = new AnalyzeZipTask(selectedFile, listView.getItems());
             this.progressBar.progressProperty().bind(task.progressProperty());
             this.progressLabel.textProperty().bind(task.messageProperty());
             task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));
@@ -78,7 +78,7 @@ public class SyantenAnalyzerController implements Initializable {
 
     @FXML
     public void analyzeDB(ActionEvent actionEvent) {
-        Task task = new AnalyzeDBTask(listView);
+        Task task = new AnalyzeDBTask(listView.getItems());
         this.progressBar.progressProperty().bind(task.progressProperty());
         this.progressLabel.textProperty().bind(task.messageProperty());
         task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));

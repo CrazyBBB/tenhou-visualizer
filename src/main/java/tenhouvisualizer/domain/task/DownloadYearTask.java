@@ -4,6 +4,7 @@ import javafx.concurrent.Task;
 import tenhouvisualizer.domain.MjlogReader;
 import tenhouvisualizer.Main;
 import tenhouvisualizer.app.downloader.InfoSchema;
+import tenhouvisualizer.domain.service.DatabaseService;
 
 import java.io.*;
 import java.net.URL;
@@ -28,8 +29,11 @@ public class DownloadYearTask extends Task {
     private static final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
     private static final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
 
+    private final DatabaseService databaseService;
+
     public DownloadYearTask(int year) {
         this.year = year;
+        this.databaseService = Main.databaseService;
     }
 
     @Override
@@ -134,7 +138,7 @@ public class DownloadYearTask extends Task {
         Matcher matcher = mjlogPattern.matcher(columns[3]);
         if (matcher.find()) {
             String id = matcher.group(1);
-            if (Main.databaseService.existsIdInINFO(id)) return;
+            if (databaseService.existsIdInINFO(id)) return;
 
             String ma = columns[2].substring(0, 1);
             String sou = columns[2].substring(2, 3);
@@ -148,7 +152,7 @@ public class DownloadYearTask extends Task {
             LocalTime localTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(columns[0]));
             LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
             InfoSchema infoSchema = new InfoSchema(id, ma, sou, players[0], players[1], players[2], players[3], localDateTime);
-            Main.databaseService.saveInfo(infoSchema);
+            databaseService.saveInfo(infoSchema);
         }
     }
 }

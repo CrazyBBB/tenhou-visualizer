@@ -1,12 +1,14 @@
 package tenhouvisualizer.domain.task;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
 import tenhouvisualizer.Main;
 import tenhouvisualizer.domain.analyzer.ParseHandler;
 import tenhouvisualizer.domain.model.Scene;
 import tenhouvisualizer.domain.analyzer.SyantenAnalyzer;
+import tenhouvisualizer.domain.service.DatabaseService;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -15,17 +17,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnalyzeDBTask extends Task {
-    private ListView<Scene> listView;
+    private final ObservableList<Scene> observableList;
+    private final DatabaseService databaseService;
 
-    public AnalyzeDBTask(ListView<Scene> listView) {
-        this.listView = listView;
+    public AnalyzeDBTask(ObservableList<Scene> observableList) {
+        this.observableList = observableList;
+        this.databaseService = Main.databaseService;
     }
 
     @Override
     protected Void call() throws Exception {
-        Platform.runLater(() -> this.listView.getItems().clear());
+        Platform.runLater(this.observableList::clear);
 
-        List<String> list = Main.databaseService.findAllMjlogContents();
+        List<String> list = databaseService.findAllMjlogContents();
         if (list.size() == 0) {
             updateMessage("0/0");
             updateProgress(0, 0);
@@ -42,7 +46,7 @@ public class AnalyzeDBTask extends Task {
             saxParser.parse(new ByteArrayInputStream(content.getBytes()), parseHandler);
             ArrayList<Scene> scenes = analyzer.getOriScenes();
             workDone++;
-            Platform.runLater(() -> listView.getItems().addAll(scenes));
+            Platform.runLater(() -> observableList.addAll(scenes));
             updateMessage(workDone + "/" + workMax);
             updateProgress(workDone, workMax);
         }

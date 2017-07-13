@@ -15,6 +15,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tenhouvisualizer.Main;
 import tenhouvisualizer.app.downloader.InfoSchema;
+import tenhouvisualizer.domain.service.DatabaseService;
 
 import java.io.IOException;
 import java.net.URL;
@@ -55,9 +56,15 @@ public class AppController implements Initializable {
 
     private ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
 
+    private final DatabaseService databaseService;
+
+    public AppController() {
+        this.databaseService = Main.databaseService;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        List<InfoSchema> list = Main.databaseService.findAllExistsInfos();
+        List<InfoSchema> list = databaseService.findAllExistsInfos();
         this.infoSchemas.addAll(list);
         this.tableView.setItems(this.infoSchemas);
 
@@ -84,7 +91,7 @@ public class AppController implements Initializable {
 //                new SimpleStringProperty("NaN")) );
         this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
             if (newInfo != null) {
-                String xmlStr = Main.databaseService.findMjlogById(newInfo.getId());
+                String xmlStr = databaseService.findMjlogById(newInfo.getId());
                 if (xmlStr != null) {
                     byte[] xml = xmlStr.getBytes();
                     this.mjlogTreeControl.showMjlogContent(xml, 0);
@@ -129,7 +136,7 @@ public class AppController implements Initializable {
 
         stage.setOnHiding(event ->  {
             tableView.getItems().clear();
-            tableView.getItems().addAll(Main.databaseService.findAllExistsInfos());
+            tableView.getItems().addAll(databaseService.findAllExistsInfos());
         });
     }
 

@@ -1,6 +1,7 @@
 package tenhouvisualizer.domain.task;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
 import tenhouvisualizer.domain.MjlogReader;
@@ -18,16 +19,16 @@ import java.util.Objects;
 
 public class AnalyzeZipTask extends Task {
     private final File selectedFile;
-    private ListView<Scene> listView;
+    private final ObservableList<Scene> observableList;
 
-    public AnalyzeZipTask(File selectedFile, ListView<Scene> listView) {
+    public AnalyzeZipTask(File selectedFile, ObservableList<Scene> observableList) {
         this.selectedFile = Objects.requireNonNull(selectedFile);
-        this.listView = listView;
+        this.observableList = observableList;
     }
 
     @Override
     protected Void call() throws Exception {
-        Platform.runLater(() -> this.listView.getItems().clear());
+        Platform.runLater(this.observableList::clear);
 
         ArrayList<MjlogFile> list = MjlogReader.unzip(selectedFile);
         long workDone = 0;
@@ -42,7 +43,7 @@ public class AnalyzeZipTask extends Task {
             saxParser.parse(new ByteArrayInputStream(gunzipedXml), parseHandler);
             ArrayList<Scene> scenes = analyzer.getOriScenes();
             workDone++;
-            Platform.runLater(() -> listView.getItems().addAll(scenes));
+            Platform.runLater(() -> observableList.addAll(scenes));
             updateMessage(workDone + "/" + workMax);
             updateProgress(workDone, workMax);
         }
