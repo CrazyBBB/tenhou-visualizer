@@ -1,11 +1,11 @@
-package tenhodownloader;
+package tenhouvisualizer.domain.service;
 
 import org.junit.Test;
-import tenhouvisualizer.domain.service.DatabaseService;
-
-import static org.junit.Assert.*;
 
 import java.sql.SQLException;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class DatabaseServiceTest {
     @Test
