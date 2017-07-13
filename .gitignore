@@ -1,11 +1,4 @@
-*~
-.gradle
-build
-*.classpath
-*.project
-*.settings
-bin
-.nb-gradle
-.idea
-.DS_Store
-tenhouvisualizer.sqlite
+_site
+.sass-cache
+Gemfile.lock
+*.gem
