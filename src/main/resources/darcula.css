@@ -8,6 +8,10 @@
     -fx-background-color: rgb(60, 63, 65);
 }
 
+.context-menu {
+    -fx-border-color: #888888;
+}
+
 .label, .cell, .button, .tab-label, .check-box {
     -fx-text-fill: #bbbbbb;
 }

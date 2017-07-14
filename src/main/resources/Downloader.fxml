@@ -12,8 +12,8 @@
                     <MenuItem onAction="#onExit" text="閉じる" />
                 </Menu>
                 <Menu text="ツール">
-                    <MenuItem onAction="#dump" text="データベースごと出力" />
-                    <MenuItem onAction="#exportMjlog" text="mjlogファイルを出力" />
+                    <MenuItem onAction="#dump" text="データベースごと出力..." />
+                    <MenuItem onAction="#exportMjlog" text="mjlogファイルを出力..." />
                 </Menu>
             </MenuBar>
         </VBox>

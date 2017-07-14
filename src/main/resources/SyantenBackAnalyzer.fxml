@@ -14,7 +14,7 @@
                 <!--<MenuItem text="終了" onAction="#onExit"/>-->
             <!--</Menu>-->
             <Menu text="解析">
-                <MenuItem fx:id="openMenuItem" text="ZIPを解析" onAction="#analyzeZIP"/>
+                <MenuItem fx:id="openMenuItem" text="ZIPを解析..." onAction="#analyzeZIP"/>
                 <MenuItem text="データベースを解析" onAction="#analyzeDB"/>
             </Menu>
         </MenuBar>
