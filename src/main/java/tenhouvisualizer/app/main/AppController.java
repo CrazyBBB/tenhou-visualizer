@@ -14,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tenhouvisualizer.Main;
+import tenhouvisualizer.domain.BindingHelper;
 import tenhouvisualizer.domain.model.InfoSchema;
 import tenhouvisualizer.domain.service.DatabaseService;
 
@@ -84,11 +85,10 @@ public class AppController implements Initializable {
         this.thirdColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.15));
         this.fourthColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.15));
 
+        this.label.textProperty().bind(BindingHelper.covertOtherwiseNull(this.tableView.getSelectionModel().selectedItemProperty(), ""));
+
         this.boardControl.drawScene();
-//        this.label2.textProperty().bind(Bindings.concat(
-//                Bindings.convert(Bindings.size(this.tableView.getItems())),
-//                new SimpleStringProperty("/"),
-//                new SimpleStringProperty("NaN")) );
+
         this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
             if (newInfo != null) {
                 String xmlStr = this.databaseService.findMjlogById(newInfo.getId());
@@ -98,7 +98,6 @@ public class AppController implements Initializable {
                     this.mjlogTreeControl.getSelectionModel().select(this.mjlogTreeControl.getRoot()
                             .getChildren().get(0).getChildren().get(0));
                 }
-                this.label.setText(newInfo.toString());
             }
         });
 
