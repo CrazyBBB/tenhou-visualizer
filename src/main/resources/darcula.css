@@ -56,3 +56,8 @@
     -fx-fill: #bbbbbb;
     -glyph-size: 15px;
 }
+
+.separator .line {
+    -fx-border-width: 0.5px;
+    -fx-border-color: #888888;
+}
