@@ -6,7 +6,7 @@ import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import tenhouvisualizer.domain.task.DownloadYearTask;
 import tenhouvisualizer.Main;
-import tenhouvisualizer.app.downloader.InfoSchema;
+import tenhouvisualizer.domain.model.InfoSchema;
 
 import java.io.*;
 import java.net.URL;

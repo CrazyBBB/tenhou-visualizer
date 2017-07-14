@@ -2,7 +2,7 @@ package tenhouvisualizer.domain.service;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tenhouvisualizer.app.downloader.InfoSchema;
+import tenhouvisualizer.domain.model.InfoSchema;
 
 import java.io.Closeable;
 import java.io.File;

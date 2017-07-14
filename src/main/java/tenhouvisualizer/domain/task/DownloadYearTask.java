@@ -3,7 +3,7 @@ package tenhouvisualizer.domain.task;
 import javafx.concurrent.Task;
 import tenhouvisualizer.domain.MjlogReader;
 import tenhouvisualizer.Main;
-import tenhouvisualizer.app.downloader.InfoSchema;
+import tenhouvisualizer.domain.model.InfoSchema;
 import tenhouvisualizer.domain.service.DatabaseService;
 
 import java.io.*;

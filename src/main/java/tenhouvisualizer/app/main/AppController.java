@@ -14,7 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tenhouvisualizer.Main;
-import tenhouvisualizer.app.downloader.InfoSchema;
+import tenhouvisualizer.domain.model.InfoSchema;
 import tenhouvisualizer.domain.service.DatabaseService;
 
 import java.io.IOException;
