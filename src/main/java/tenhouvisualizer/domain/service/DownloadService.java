@@ -41,41 +41,32 @@ public class DownloadService {
         return new DownloadYearTask(year);
     }
 
-    public void downloadDate(LocalDate localDate) {
+    public void downloadDate(LocalDate localDate) throws IOException {
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
         String urlPrefix = "http://tenhou.net/sc/raw/dat/2017/scc";
         String urlPostfix = ".html.gz";
         download(urlPrefix + localDate.format(formatter) + urlPostfix, localDate);
     }
 
-    public void downloadHour(LocalDateTime localDateTime) {
+    public void downloadHour(LocalDateTime localDateTime) throws IOException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
         String urlPrefix = "http://tenhou.net/sc/raw/dat/scc";
         String urlPostfix = ".html.gz";
         download(urlPrefix + localDateTime.format(formatter) + urlPostfix, localDateTime.toLocalDate());
     }
 
-    private void download(String urlString, LocalDate localDate) {
-        try {
-            URL url = new URL(urlString);
-            try (InputStream is = url.openStream();
-                 GZIPInputStream gzis = new GZIPInputStream(is);
-                 InputStreamReader isr = new InputStreamReader(gzis);
-                 BufferedReader br = new BufferedReader(isr)) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    if (!line.isEmpty()) {
-                        addIndex(line, localDate);
-                    }
+    private void download(String urlString, LocalDate localDate) throws IOException {
+        URL url = new URL(urlString);
+        try (InputStream is = url.openStream();
+             GZIPInputStream gzis = new GZIPInputStream(is);
+             InputStreamReader isr = new InputStreamReader(gzis);
+             BufferedReader br = new BufferedReader(isr)) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.isEmpty()) {
+                    addIndex(line, localDate);
                 }
             }
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
-            alert.getDialogPane().setHeaderText("インデックス追加の失敗");
-            alert.getDialogPane().setContentText("インデックスを追加することができませんでした");
-            alert.show();
-            throw new UncheckedIOException(e);
         }
     }
 
@@ -115,22 +106,13 @@ public class DownloadService {
     }
 
 
-    public void downloadMjlogToDatabase(InfoSchema schema) {
-        try {
-            URL url = new URL("http://tenhou.net/0/log/?" + schema.id);
-            try (InputStream is = url.openStream();
-            InputStreamReader isr = new InputStreamReader(is)) {
-                String content = consumeReader(isr);
-                databaseService.saveMjlog(schema.id, content);
-                this.storedInfoSchemaIds.add(schema.id);
-            }
-        } catch (IOException | SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
-            alert.getDialogPane().setHeaderText("牌譜追加の失敗");
-            alert.getDialogPane().setContentText("牌譜を追加することができませんでした");
-            alert.show();
-            throw new RuntimeException(e);
+    public void downloadMjlogToDatabase(InfoSchema schema) throws IOException, SQLException {
+        URL url = new URL("http://tenhou.net/0/log/?" + schema.id);
+        try (InputStream is = url.openStream();
+        InputStreamReader isr = new InputStreamReader(is)) {
+            String content = consumeReader(isr);
+            databaseService.saveMjlog(schema.id, content);
+            this.storedInfoSchemaIds.add(schema.id);
         }
     }
 

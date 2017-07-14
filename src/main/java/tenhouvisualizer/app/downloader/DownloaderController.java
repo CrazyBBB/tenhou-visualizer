@@ -167,58 +167,76 @@ public class DownloaderController implements Initializable {
     }
 
     public void downloadIndex(ActionEvent actionEvent) {
-        if (this.tabPane.getSelectionModel().getSelectedItem() == this.pastYearsTab) {
-            Integer year = this.yearListView.getSelectionModel().getSelectedItem();
-            if (year != null) {
-                if (this.databaseService.existsIdInMJLOGINDEX(year.toString())) return;
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setHeaderText("ダウンロードの確認");
-                alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
-                String str = "昨年以前のインデックスは年単位でダウンロードするので" +
-                        "時間がかかります。よろしいですか？";
-                alert.setContentText(str);
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.isPresent() && result.get() == ButtonType.OK) {
-                    Task task = this.service.createDownloadYearTask(year);
-                    this.progressBar.progressProperty().bind(task.progressProperty());
-                    this.progressLabel.textProperty().bind(task.messageProperty());
-                    task.setOnRunning(a -> this.indexButton.setDisable(true));
-                    task.setOnSucceeded(a -> {
-                        this.changeResult();
-                        this.databaseService.saveMjlogIndex(year.toString());
-                        this.yearListView.getItems().remove(year);
-                        this.indexButton.setDisable(false);
-                    });
-                    new Thread(task).start();
+        try {
+            if (this.tabPane.getSelectionModel().getSelectedItem() == this.pastYearsTab) {
+                Integer year = this.yearListView.getSelectionModel().getSelectedItem();
+                if (year != null) {
+                    if (this.databaseService.existsIdInMJLOGINDEX(year.toString())) return;
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setHeaderText("ダウンロードの確認");
+                    alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+                    String str = "昨年以前のインデックスは年単位でダウンロードするので" +
+                            "時間がかかります。よろしいですか？";
+                    alert.setContentText(str);
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.isPresent() && result.get() == ButtonType.OK) {
+                        Task task = this.service.createDownloadYearTask(year);
+                        this.progressBar.progressProperty().bind(task.progressProperty());
+                        this.progressLabel.textProperty().bind(task.messageProperty());
+                        task.setOnRunning(a -> this.indexButton.setDisable(true));
+                        task.setOnSucceeded(a -> {
+                            this.changeResult();
+                            this.databaseService.saveMjlogIndex(year.toString());
+                            this.yearListView.getItems().remove(year);
+                            this.indexButton.setDisable(false);
+                        });
+                        new Thread(task).start();
+                    }
+                }
+            } else if (this.tabPane.getSelectionModel().getSelectedItem() == this.currentYearTab) {
+                LocalDate localDate = this.dateListView.getSelectionModel().getSelectedItem();
+                if (localDate != null) {
+                    if (this.databaseService.existsIdInMJLOGINDEX(localDate.toString())) return;
+                    this.service.downloadDate(localDate);
+                    this.databaseService.saveMjlogIndex(localDate.toString());
+                    this.dateListView.getItems().remove(localDate);
+                    this.dateListView.getSelectionModel().clearSelection();
+                }
+            } else if (this.tabPane.getSelectionModel().getSelectedItem() == this.currentWeekTab) {
+                LocalDateTime localDateTime = this.hourListView.getSelectionModel().getSelectedItem();
+                if (localDateTime != null) {
+                    if (this.databaseService.existsIdInMJLOGINDEX(localDateTime.toString())) return;
+                    this.service.downloadHour(localDateTime);
+                    this.databaseService.saveMjlogIndex(localDateTime.toString());
+                    this.hourListView.getItems().remove(localDateTime);
+                    this.hourListView.getSelectionModel().clearSelection();
                 }
             }
-        } else if (this.tabPane.getSelectionModel().getSelectedItem() == this.currentYearTab) {
-            LocalDate localDate = this.dateListView.getSelectionModel().getSelectedItem();
-            if (localDate != null) {
-                if (this.databaseService.existsIdInMJLOGINDEX(localDate.toString())) return;
-                this.service.downloadDate(localDate);
-                this.databaseService.saveMjlogIndex(localDate.toString());
-                this.dateListView.getItems().remove(localDate);
-                this.dateListView.getSelectionModel().clearSelection();
-            }
-        } else if (this.tabPane.getSelectionModel().getSelectedItem() == this.currentWeekTab) {
-            LocalDateTime localDateTime = this.hourListView.getSelectionModel().getSelectedItem();
-            if (localDateTime != null) {
-                if (this.databaseService.existsIdInMJLOGINDEX(localDateTime.toString())) return;
-                this.service.downloadHour(localDateTime);
-                this.databaseService.saveMjlogIndex(localDateTime.toString());
-                this.hourListView.getItems().remove(localDateTime);
-                this.hourListView.getSelectionModel().clearSelection();
-            }
+            changeResult();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+            alert.getDialogPane().setHeaderText("インデックス追加の失敗");
+            alert.getDialogPane().setContentText("インデックスを追加することができませんでした");
+            alert.show();
+            throw new RuntimeException(e);
         }
-        changeResult();
     }
 
     public void downloadMjlog(ActionEvent actionEvent) {
         if (this.tableView.getSelectionModel().getSelectedItem() != null) {
             InfoSchema infoSchema = this.tableView.getSelectionModel().getSelectedItem();
             if (!this.databaseService.existsIdInMJLOG(infoSchema.id)) {
-                this.service.downloadMjlogToDatabase(infoSchema);
+                try {
+                    this.service.downloadMjlogToDatabase(infoSchema);
+                } catch (IOException | SQLException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+                    alert.getDialogPane().setHeaderText("牌譜追加の失敗");
+                    alert.getDialogPane().setContentText("牌譜を追加することができませんでした");
+                    alert.show();
+                    throw new RuntimeException(e);
+                }
                 this.tableView.getItems().set(this.tableView.getSelectionModel().getFocusedIndex(), infoSchema);
             }
         }
