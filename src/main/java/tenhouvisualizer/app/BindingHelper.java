@@ -1,4 +1,4 @@
-package tenhouvisualizer.domain;
+package tenhouvisualizer.app;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
