@@ -82,64 +82,27 @@ public class DownloaderController implements Initializable {
             @Override
             protected void updateItem(Integer item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(item + "年");
-                }
+                setText(empty ? null : item + "年");
             }
         });
         this.dateListView.setCellFactory(e -> new ListCell<LocalDate>() {
             @Override
             protected void updateItem(LocalDate item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(item.format(dayFormatter));
-                }
+                setText(empty ? null : item.format(dayFormatter));
             }
         });
         this.hourListView.setCellFactory(e -> new ListCell<LocalDateTime>() {
             @Override
             protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(item.format(hourFormatter));
-                }
+                setText(empty ? null : item.format(hourFormatter));
             }
         });
-        Set<String> mjlogIndexIds = this.databaseService.findAllMjlogIndexIds();
-        {
-            int from = 2009;
-            int to = LocalDate.now().getYear();
-            for (Integer i = from; i < to; i++) {
-                if (!mjlogIndexIds.contains(i.toString())) {
-                    this.yearListView.getItems().add(i);
-                }
-            }
-        }
-        {
-            LocalDate from = LocalDate.of(LocalDate.now().getYear(), 1, 1);
-            LocalDate to = LocalDate.now().minusDays(7);
-            for (LocalDate i = from; to.isAfter(i); i = i.plusDays(1)) {
-                if (!mjlogIndexIds.contains(i.toString())) {
-                    this.dateListView.getItems().add(i);
-                }
-            }
-        }
 
-        {
-            LocalDateTime from = LocalDateTime.of(LocalDate.now().minusDays(7), LocalTime.MIN);
-            LocalDateTime to = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS);
-            for (LocalDateTime i = from; to.isAfter(i); i = i.plusHours(1)) {
-                if (!mjlogIndexIds.contains(i.toString())) {
-                    this.hourListView.getItems().add(i);
-                }
-            }
-        }
+        this.yearListView.getItems().addAll(this.service.createDownloadableYearList());
+        this.dateListView.getItems().addAll(this.service.createDownloadableDateList());
+        this.hourListView.getItems().addAll(this.service.createDownloadableHourList());
 
         changeResult();
         this.tableView.setItems(this.service.infoSchemas);
@@ -155,14 +118,6 @@ public class DownloaderController implements Initializable {
         this.thirdColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().third));
         this.fourthColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().fourth));
 
-//        this.downloadColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
-//        this.dateTimeColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
-//        this.maColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
-//        this.souColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.066));
-//        this.firstColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-//        this.secondColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-//        this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-//        this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
         this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this, this.service));
     }
 

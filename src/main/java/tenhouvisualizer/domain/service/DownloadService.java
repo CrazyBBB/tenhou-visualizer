@@ -18,7 +18,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -132,5 +135,44 @@ public class DownloadService {
 
     public void removeInfoSchema(InfoSchema infoSchema) {
         this.storedInfoSchemaIds.remove(infoSchema.id);
+    }
+
+    public List<Integer> createDownloadableYearList() {
+        List<Integer> downloadableYearList = new ArrayList<>();
+        Set<String> mjlogIndexIds = this.databaseService.findAllMjlogIndexIds();
+        int from = 2009;
+        int to = LocalDate.now().getYear();
+        for (Integer i = from; i < to; i++) {
+            if (!mjlogIndexIds.contains(i.toString())) {
+                downloadableYearList.add(i);
+            }
+        }
+        return downloadableYearList;
+    }
+
+    public List<LocalDate> createDownloadableDateList() {
+        List<LocalDate> downloadableDateList = new ArrayList<>();
+        Set<String> mjlogIndexIds = this.databaseService.findAllMjlogIndexIds();
+        LocalDate from = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+        LocalDate to = LocalDate.now().minusDays(7);
+        for (LocalDate i = from; to.isAfter(i); i = i.plusDays(1)) {
+            if (!mjlogIndexIds.contains(i.toString())) {
+                downloadableDateList.add(i);
+            }
+        }
+        return downloadableDateList;
+    }
+
+    public List<LocalDateTime> createDownloadableHourList() {
+        List<LocalDateTime> downloadableHourList = new ArrayList<>();
+        Set<String> mjlogIndexIds = this.databaseService.findAllMjlogIndexIds();
+        LocalDateTime from = LocalDateTime.of(LocalDate.now().minusDays(7), LocalTime.MIN);
+        LocalDateTime to = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS);
+        for (LocalDateTime i = from; to.isAfter(i); i = i.plusHours(1)) {
+            if (!mjlogIndexIds.contains(i.toString())) {
+                downloadableHourList.add(i);
+            }
+        }
+        return downloadableHourList;
     }
 }
