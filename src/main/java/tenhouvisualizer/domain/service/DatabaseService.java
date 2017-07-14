@@ -219,7 +219,7 @@ public class DatabaseService implements Closeable {
                 souCriterionString = "sou = '東'";
             }
         } else {
-            if (isContentYonma) {
+            if (isContentTonnan) {
                 souCriterionString = "sou = '南'";
             } else {
                 return result;

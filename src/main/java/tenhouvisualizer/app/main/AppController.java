@@ -64,7 +64,7 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        List<InfoSchema> list = databaseService.findAllExistsInfos();
+        List<InfoSchema> list = this.databaseService.findAllExistsInfos();
         this.infoSchemas.addAll(list);
         this.tableView.setItems(this.infoSchemas);
 
@@ -76,13 +76,13 @@ public class AppController implements Initializable {
         this.thirdColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().third));
         this.fourthColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().fourth));
 
-        this.maColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
-        this.maColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.1));
-        this.souColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.1));
-        this.firstColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-        this.secondColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-        this.thirdColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-        this.fourthColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
+        this.maColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.2));
+        this.maColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.1));
+        this.souColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.1));
+        this.firstColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.15));
+        this.secondColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.15));
+        this.thirdColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.15));
+        this.fourthColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.15));
 
         this.boardControl.drawScene();
 //        this.label2.textProperty().bind(Bindings.concat(
@@ -91,7 +91,7 @@ public class AppController implements Initializable {
 //                new SimpleStringProperty("NaN")) );
         this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
             if (newInfo != null) {
-                String xmlStr = databaseService.findMjlogById(newInfo.getId());
+                String xmlStr = this.databaseService.findMjlogById(newInfo.getId());
                 if (xmlStr != null) {
                     byte[] xml = xmlStr.getBytes();
                     this.mjlogTreeControl.showMjlogContent(xml, 0);
@@ -125,7 +125,7 @@ public class AppController implements Initializable {
     public void openDownloader(ActionEvent actionEvent) throws IOException {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.initOwner(tableView.getScene().getWindow());
+        stage.initOwner(this.tableView.getScene().getWindow());
 
         Parent root = FXMLLoader.load(getClass().getResource("/Downloader.fxml"));
         root.getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
@@ -135,8 +135,8 @@ public class AppController implements Initializable {
         stage.show();
 
         stage.setOnHiding(event ->  {
-            tableView.getItems().clear();
-            tableView.getItems().addAll(databaseService.findAllExistsInfos());
+            this.tableView.getItems().clear();
+            this.tableView.getItems().addAll(this.databaseService.findAllExistsInfos());
         });
     }
 
@@ -144,7 +144,7 @@ public class AppController implements Initializable {
     public void openSyantenBackAnalyzer(ActionEvent actionEvent) throws IOException {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.initOwner(tableView.getScene().getWindow());
+        stage.initOwner(this.tableView.getScene().getWindow());
 
         Parent root = FXMLLoader.load(getClass().getResource("/SyantenBackAnalyzer.fxml"));
         root.getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
