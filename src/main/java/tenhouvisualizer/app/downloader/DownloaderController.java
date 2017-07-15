@@ -8,6 +8,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tenhouvisualizer.domain.model.InfoSchema;
 import tenhouvisualizer.domain.service.DatabaseService;
 import tenhouvisualizer.domain.service.DownloadService;
@@ -30,6 +32,9 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 public class DownloaderController implements Initializable {
+
+    private final static Logger log = LoggerFactory.getLogger(DownloaderController.class);
+
     private static final int maxInfosPerPage = 100;
     private static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
     private static final DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日HH時台");
@@ -169,12 +174,12 @@ public class DownloaderController implements Initializable {
             }
             changeResult();
         } catch (IOException e) {
+            log.error("インデックスのダウンロード中にエラーが発生したっぽい", e);
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
             alert.getDialogPane().setHeaderText("インデックス追加の失敗");
             alert.getDialogPane().setContentText("インデックスを追加することができませんでした");
             alert.show();
-            throw new RuntimeException(e);
         }
     }
 
@@ -185,12 +190,12 @@ public class DownloaderController implements Initializable {
                 try {
                     this.service.downloadMjlogToDatabase(infoSchema);
                 } catch (IOException | SQLException e) {
+                    log.error("ログのダウンロード中にエラーが発生したっぽい", e);
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
                     alert.getDialogPane().setHeaderText("牌譜追加の失敗");
                     alert.getDialogPane().setContentText("牌譜を追加することができませんでした");
                     alert.show();
-                    throw new RuntimeException(e);
                 }
                 this.tableView.getItems().set(this.tableView.getSelectionModel().getFocusedIndex(), infoSchema);
             }

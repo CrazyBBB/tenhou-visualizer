@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tenhouvisualizer.domain.service.DatabaseService;
 
 import java.io.File;
@@ -12,6 +14,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class Main extends Application {
+
+    private final static Logger log = LoggerFactory.getLogger(Main.class);
 
     public static DatabaseService databaseService;
 
@@ -21,6 +25,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        log.info("start!");
         try {
             Main.databaseService = new DatabaseService(new File("./tenhouvisualizer.sqlite"));
         } catch (ClassNotFoundException | SQLException e) {
@@ -39,5 +44,6 @@ public class Main extends Application {
     public void stop() throws Exception {
         super.stop();
         Main.databaseService.close();
+        log.info("stop!");
     }
 }

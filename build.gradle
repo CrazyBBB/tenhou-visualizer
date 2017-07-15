@@ -33,6 +33,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/de.jensd/fontawesomefx
     compile group: 'de.jensd', name: 'fontawesomefx', version: '8.9'
+
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
 }
 
 jar {
