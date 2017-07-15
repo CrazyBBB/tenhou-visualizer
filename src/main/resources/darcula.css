@@ -6,7 +6,6 @@
 
 .menu-bar {
     -fx-background-color: rgb(60, 63, 65);
-    -fx-graphic: red;
 }
 
 .context-menu {
