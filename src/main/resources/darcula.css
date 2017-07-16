@@ -14,6 +14,7 @@
 
 .label, .cell, .button, .tab-label, .check-box {
     -fx-text-fill: #bbbbbb;
+    -fx-fill: red;
 }
 
 .dialog-pane .button:default {

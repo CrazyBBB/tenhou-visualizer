@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import tenhouvisualizer.app.main.BoardControl?>
 <?import javafx.scene.layout.VBox?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <BorderPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="tenhouvisualizer.app.syantenanalyzer.SyantenAnalyzerController" fx:id="root">
     <top>
@@ -14,8 +15,16 @@
                 <!--<MenuItem text="終了" onAction="#onExit"/>-->
             <!--</Menu>-->
             <Menu text="解析">
-                <MenuItem fx:id="openMenuItem" text="ZIPを解析..." onAction="#analyzeZIP"/>
-                <MenuItem text="データベースを解析" onAction="#analyzeDB"/>
+                <MenuItem fx:id="openMenuItem" text="ZIPを解析..." onAction="#analyzeZIP">
+                    <graphic>
+                        <FontAwesomeIconView styleClass="gryph-icon" glyphName="FILE_ARCHIVE_ALT"/>
+                    </graphic>
+                </MenuItem>
+                <MenuItem text="データベースを解析" onAction="#analyzeDB">
+                    <graphic>
+                        <FontAwesomeIconView styleClass="gryph-icon" glyphName="DATABASE"/>
+                    </graphic>
+                </MenuItem>
             </Menu>
         </MenuBar>
     </top>

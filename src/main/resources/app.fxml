@@ -21,14 +21,14 @@
             <Menu text="データベース">
                 <MenuItem text="Webから鳳凰卓の牌譜をインポート" onAction="#openDownloader">
                     <graphic>
-                        <FontAwesomeIconView fill="#bbbbbb" glyphName="DATABASE"/>
+                        <FontAwesomeIconView styleClass="gryph-icon" glyphName="DATABASE"/>
                     </graphic>
                 </MenuItem>
             </Menu>
             <Menu text="ツール">
-                <MenuItem text="シャンテン後退解析" onAction="#openSyantenBackAnalyzer">
+                <MenuItem text="解析" onAction="#openSyantenBackAnalyzer">
                     <graphic>
-                        <FontAwesomeIconView fill="#bbbbbb" glyphName="LINE_CHART"/>
+                            <FontAwesomeIconView styleClass="gryph-icon" glyphName="LINE_CHART"/>
                     </graphic>
                 </MenuItem>
             </Menu>
