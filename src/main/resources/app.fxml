@@ -60,6 +60,19 @@
                     <HBox alignment="CENTER">
                         <VBox>
                             <BoardControl fx:id="boardControl" height="600.0" width="600.0"/>
+                            <HBox>
+                                <Button>
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="UNDO" styleClass="gryph-icon"/>
+                                    </graphic>
+                                </Button>
+                                <Pane HBox.hgrow="ALWAYS"/>
+                                <Button>
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="REPEAT" styleClass="gryph-icon"/>
+                                    </graphic>
+                                </Button>
+                            </HBox>
                         </VBox>
                     </HBox>
                 </VBox>
