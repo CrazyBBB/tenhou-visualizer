@@ -149,7 +149,7 @@ public class AppController implements Initializable {
         root.getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
         javafx.scene.Scene scene = new javafx.scene.Scene(root);
         stage.setScene(scene);
-        stage.setTitle("シャンテン後退解析");
+        stage.setTitle("解析");
         stage.show();
     }
 }
