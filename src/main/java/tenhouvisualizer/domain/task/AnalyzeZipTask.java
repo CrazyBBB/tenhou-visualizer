@@ -4,7 +4,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import tenhouvisualizer.domain.analyzer.ParseHandler;
-import tenhouvisualizer.domain.model.Scene;
+import tenhouvisualizer.domain.model.MahjongScene;
 import tenhouvisualizer.domain.analyzer.SyantenAnalyzer;
 
 import javax.xml.parsers.SAXParser;
@@ -20,9 +20,9 @@ import java.util.zip.ZipFile;
 
 public class AnalyzeZipTask extends Task {
     private final File selectedFile;
-    private final ObservableList<Scene> observableList;
+    private final ObservableList<MahjongScene> observableList;
 
-    public AnalyzeZipTask(File selectedFile, ObservableList<Scene> observableList) {
+    public AnalyzeZipTask(File selectedFile, ObservableList<MahjongScene> observableList) {
         this.selectedFile = Objects.requireNonNull(selectedFile);
         this.observableList = observableList;
     }
@@ -44,7 +44,7 @@ public class AnalyzeZipTask extends Task {
                     GZIPInputStream gzis = new GZIPInputStream(is)) {
                     saxParser.parse(gzis, parseHandler);
                 }
-                ArrayList<Scene> scenes = analyzer.getOriScenes();
+                ArrayList<MahjongScene> scenes = analyzer.getOriScenes();
                 workDone++;
                 Platform.runLater(() -> observableList.addAll(scenes));
                 updateMessage(workDone + "/" + workMax);

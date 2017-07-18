@@ -1,8 +1,8 @@
 package tenhouvisualizer.domain.analyzer;
 
 import tenhouvisualizer.domain.model.Naki;
-import tenhouvisualizer.domain.model.Scene;
-import tenhouvisualizer.domain.Utils;
+import tenhouvisualizer.domain.model.MahjongScene;
+import tenhouvisualizer.domain.MahjongUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 public class SyantenAnalyzer implements IAnalyzer {
 
-    private ArrayList<Scene> oriScenes = new ArrayList<>();
+    private ArrayList<MahjongScene> oriScenes = new ArrayList<>();
 
     private boolean isSanma = false;
     private String[] playerNames = new String[4];
@@ -55,7 +55,7 @@ public class SyantenAnalyzer implements IAnalyzer {
             tmpNaki.add(new ArrayList<>(naki.get(i)));
         }
 
-        oriScenes.add(new Scene(isSanma,
+        oriScenes.add(new MahjongScene(isSanma,
                 playerId,
                 playerNames.clone(),
                 playerDans.clone(),
@@ -78,7 +78,7 @@ public class SyantenAnalyzer implements IAnalyzer {
                 new ArrayList<>(doraDisplays)));
     }
 
-    public ArrayList<Scene> getOriScenes() {
+    public ArrayList<MahjongScene> getOriScenes() {
         return oriScenes;
     }
 
@@ -136,7 +136,7 @@ public class SyantenAnalyzer implements IAnalyzer {
     public void discard(int position, int kiriHai) {
         int beforeSyanten = 0;
         if (position == heroPosition && !used) {
-            beforeSyanten = Utils.computeSyanten(tehai[position], naki.get(position).size());
+            beforeSyanten = MahjongUtils.computeSyanten(tehai[position], naki.get(position).size());
         }
 
         stehai.get(position).remove(kiriHai);
@@ -145,7 +145,7 @@ public class SyantenAnalyzer implements IAnalyzer {
         daTedashi = prev != kiriHai;
 
         if (position == heroPosition && !used) {
-            int afterSyanten = Utils.computeSyanten(tehai[position], naki.get(position).size());
+            int afterSyanten = MahjongUtils.computeSyanten(tehai[position], naki.get(position).size());
             if (beforeSyanten < afterSyanten) {
                 saveScene(position);
                 used = true;

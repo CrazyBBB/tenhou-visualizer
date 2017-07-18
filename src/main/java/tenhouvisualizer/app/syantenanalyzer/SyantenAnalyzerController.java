@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 import tenhouvisualizer.domain.task.AnalyzeDBTask;
 import tenhouvisualizer.domain.task.AnalyzeZipTask;
 import tenhouvisualizer.app.main.BoardControl;
-import tenhouvisualizer.domain.model.Scene;
+import tenhouvisualizer.domain.model.MahjongScene;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -32,7 +32,7 @@ public class SyantenAnalyzerController implements Initializable {
     @FXML
     private Label progressLabel;
     @FXML
-    private ListView<Scene> listView;
+    private ListView<MahjongScene> listView;
     @FXML
     private BoardControl boardControl;
 

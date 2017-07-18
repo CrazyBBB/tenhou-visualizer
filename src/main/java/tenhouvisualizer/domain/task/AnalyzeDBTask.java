@@ -3,10 +3,9 @@ package tenhouvisualizer.domain.task;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.scene.control.ListView;
 import tenhouvisualizer.Main;
 import tenhouvisualizer.domain.analyzer.ParseHandler;
-import tenhouvisualizer.domain.model.Scene;
+import tenhouvisualizer.domain.model.MahjongScene;
 import tenhouvisualizer.domain.analyzer.SyantenAnalyzer;
 import tenhouvisualizer.domain.service.DatabaseService;
 
@@ -17,10 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnalyzeDBTask extends Task {
-    private final ObservableList<Scene> observableList;
+    private final ObservableList<MahjongScene> observableList;
     private final DatabaseService databaseService;
 
-    public AnalyzeDBTask(ObservableList<Scene> observableList) {
+    public AnalyzeDBTask(ObservableList<MahjongScene> observableList) {
         this.observableList = observableList;
         this.databaseService = Main.databaseService;
     }
@@ -44,7 +43,7 @@ public class AnalyzeDBTask extends Task {
             SyantenAnalyzer analyzer = new SyantenAnalyzer(0);
             ParseHandler parseHandler = new ParseHandler(analyzer);
             saxParser.parse(new ByteArrayInputStream(content.getBytes()), parseHandler);
-            ArrayList<Scene> scenes = analyzer.getOriScenes();
+            ArrayList<MahjongScene> scenes = analyzer.getOriScenes();
             workDone++;
             Platform.runLater(() -> observableList.addAll(scenes));
             updateMessage(workDone + "/" + workMax);

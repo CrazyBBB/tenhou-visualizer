@@ -2,8 +2,8 @@ package tenhouvisualizer.domain.analyzer;
 
 import tenhouvisualizer.domain.model.Kyoku;
 import tenhouvisualizer.domain.model.Naki;
-import tenhouvisualizer.domain.model.Scene;
-import tenhouvisualizer.domain.Utils;
+import tenhouvisualizer.domain.model.MahjongScene;
+import tenhouvisualizer.domain.MahjongUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +27,7 @@ public class Analyzer implements IAnalyzer {
     private static String[] kazeStr = {"東", "南", "西", "北"};
 
     private ArrayList<Kyoku> oriScenesList = new ArrayList<>();
-    private ArrayList<Scene> oriScenes;
+    private ArrayList<MahjongScene> oriScenes;
 
     private boolean isSanma = false;
     private String[] playerNames = new String[4];
@@ -74,7 +74,7 @@ public class Analyzer implements IAnalyzer {
             tmpNaki.add(new ArrayList<>(naki.get(i)));
         }
 
-        oriScenes.add(new Scene(
+        oriScenes.add(new MahjongScene(
                 isSanma,
                 playerId,
                 playerNames.clone(),
@@ -177,7 +177,7 @@ public class Analyzer implements IAnalyzer {
         tehai[position][kiriHai / 4]--;
         da[position] = kiriHai;
         daTedashi = prev != kiriHai;
-        boolean isTenpai = Utils.computeSyanten(tehai[position], naki.get(position).size()) == 0;
+        boolean isTenpai = MahjongUtils.computeSyanten(tehai[position], naki.get(position).size()) == 0;
 
         saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 " +
                 (daReach ? "リーチ" : "") + "打" + haiStr[kiriHai] + (isTenpai ? "*" : ""));

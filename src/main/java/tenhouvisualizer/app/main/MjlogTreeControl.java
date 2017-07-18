@@ -5,7 +5,7 @@ import tenhouvisualizer.domain.analyzer.Analyzer;
 import tenhouvisualizer.domain.analyzer.ParseHandler;
 import tenhouvisualizer.domain.model.Kyoku;
 import tenhouvisualizer.domain.model.Mjlog;
-import tenhouvisualizer.domain.model.Scene;
+import tenhouvisualizer.domain.model.MahjongScene;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -36,7 +36,7 @@ public class MjlogTreeControl extends TreeView<Mjlog> {
         for (Kyoku kyoku : scenesList) {
             MjlogTreeItem child = new MjlogTreeItem(new Mjlog(kyoku.summary));
             for (int i = 0; i < kyoku.scenes.size(); i++) {
-                Scene scene = kyoku.scenes.get(i);
+                MahjongScene scene = kyoku.scenes.get(i);
                 MjlogTreeItem grandchild = new MjlogTreeItem(new Mjlog(scene.toString(), scene, i + 1));
                 child.getChildren().add(grandchild);
             }

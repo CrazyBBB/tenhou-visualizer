@@ -2,10 +2,10 @@ package tenhouvisualizer.domain.model;
 
 public class Mjlog {
     private String name;
-    private Scene scene;
+    private MahjongScene scene;
     private int idx;
 
-    public Mjlog(String name, Scene scene, int idx) {
+    public Mjlog(String name, MahjongScene scene, int idx) {
         this.name = name;
         this.scene = scene;
         this.idx = idx;
@@ -24,11 +24,11 @@ public class Mjlog {
         this.name = name;
     }
 
-    public Scene getScene() {
+    public MahjongScene getScene() {
         return scene;
     }
 
-    public void setScene(Scene scene) {
+    public void setScene(MahjongScene scene) {
         this.scene = scene;
     }
 
