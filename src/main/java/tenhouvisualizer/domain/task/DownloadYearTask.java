@@ -1,7 +1,6 @@
 package tenhouvisualizer.domain.task;
 
 import javafx.concurrent.Task;
-import tenhouvisualizer.domain.MjlogReader;
 import tenhouvisualizer.Main;
 import tenhouvisualizer.domain.model.InfoSchema;
 import tenhouvisualizer.domain.service.DatabaseService;
@@ -16,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -112,16 +112,16 @@ public class DownloadYearTask extends Task {
                     final LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
 
                     if (htmlFileName.endsWith("gz")) {
-                         buf = MjlogReader.gunzip(buf);
-                    }
-
-                    String htmlString = new String(buf);
-                    StringReader stringReader = new StringReader(htmlString);
-                    BufferedReader bufferedReader = new BufferedReader(stringReader);
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        if (!line.isEmpty()) {
-                            addIndex(line, localDate);
+                        try (ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+                             GZIPInputStream gzis = new GZIPInputStream(bais);
+                             InputStreamReader sr = new InputStreamReader(gzis);
+                             BufferedReader br = new BufferedReader(sr)) {
+                            String line;
+                            while ((line = br.readLine()) != null) {
+                                if (!line.isEmpty()) {
+                                    addIndex(line, localDate);
+                                }
+                            }
                         }
                     }
                 }

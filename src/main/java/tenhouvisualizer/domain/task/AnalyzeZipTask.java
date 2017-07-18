@@ -3,19 +3,20 @@ package tenhouvisualizer.domain.task;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.scene.control.ListView;
-import tenhouvisualizer.domain.MjlogReader;
-import tenhouvisualizer.domain.model.MjlogFile;
 import tenhouvisualizer.domain.analyzer.ParseHandler;
 import tenhouvisualizer.domain.model.Scene;
 import tenhouvisualizer.domain.analyzer.SyantenAnalyzer;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Objects;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class AnalyzeZipTask extends Task {
     private final File selectedFile;
@@ -29,23 +30,26 @@ public class AnalyzeZipTask extends Task {
     @Override
     protected Void call() throws Exception {
         Platform.runLater(this.observableList::clear);
-
-        ArrayList<MjlogFile> list = MjlogReader.unzip(selectedFile);
-        long workDone = 0;
-        long workMax = list.size();
-        for (MjlogFile mjlogFile : list) {
-            byte[] gunzipedXml = MjlogReader.gunzip(mjlogFile.getXml());
-            if (gunzipedXml == null) continue;
-            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-            SAXParser saxParser = saxParserFactory.newSAXParser();
-            SyantenAnalyzer analyzer = new SyantenAnalyzer(mjlogFile.getPosition());
-            ParseHandler parseHandler = new ParseHandler(analyzer);
-            saxParser.parse(new ByteArrayInputStream(gunzipedXml), parseHandler);
-            ArrayList<Scene> scenes = analyzer.getOriScenes();
-            workDone++;
-            Platform.runLater(() -> observableList.addAll(scenes));
-            updateMessage(workDone + "/" + workMax);
-            updateProgress(workDone, workMax);
+        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+        SAXParser saxParser = saxParserFactory.newSAXParser();
+        try (ZipFile zipFile = new ZipFile(this.selectedFile)) {
+            int workMax = zipFile.size();
+            long workDone = 0;
+            int position = zipFile.getName().charAt(zipFile.getName().length() - 7) - '0';
+            for (Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements();) {
+                ZipEntry zipEntry = e.nextElement();
+                SyantenAnalyzer analyzer = new SyantenAnalyzer(position);
+                ParseHandler parseHandler = new ParseHandler(analyzer);
+                try (InputStream is = zipFile.getInputStream(zipEntry);
+                    GZIPInputStream gzis = new GZIPInputStream(is)) {
+                    saxParser.parse(gzis, parseHandler);
+                }
+                ArrayList<Scene> scenes = analyzer.getOriScenes();
+                workDone++;
+                Platform.runLater(() -> observableList.addAll(scenes));
+                updateMessage(workDone + "/" + workMax);
+                updateProgress(workDone, workMax);
+            }
         }
         return null;
     }
