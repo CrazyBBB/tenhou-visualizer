@@ -5,9 +5,9 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ObservableObjectValue;
 
 public class BindingHelper {
-    public static StringBinding covertOtherwiseNull(ObservableObjectValue observableObjectValue, String nullMessage) {
+    public static StringBinding covertOrDefault(ObservableObjectValue observableObjectValue, String defaultMessage) {
         return Bindings.when(Bindings.isNotNull(observableObjectValue))
                 .then(Bindings.convert(observableObjectValue))
-                .otherwise(nullMessage);
+                .otherwise(defaultMessage);
     }
 }

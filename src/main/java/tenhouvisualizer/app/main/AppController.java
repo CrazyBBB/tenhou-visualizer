@@ -85,7 +85,7 @@ public class AppController implements Initializable {
         this.thirdColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.15));
         this.fourthColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.15));
 
-        this.label.textProperty().bind(BindingHelper.covertOtherwiseNull(this.tableView.getSelectionModel().selectedItemProperty(), ""));
+        this.label.textProperty().bind(BindingHelper.covertOrDefault(this.tableView.getSelectionModel().selectedItemProperty(), ""));
 
         this.boardControl.drawScene();
 
