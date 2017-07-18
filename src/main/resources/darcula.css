@@ -2,6 +2,9 @@
     -fx-base: rgb(60, 63, 65);
     -fx-background: rgb(60, 63, 65);
     -fx-control-inner-background:  rgb(60, 63, 65);
+    -fx-accent: #4b6eaf;
+    -fx-selection-bar-non-focused: #0D293E;
+    -fx-focus-color: #4b6eaf;
 }
 
 .menu-bar {
