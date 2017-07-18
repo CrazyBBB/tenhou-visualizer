@@ -88,8 +88,12 @@ public class BoardControl extends Canvas {
     }
 
     public void drawScene(MahjongScene scene) {
+        drawScene(scene, 0);
+    }
+
+    public void drawScene(MahjongScene scene, int numberOfRotation) {
         initBase();
-        initInfoAndHai(scene);
+        initInfoAndHai(scene, numberOfRotation);
     }
 
     public BoardControl() {
@@ -113,9 +117,9 @@ public class BoardControl extends Canvas {
         gc.fillRect(200, 200, 200, 200);
     }
 
-    private void initInfoAndHai(MahjongScene scene) {
+    private void initInfoAndHai(MahjongScene scene, int numberOfRotation) {
         for (int i = 0; i < 4; i++) {
-            int drawnPlayerId = (i + scene.heroPosition) % 4;
+            int drawnPlayerId = (i + scene.heroPosition + numberOfRotation) % 4;
 
             if (drawnPlayerId != 3 || !scene.isSanma) {
                 gc.setFill(Color.valueOf("#CD5F12"));

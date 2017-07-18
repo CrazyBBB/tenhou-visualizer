@@ -9,7 +9,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -43,21 +46,27 @@ public class AppController implements Initializable {
     @FXML
     private TableColumn<InfoSchema, String> dataTimeColumn;
     @FXML
-    private TableColumn<InfoSchema, String>  firstColumn;
+    private TableColumn<InfoSchema, String> firstColumn;
     @FXML
-    private TableColumn<InfoSchema, String>  secondColumn;
+    private TableColumn<InfoSchema, String> secondColumn;
     @FXML
-    private TableColumn<InfoSchema, String>  thirdColumn;
+    private TableColumn<InfoSchema, String> thirdColumn;
     @FXML
-    private TableColumn<InfoSchema, String>  fourthColumn;
+    private TableColumn<InfoSchema, String> fourthColumn;
     @FXML
-    private TableColumn<InfoSchema, String>  maColumn;
+    private TableColumn<InfoSchema, String> maColumn;
     @FXML
     private TableColumn<InfoSchema, String> souColumn;
+    @FXML
+    private Button rotateRightButton;
+    @FXML
+    private Button rotateLeftButton;
 
     private ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
 
     private final DatabaseService databaseService;
+
+    private int numberOfRotation = 0;
 
     public AppController() {
         this.databaseService = Main.databaseService;
@@ -91,12 +100,12 @@ public class AppController implements Initializable {
 
         this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
             if (newInfo != null) {
+                numberOfRotation = 0;
                 String xmlStr = this.databaseService.findMjlogById(newInfo.getId());
                 if (xmlStr != null) {
                     byte[] xml = xmlStr.getBytes();
                     this.mjlogTreeControl.showMjlogContent(xml, 0);
-                    this.mjlogTreeControl.getSelectionModel().select(this.mjlogTreeControl.getRoot()
-                            .getChildren().get(0).getChildren().get(0));
+                    this.mjlogTreeControl.getSelectionModel().selectFirst();
                 }
             }
         });
@@ -104,15 +113,42 @@ public class AppController implements Initializable {
         this.mjlogTreeControl.getSelectionModel().selectedItemProperty().addListener((obs, oldMjlog, newMjlog) -> {
             if (newMjlog != null) {
                 if (newMjlog.isLeaf()) {
-                    this.boardControl.drawScene(newMjlog.getValue().getScene());
+                    this.boardControl.drawScene(newMjlog.getValue().getScene(), numberOfRotation);
                     this.label2.setText(newMjlog.getValue().getIdx() + "/" + newMjlog.getParent().getChildren().size()
-                                            + " " + newMjlog.getParent().toString());
+                            + " " + newMjlog.getParent().toString());
                 } else {
                     this.mjlogTreeControl.getSelectionModel().getSelectedItem().setExpanded(true);
                     this.label2.setText(newMjlog.toString());
+                    this.boardControl.drawScene(newMjlog.getChildren().get(0).getValue().getScene(), numberOfRotation);
                 }
             }
         });
+    }
+
+    public void rotateLeft(ActionEvent actionEvent) {
+        if (this.mjlogTreeControl.getSelectionModel().getSelectedItem() != null) {
+            numberOfRotation += 3;
+            MjlogTreeItem item = (MjlogTreeItem) this.mjlogTreeControl.getSelectionModel().getSelectedItem();
+            if (item.isLeaf()) {
+                this.boardControl.drawScene(item.getValue().getScene(), numberOfRotation);
+            } else {
+                this.boardControl.drawScene(item.getChildren().get(0).getValue().getScene(), numberOfRotation);
+            }
+            this.mjlogTreeControl.requestFocus();
+        }
+    }
+
+    public void rotateRight(ActionEvent actionEvent) {
+        if (this.mjlogTreeControl.getSelectionModel().getSelectedItem() != null) {
+            numberOfRotation += 1;
+            MjlogTreeItem item = (MjlogTreeItem) this.mjlogTreeControl.getSelectionModel().getSelectedItem();
+            if (item.isLeaf()) {
+                this.boardControl.drawScene(item.getValue().getScene(), numberOfRotation);
+            } else {
+                this.boardControl.drawScene(item.getChildren().get(0).getValue().getScene(), numberOfRotation);
+            }
+            this.mjlogTreeControl.requestFocus();
+        }
     }
 
     @FXML
@@ -133,7 +169,7 @@ public class AppController implements Initializable {
         stage.setTitle("鳳凰卓牌譜ダウンロード");
         stage.show();
 
-        stage.setOnHiding(event ->  {
+        stage.setOnHiding(event -> {
             this.tableView.getItems().clear();
             this.tableView.getItems().addAll(this.databaseService.findAllExistsInfos());
         });

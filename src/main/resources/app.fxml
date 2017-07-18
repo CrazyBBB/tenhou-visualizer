@@ -61,13 +61,13 @@
                         <VBox>
                             <BoardControl fx:id="boardControl" height="600.0" width="600.0"/>
                             <HBox>
-                                <Button>
+                                <Button fx:id="rotateLeftButton" onAction="#rotateLeft">
                                     <graphic>
                                         <FontAwesomeIconView glyphName="UNDO" styleClass="gryph-icon"/>
                                     </graphic>
                                 </Button>
                                 <Pane HBox.hgrow="ALWAYS"/>
-                                <Button>
+                                <Button fx:id="rotateRightButton" onAction="#rotateRight">
                                     <graphic>
                                         <FontAwesomeIconView glyphName="REPEAT" styleClass="gryph-icon"/>
                                     </graphic>
