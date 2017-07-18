@@ -70,8 +70,7 @@ public class SyantenAnalyzerController implements Initializable {
             Task task = new AnalyzeZipTask(selectedFile, listView.getItems());
             this.progressBar.progressProperty().bind(task.progressProperty());
             this.progressLabel.textProperty().bind(task.messageProperty());
-            task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));
-            task.setOnRunning(a -> this.openMenuItem.setDisable(true));
+            this.openMenuItem.disableProperty().bind(task.runningProperty());
             new Thread(task).start();
         }
     }
@@ -81,8 +80,7 @@ public class SyantenAnalyzerController implements Initializable {
         Task task = new AnalyzeDBTask(listView.getItems());
         this.progressBar.progressProperty().bind(task.progressProperty());
         this.progressLabel.textProperty().bind(task.messageProperty());
-        task.setOnSucceeded(a -> this.openMenuItem.setDisable(false));
-        task.setOnRunning(a -> this.openMenuItem.setDisable(true));
+        this.openMenuItem.disableProperty().bind(task.runningProperty());
         new Thread(task).start();
     }
 }

@@ -143,12 +143,11 @@ public class DownloaderController implements Initializable {
                         Task task = this.service.createDownloadYearTask(year);
                         this.progressBar.progressProperty().bind(task.progressProperty());
                         this.progressLabel.textProperty().bind(task.messageProperty());
-                        task.setOnRunning(a -> this.indexButton.setDisable(true));
+                        this.indexButton.disableProperty().bind(task.runningProperty());
                         task.setOnSucceeded(a -> {
                             this.changeResult();
                             this.databaseService.saveMjlogIndex(year.toString());
                             this.yearListView.getItems().remove(year);
-                            this.indexButton.setDisable(false);
                         });
                         new Thread(task).start();
                     }
