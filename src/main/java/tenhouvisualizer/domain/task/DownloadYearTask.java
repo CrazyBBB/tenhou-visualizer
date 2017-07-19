@@ -1,6 +1,7 @@
 package tenhouvisualizer.domain.task;
 
 import javafx.concurrent.Task;
+import org.jetbrains.annotations.NotNull;
 import tenhouvisualizer.Main;
 import tenhouvisualizer.domain.model.InfoSchema;
 import tenhouvisualizer.domain.service.DatabaseService;
@@ -54,7 +55,8 @@ public class DownloadYearTask extends Task {
     }
 
     private void downloadZipAndAddIndices(URL url, File tmpFile) throws IOException {
-        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(url.openStream());
+        try (InputStream is = url.openStream();
+             BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
              FileOutputStream fileOutputStream = new FileOutputStream(tmpFile)) {
             long workDone = 0;
             long workMax = connection.getContentLength();
@@ -62,45 +64,35 @@ public class DownloadYearTask extends Task {
             byte[] buffer = new byte[4096];
             int length;
 
-            while ((length = bufferedInputStream.read(buffer)) > 0) {
+            while ((length = bufferedInputStream.read(buffer)) >= 0) {
                 workDone += length;
                 fileOutputStream.write(buffer, 0, length);
                 updateProgress(workDone, workMax);
                 updateMessage("ダウンロード中 " + String.format("%.1f", 100.0 * workDone / workMax) + "%");
             }
 
-            addIndices(tmpFile);
         } catch (Exception e) {
             updateMessage("");
             throw new RuntimeException(e);
         }
+
+        addIndices(tmpFile);
     }
 
     private void addIndices(File tmpFile) {
-        try (FileInputStream fileInputStream = new FileInputStream(tmpFile);
-             ZipInputStream zipInputStream = new ZipInputStream(fileInputStream)) {
-            ZipFile zipFile = new ZipFile(tmpFile);
+        try (ZipFile zipFile = new ZipFile(tmpFile)) {
             long workDone = 0;
             long workMax = 0;
-            Enumeration enumeration = zipFile.entries();
-            while(enumeration.hasMoreElements()){
-                ZipEntry zipEntry = (ZipEntry)enumeration.nextElement();
+
+            for (Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements(); ){
+                ZipEntry zipEntry = e.nextElement();
                 String htmlFileName = new File(zipEntry.getName()).getName();
                 if (htmlFileName.startsWith("scc")) workMax++;
             }
 
-            ZipEntry entry;
-            while ((entry = zipInputStream.getNextEntry()) != null) {
-                String htmlFileName = new File(entry.getName()).getName();
-
-                int size = (int) entry.getSize();
-                byte[] buf = new byte[size];
-                int readSize;
-                int offset = 0;
-                while ((readSize = zipInputStream.read(buf, offset, size - offset)) > 0) {
-                    offset += readSize;
-                }
-
+            for (Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements(); ){
+                ZipEntry zipEntry = e.nextElement();
+                String htmlFileName = getFileName(zipEntry.getName());
                 if (htmlFileName.startsWith("scc")) {
                     workDone++;
                     updateProgress(workDone, workMax);
@@ -112,9 +104,20 @@ public class DownloadYearTask extends Task {
                     final LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
 
                     if (htmlFileName.endsWith("gz")) {
-                        try (ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-                             GZIPInputStream gzis = new GZIPInputStream(bais);
+                        try (InputStream is = zipFile.getInputStream(zipEntry);
+                             GZIPInputStream gzis = new GZIPInputStream(is);
                              InputStreamReader sr = new InputStreamReader(gzis);
+                             BufferedReader br = new BufferedReader(sr)) {
+                            String line;
+                            while ((line = br.readLine()) != null) {
+                                if (!line.isEmpty()) {
+                                    addIndex(line, localDate);
+                                }
+                            }
+                        }
+                    } else {
+                        try (InputStream is = zipFile.getInputStream(zipEntry);
+                             InputStreamReader sr = new InputStreamReader(is);
                              BufferedReader br = new BufferedReader(sr)) {
                             String line;
                             while ((line = br.readLine()) != null) {
@@ -126,11 +129,16 @@ public class DownloadYearTask extends Task {
                     }
                 }
             }
-            updateMessage("");
         } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } finally {
             updateMessage("");
-            throw new RuntimeException(e);
         }
+    }
+
+    @NotNull
+    static String getFileName(String path) {
+        return path.substring(path.lastIndexOf('/') + 1);
     }
 
     private void addIndex(String line, LocalDate localDate) {
