@@ -19,14 +19,12 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 public class DownloadYearTask extends Task {
     private int year;
 
     private URLConnection connection;
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
     private static final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
 
@@ -86,13 +84,13 @@ public class DownloadYearTask extends Task {
 
             for (Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements(); ){
                 ZipEntry zipEntry = e.nextElement();
-                String htmlFileName = new File(zipEntry.getName()).getName();
+                String htmlFileName = getFileNameWithExtension(zipEntry.getName());
                 if (htmlFileName.startsWith("scc")) workMax++;
             }
 
             for (Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements(); ){
                 ZipEntry zipEntry = e.nextElement();
-                String htmlFileName = getFileName(zipEntry.getName());
+                String htmlFileName = getFileNameWithExtension(zipEntry.getName());
                 if (htmlFileName.startsWith("scc")) {
                     workDone++;
                     updateProgress(workDone, workMax);
@@ -101,7 +99,7 @@ public class DownloadYearTask extends Task {
                     //    ********
                     // scc20100813.html
                     String dateString = htmlFileName.substring(3, 11);
-                    final LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
+                    final LocalDate localDate = LocalDate.parse(dateString, DateTimeFormatter.BASIC_ISO_DATE);
 
                     if (htmlFileName.endsWith("gz")) {
                         try (InputStream is = zipFile.getInputStream(zipEntry);
@@ -137,7 +135,7 @@ public class DownloadYearTask extends Task {
     }
 
     @NotNull
-    static String getFileName(String path) {
+    static String getFileNameWithExtension(String path) {
         return path.substring(path.lastIndexOf('/') + 1);
     }
 
