@@ -2,6 +2,8 @@ package tenhouvisualizer.domain.service;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tenhouvisualizer.domain.model.InfoSchema;
 
 import java.io.Closeable;
@@ -16,6 +18,9 @@ import java.util.List;
 import java.util.Set;
 
 public class DatabaseService implements Closeable {
+
+    private final static Logger log = LoggerFactory.getLogger(DatabaseService.class);
+
     private final Connection connection;
     private final PreparedStatement insertMjlogStatement;
     private final PreparedStatement findAllMjlogStatement;
@@ -28,6 +33,8 @@ public class DatabaseService implements Closeable {
     private final PreparedStatement insertMjlogIndexStatement;
     private final PreparedStatement findAllMjlogIndexStatement;
     public DatabaseService(@Nullable File file) throws ClassNotFoundException, SQLException {
+        long start = System.currentTimeMillis();
+
         Class.forName("org.sqlite.JDBC");
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + (file == null ? "" : file));
         initialize();
@@ -41,6 +48,9 @@ public class DatabaseService implements Closeable {
         this.findAllExistsInfoStatement = connection.prepareStatement("SELECT * FROM INFO WHERE id in (SELECT id FROM MJLOG);");
         this.insertMjlogIndexStatement = connection.prepareStatement("INSERT INTO MJLOGINDEX VALUES(?);");
         this.findAllMjlogIndexStatement = connection.prepareStatement("SELECT id FROM MJLOGINDEX;");
+
+        long end = System.currentTimeMillis();
+        log.info("time to initialize db: {}", end - start);
     }
 
     private void initialize() throws SQLException {
