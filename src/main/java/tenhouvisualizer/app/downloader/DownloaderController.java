@@ -72,7 +72,7 @@ public class DownloaderController implements Initializable {
     public CheckBox tonpuCheckBox;
     public CheckBox tonnanCheckBox;
 
-    private final StringProperty textToHighlight = new SimpleStringProperty();
+    private final StringProperty textToHighlight = new SimpleStringProperty(null);
 
     private int pageIndex = 0;
     private String playerName = "";
@@ -129,6 +129,9 @@ public class DownloaderController implements Initializable {
         this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this, this.service));
 
         this.firstColumn.setCellFactory(e -> new HighlightCell(textToHighlight));
+        this.secondColumn.setCellFactory(e -> new HighlightCell(textToHighlight));
+        this.thirdColumn.setCellFactory(e -> new HighlightCell(textToHighlight));
+        this.fourthColumn.setCellFactory(e -> new HighlightCell(textToHighlight));
     }
 
     public void downloadIndex(ActionEvent actionEvent) {
@@ -296,7 +299,7 @@ public class DownloaderController implements Initializable {
         isContentYonma = this.yonmaCheckBox.selectedProperty().get();
         isContentTonPu = this.tonpuCheckBox.selectedProperty().get();
         isContentTonnan = this.tonnanCheckBox.selectedProperty().get();
-        textToHighlight.setValue(playerName);
+        textToHighlight.setValue("".equals(playerName) ? null : playerName);
         changeResult();
     }
 

@@ -88,7 +88,6 @@ public class DownloadService {
                 Matcher playerMatcher = playerPattern.matcher(playerAndScore[i]);
                 if (playerMatcher.find()) players[i] = playerMatcher.group(1);
             }
-            if (players[3] == null) players[3] = "";
             LocalTime localTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(columns[0]));
             LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
             InfoSchema infoSchema = new InfoSchema(id, ma, sou, players[0], players[1], players[2], players[3], localDateTime);
