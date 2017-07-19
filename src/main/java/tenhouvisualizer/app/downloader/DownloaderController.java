@@ -2,6 +2,7 @@ package tenhouvisualizer.app.downloader;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -71,6 +72,8 @@ public class DownloaderController implements Initializable {
     public CheckBox tonpuCheckBox;
     public CheckBox tonnanCheckBox;
 
+    private final StringProperty textToHighlight = new SimpleStringProperty();
+
     private int pageIndex = 0;
     private String playerName = "";
     private boolean isContentSanma = true;
@@ -124,6 +127,8 @@ public class DownloaderController implements Initializable {
         this.fourthColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().fourth));
 
         this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this, this.service));
+
+        this.firstColumn.setCellFactory(e -> new HighlightCell(textToHighlight));
     }
 
     public void downloadIndex(ActionEvent actionEvent) {
@@ -291,6 +296,7 @@ public class DownloaderController implements Initializable {
         isContentYonma = this.yonmaCheckBox.selectedProperty().get();
         isContentTonPu = this.tonpuCheckBox.selectedProperty().get();
         isContentTonnan = this.tonnanCheckBox.selectedProperty().get();
+        textToHighlight.setValue(playerName);
         changeResult();
     }
 
