@@ -1,5 +1,6 @@
 package tenhouvisualizer.app.downloader;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableCell;
 import tenhouvisualizer.domain.model.InfoSchema;
@@ -13,13 +14,10 @@ public class HighlightCell extends TableCell<InfoSchema, String> {
         super();
 
         this.textToProperty = textToProperty;
-        this.textToProperty.addListener((obs, oldItem, newItem) -> {
-            if (Objects.equals(getItem(), newItem) && !isEmpty()) {
-                setStyle("-fx-background-color: red");
-            } else {
-                setStyle("-fx-background-color: blue");
-            }
-        });
+
+        this.styleProperty().bind(Bindings.when(Bindings.equal(itemProperty(), this.textToProperty))
+                .then("-fx-background-color: red")
+                .otherwise("-fx-background-color: none"));
     }
 
     @Override
