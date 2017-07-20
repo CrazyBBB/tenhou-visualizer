@@ -12,14 +12,14 @@ import tenhouvisualizer.domain.model.InfoSchema;
 
 public class HighlightCell extends TableCell<InfoSchema, String> {
 
-    private static final BackgroundFill BACKGROUND_FILL = new BackgroundFill(Color.gray(0.4, 0.5), null, null);
+    private static final Background HIGHLIGHT_BACKGROUND = new Background(new BackgroundFill(Color.gray(0.4, 0.5), null, null));
     private final static Logger log = LoggerFactory.getLogger(DownloaderController.class);
 
     public HighlightCell(StringProperty textToHighlight) {
         super();
 
         this.backgroundProperty().bind(Bindings.when(Bindings.and(Bindings.isNotNull(textToHighlight), Bindings.equal(itemProperty(), textToHighlight)))
-                .then(new Background(BACKGROUND_FILL))
+                .then(HIGHLIGHT_BACKGROUND)
                 .otherwise(Background.EMPTY));
     }
 

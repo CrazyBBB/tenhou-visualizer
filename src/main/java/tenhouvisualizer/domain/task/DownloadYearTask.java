@@ -101,7 +101,7 @@ public class DownloadYearTask extends Task {
                     String dateString = htmlFileName.substring(3, 11);
                     final LocalDate localDate = LocalDate.parse(dateString, DateTimeFormatter.BASIC_ISO_DATE);
 
-                    if (htmlFileName.endsWith("gz")) {
+                    if (htmlFileName.endsWith(".gz")) {
                         try (InputStream is = zipFile.getInputStream(zipEntry);
                              GZIPInputStream gzis = new GZIPInputStream(is);
                              InputStreamReader sr = new InputStreamReader(gzis);
