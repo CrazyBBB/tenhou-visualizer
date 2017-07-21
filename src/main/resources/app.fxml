@@ -37,9 +37,9 @@
     <center>
         <GridPane>
             <columnConstraints>
-                <ColumnConstraints hgrow="ALWAYS"/>
-                <ColumnConstraints hgrow="ALWAYS" minWidth="640" maxWidth="640" />
-                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="20"/>
+                <ColumnConstraints percentWidth="60"/>
+                <ColumnConstraints percentWidth="20"/>
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints vgrow="ALWAYS" />
@@ -55,7 +55,7 @@
                     <TableColumn fx:id="fourthColumn" text="4位" editable="false" />
                 </columns>
             </TableView>
-            <ScrollPane fitToWidth="true" fitToHeight="true" GridPane.columnIndex="1">
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="true" GridPane.columnIndex="1">
                 <VBox alignment="CENTER">
                     <HBox alignment="CENTER">
                         <VBox>

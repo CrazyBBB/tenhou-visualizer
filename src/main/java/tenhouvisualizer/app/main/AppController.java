@@ -1,6 +1,7 @@
 package tenhouvisualizer.app.main;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,10 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -32,6 +30,8 @@ public class AppController implements Initializable {
 
     @FXML
     private BorderPane root;
+    @FXML
+    private ScrollPane scrollPane;
     @FXML
     private Label label;
     @FXML
@@ -95,6 +95,9 @@ public class AppController implements Initializable {
         this.fourthColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.15));
 
         this.label.textProperty().bind(BindingHelper.covertOrDefault(this.tableView.getSelectionModel().selectedItemProperty(), ""));
+
+        this.boardControl.widthProperty().bind(Bindings.min(this.scrollPane.widthProperty(), this.scrollPane.heightProperty()));
+        this.boardControl.heightProperty().bind(Bindings.min(this.scrollPane.widthProperty(), this.scrollPane.heightProperty()));
 
         this.boardControl.drawScene();
 
