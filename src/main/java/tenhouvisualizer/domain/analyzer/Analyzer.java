@@ -12,7 +12,7 @@ import java.util.TreeSet;
 public class Analyzer implements IAnalyzer {
     private static String[] haiStr = {
             "1m", "1m", "1m", "1m", "2m", "2m", "2m", "2m", "3m", "3m", "3m", "3m",
-            "4m", "4m", "4m",  "4m", "赤5m", "5m", "5m", "5m", "6m", "6m", "6m", "6m",
+            "4m", "4m", "4m", "4m", "赤5m", "5m", "5m", "5m", "6m", "6m", "6m", "6m",
             "7m", "7m", "7m", "7m", "8m", "8m", "8m", "8m", "9m", "9m", "9m", "9m",
             "1p", "1p", "1p", "1p", "2p", "2p", "2p", "2p", "3p", "3p", "3p", "3p",
             "4p", "4p", "4p", "4p", "赤5p", "5p", "5p", "5p", "6p", "6p", "6p", "6p",
@@ -165,15 +165,12 @@ public class Analyzer implements IAnalyzer {
         tsumo[position] = tsumoHai;
         saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 ツモ" + haiStr[tsumoHai]);
 
-        stehai.get(position).add(tsumoHai);
         tehai[position][tsumoHai / 4]++;
-        Arrays.fill(tsumo, -1);
         prev = tsumoHai;
     }
 
     @Override
     public void discard(int position, int kiriHai) {
-        stehai.get(position).remove(kiriHai);
         tehai[position][kiriHai / 4]--;
         da[position] = kiriHai;
         daTedashi = prev != kiriHai;
@@ -182,6 +179,11 @@ public class Analyzer implements IAnalyzer {
         saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 " +
                 (daReach ? "リーチ" : "") + "打" + haiStr[kiriHai] + (isTenpai ? "*" : ""));
 
+        if (tsumo[position] != -1) {
+            stehai.get(position).add(tsumo[position]);
+            Arrays.fill(tsumo, -1);
+        }
+        stehai.get(position).remove(kiriHai);
         dahai.get(position).add(kiriHai);
         tedashi.get(position).add(prev != kiriHai);
         Arrays.fill(da, -1);
@@ -226,6 +228,8 @@ public class Analyzer implements IAnalyzer {
 
     @Override
     public void ankan(int position, int[] selfHai) {
+        stehai.get(position).add(tsumo[position]);
+        Arrays.fill(tsumo, -1);
         naki.get(position).add(new Naki(selfHai, 2, -1));
 
         for (int i = 0; i < 4; i++) {
@@ -285,10 +289,12 @@ public class Analyzer implements IAnalyzer {
 
     @Override
     public void kita(int position) {
+        stehai.get(position).add(tsumo[position]);
+        Arrays.fill(tsumo, -1);
         kita[position]++;
 
         tehai[position][30]--;
-        for (int i = 120; i <= 123 ; i++) {
+        for (int i = 120; i <= 123; i++) {
             if (stehai.get(position).contains(i)) {
                 stehai.get(position).remove(i);
                 break;
@@ -318,9 +324,9 @@ public class Analyzer implements IAnalyzer {
         if (!oriScenes.isEmpty()) {
             String summary = kazeStr[bakaze] + kyoku + "局" + honba + "本場 " + playerNames[position];
             if (position == from) {
-                summary += " ツモ " + String.join("", yaku) + " " + score;
+                summary += " ツモ " + String.join("", yaku) + " " + score + "点";
             } else {
-                summary += " ロン " + String.join("", yaku) + " " + score + " " + playerNames[from];
+                summary += " ロン " + String.join("", yaku) + " " + score + "点 " + playerNames[from];
             }
             oriScenesList.add(new Kyoku(summary, new ArrayList<>(oriScenes)));
         }

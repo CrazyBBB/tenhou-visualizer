@@ -184,11 +184,13 @@ public class BoardControl extends Canvas {
         double x = 70 * ratio;
         double y = 555 * ratio;
         for (int hai : scene.tehaiSets.get(playerId)) {
-            gc.drawImage(getImage(hai, true, true), x, y, haiWidth, haiHeight);
+            if (scene.da[playerId] != hai) {
+                gc.drawImage(getImage(hai, true, true), x, y, haiWidth, haiHeight);
+            }
             x += haiWidth;
         }
 
-        if (scene.tsumo[playerId] != -1) {
+        if (scene.tsumo[playerId] != -1 && scene.da[playerId] != scene.tsumo[playerId]) {
             gc.drawImage(getImage(scene.tsumo[playerId], true, true), x + 4 * ratio, y, haiWidth, haiHeight);
         }
     }
