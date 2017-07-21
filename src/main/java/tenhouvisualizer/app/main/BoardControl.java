@@ -6,6 +6,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tenhouvisualizer.domain.model.Naki;
 import tenhouvisualizer.domain.model.MahjongScene;
 
@@ -16,7 +18,19 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class BoardControl extends Canvas {
+
+    private final static Logger log = LoggerFactory.getLogger(BoardControl.class);
+
     private GraphicsContext gc;
+
+    private double baseSize;
+    private double ratio;
+    private double haiWidth;
+    private double haiHeight;
+    private double wanpaiWidth;
+    private double wanpaiHeight;
+    private double fontLSize;
+    private double fontSSize;
 
     private Image[] img_nt = new Image[37];
     private Image[] img_ny = new Image[37];
@@ -84,7 +98,7 @@ public class BoardControl extends Canvas {
     }
 
     public void drawScene() {
-        initBase();
+        init();
     }
 
     public void drawScene(MahjongScene scene) {
@@ -92,7 +106,7 @@ public class BoardControl extends Canvas {
     }
 
     public void drawScene(MahjongScene scene, int numberOfRotation) {
-        initBase();
+        init();
         initInfoAndHai(scene, numberOfRotation);
     }
 
@@ -109,12 +123,21 @@ public class BoardControl extends Canvas {
         gc = this.getGraphicsContext2D();
     }
 
-    private void initBase() {
+    private void init() {
+        baseSize = Math.min(this.getWidth(), this.getHeight());
+        ratio = baseSize / 600;
+        haiWidth = 32 * ratio;
+        haiHeight = 45 * ratio;
+        wanpaiWidth = 20 * ratio;
+        wanpaiHeight = 29 * ratio;
+        fontLSize = 24 * ratio;
+        fontSSize = 15 * ratio;
+
         gc.clearRect(0, 0, this.getWidth(), this.getHeight());
         gc.setFill(javafx.scene.paint.Color.rgb(50, 100, 50));
-        gc.fillRect(0, 0, this.getWidth(), this.getHeight());
+        gc.fillRect(0, 0, baseSize, baseSize);
         gc.setFill(javafx.scene.paint.Color.rgb(60, 63, 65));
-        gc.fillRect(200, 200, 200, 200);
+        gc.fillRect(200 * ratio, 200 * ratio, 200 * ratio, 200 * ratio);
     }
 
     private void initInfoAndHai(MahjongScene scene, int numberOfRotation) {
@@ -123,32 +146,32 @@ public class BoardControl extends Canvas {
 
             if (drawnPlayerId != 3 || !scene.isSanma) {
                 gc.setFill(Color.valueOf("#CD5F12"));
-                gc.setFont(javafx.scene.text.Font.font(15));
-                gc.fillText(scene.getZikaze(drawnPlayerId) + " " + String.valueOf(scene.playerPoints[drawnPlayerId]), 200, 368);
+                gc.setFont(javafx.scene.text.Font.font(fontSSize));
+                gc.fillText(scene.getZikaze(drawnPlayerId) + " " + String.valueOf(scene.playerPoints[drawnPlayerId]), 200 * ratio, 368 * ratio);
 
                 gc.setFill(javafx.scene.paint.Color.valueOf("#bbbbbb"));
-                gc.fillText(scene.playerDans[drawnPlayerId] + "R" + scene.playerRates[drawnPlayerId], 200, 383);
+                gc.fillText(scene.playerDans[drawnPlayerId] + "R" + scene.playerRates[drawnPlayerId], 200 * ratio, 383 * ratio);
 
-                gc.setFont(javafx.scene.text.Font.font(15));
-                gc.fillText(scene.playerNames[drawnPlayerId], 200, 398);
+                gc.setFont(javafx.scene.text.Font.font(fontSSize));
+                gc.fillText(scene.playerNames[drawnPlayerId], 200 * ratio, 398 * ratio);
                 draw(scene, drawnPlayerId);
             }
             rotate();
         }
 
         gc.setFill(javafx.scene.paint.Color.valueOf("#bbbbbb"));
-        gc.setFont(javafx.scene.text.Font.font(24));
-        gc.fillText(scene.getBaStr(), 240, 290);
+        gc.setFont(javafx.scene.text.Font.font(fontLSize));
+        gc.fillText(scene.getBaStr(), 240 * ratio, 290 * ratio);
 
-        gc.drawImage(imgUra, 240, 300, 20, 29);
+        gc.drawImage(imgUra, 240 * ratio, 300 * ratio, wanpaiWidth, wanpaiHeight);
         for (int i = 0; i < 4; i++) {
             if (i < scene.dora.size()) {
-                gc.drawImage(getImage(scene.dora.get(i), true, true), 260 + 20 * i, 300, 20, 29);
+                gc.drawImage(getImage(scene.dora.get(i), true, true), 260 * ratio + wanpaiWidth * i, 300 * ratio, wanpaiWidth, wanpaiHeight);
             } else {
-                gc.drawImage(imgUra, 260 + 20 * i, 300, 20, 29);
+                gc.drawImage(imgUra, 260 * ratio + wanpaiWidth * i, 300 * ratio, wanpaiWidth, wanpaiHeight);
             }
         }
-        gc.drawImage(imgUra, 340, 300, 20, 29);
+        gc.drawImage(imgUra, 340 * ratio, 300 * ratio, wanpaiWidth, wanpaiHeight);
     }
 
     private void draw(MahjongScene scene, int playerId) {
@@ -158,35 +181,35 @@ public class BoardControl extends Canvas {
     }
 
     private void drawTehai(MahjongScene scene, int playerId) {
-        int x = 70;
-        int y = 555;
+        double x = 70 * ratio;
+        double y = 555 * ratio;
         for (int hai : scene.tehaiSets.get(playerId)) {
-            gc.drawImage(getImage(hai, true, true), x, y, 32, 45);
-            x += 32;
+            gc.drawImage(getImage(hai, true, true), x, y, haiWidth, haiHeight);
+            x += haiWidth;
         }
 
         if (scene.tsumo[playerId] != -1) {
-            gc.drawImage(getImage(scene.tsumo[playerId], true, true), x + 4, y, 32, 45);
+            gc.drawImage(getImage(scene.tsumo[playerId], true, true), x + 4 * ratio, y, haiWidth, haiHeight);
         }
     }
 
     private void drawDahai(MahjongScene scene, int playerId) {
-        int x = 200;
-        int y = 400;
+        double x = 200 * ratio;
+        double y = 400 * ratio;
         int i = 0;
         for (int hai : scene.stehaiLists.get(playerId)) {
             if (i == scene.reach[playerId]) {
-                gc.drawImage(getImage(hai, scene.tedashiLists.get(playerId).get(i), false), x, y + 13, 45, 32);
-                x += 45;
+                gc.drawImage(getImage(hai, scene.tedashiLists.get(playerId).get(i), false), x, y + (haiHeight - haiWidth), haiHeight, haiWidth);
+                x += haiHeight;
             } else {
-                gc.drawImage(getImage(hai, scene.tedashiLists.get(playerId).get(i), true), x, y, 32, 45);
-                x += 32;
+                gc.drawImage(getImage(hai, scene.tedashiLists.get(playerId).get(i), true), x, y, haiWidth, haiHeight);
+                x += haiWidth;
             }
 
 
             if (i == 5 || i == 11) {
-                x = 200;
-                y += 45;
+                x = 200 * ratio;
+                y += haiHeight;
             }
 
             i++;
@@ -194,25 +217,25 @@ public class BoardControl extends Canvas {
 
         if (scene.da[playerId] != -1) {
             if (scene.daReach) {
-                gc.drawImage(getImage(scene.da[playerId], scene.daTedasi, false), x + 4, y + 17, 45, 32);
+                gc.drawImage(getImage(scene.da[playerId], scene.daTedasi, false), x + 4 * ratio, y + haiHeight - haiWidth + 4 * ratio, haiHeight, haiWidth);
             } else {
-                gc.drawImage(getImage(scene.da[playerId], scene.daTedasi, true), x + 4, y + 4, 32, 45);
+                gc.drawImage(getImage(scene.da[playerId], scene.daTedasi, true), x + 4 * ratio, y + 4 * ratio, haiWidth, haiHeight);
             }
         }
     }
 
     private void drawNaki(MahjongScene scene, int playerId) {
-        int x = 600;
-        int y = 555;
+        double x = 600 * ratio;
+        double y = 555 * ratio;
 
         int nOfKita = scene.kita[playerId];
         if (nOfKita > 0) {
-            x -= 32;
+            x -= haiWidth;
 
-            gc.drawImage(img_nt[30], x, y, 32, 45);
+            gc.drawImage(img_nt[30], x, y, haiWidth, haiHeight);
             gc.setFill(javafx.scene.paint.Color.WHITE);
-            gc.setFont(javafx.scene.text.Font.font(15));
-            gc.fillText("×" + nOfKita, 577, 553);
+            gc.setFont(javafx.scene.text.Font.font(fontSSize));
+            gc.fillText("×" + nOfKita, 577 * ratio, 553 * ratio);
         }
 
         for (Naki naki : scene.naki.get(playerId)) {
@@ -225,31 +248,31 @@ public class BoardControl extends Canvas {
                 }
                 for (int i = n; i >= 0; i--) {
                     if (i == naki.nakiIdx) {
-                        x -= 45;
-                        gc.drawImage(getImage(naki.hai[i], true, false), x, y + 13, 45, 32);
+                        x -= haiHeight;
+                        gc.drawImage(getImage(naki.hai[i], true, false), x, y + haiHeight - haiWidth, haiHeight, haiWidth);
                     } else {
-                        x -= 32;
-                        gc.drawImage(getImage(naki.hai[i], true, true), x, y, 32, 45);
+                        x -= haiWidth;
+                        gc.drawImage(getImage(naki.hai[i], true, true), x, y, haiWidth, haiHeight);
                     }
                 }
             } else if (naki.type == 2) {
                 for (int i = 3; i >= 0; i--) {
-                    x -= 32;
+                    x -= haiWidth;
                     if (i == 0 || i == 3) {
-                        gc.drawImage(imgUra, x, y, 32, 45);
+                        gc.drawImage(imgUra, x, y, haiWidth, haiHeight);
                     } else {
-                        gc.drawImage(getImage(naki.hai[i], true, true), x, y, 32, 45);
+                        gc.drawImage(getImage(naki.hai[i], true, true), x, y, haiWidth, haiHeight);
                     }
                 }
             } else if (naki.type == 4) {
                 for (int i = 2; i >= 0; i--) {
                     if (i == naki.nakiIdx) {
-                        x -= 45;
-                        gc.drawImage(getImage(naki.hai[i], true, false), x, y + 13, 45, 32);
-                        gc.drawImage(getImage(naki.hai[3], true, false), x, y - 19, 45, 32);
+                        x -= haiHeight;
+                        gc.drawImage(getImage(naki.hai[i], true, false), x, y + haiHeight - haiWidth, haiHeight, haiWidth);
+                        gc.drawImage(getImage(naki.hai[3], true, false), x, y + haiHeight - 2 * haiWidth, haiHeight, haiWidth);
                     } else {
-                        x -= 32;
-                        gc.drawImage(getImage(naki.hai[i], true, true), x, y, 32, 45);
+                        x -= haiWidth;
+                        gc.drawImage(getImage(naki.hai[i], true, true), x, y, haiWidth, haiHeight);
                     }
                 }
             } else {
@@ -283,7 +306,7 @@ public class BoardControl extends Canvas {
 
     private void rotate() {
         gc.rotate(-90);
-        gc.translate(-600, 0);
+        gc.translate(-baseSize, 0);
     }
 
 }
