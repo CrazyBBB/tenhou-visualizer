@@ -96,9 +96,6 @@ public class AppController implements Initializable {
 
         this.label.textProperty().bind(BindingHelper.covertOrDefault(this.tableView.getSelectionModel().selectedItemProperty(), ""));
 
-        this.boardControl.widthProperty().bind(Bindings.min(this.scrollPane.widthProperty(), this.scrollPane.heightProperty()));
-        this.boardControl.heightProperty().bind(Bindings.min(this.scrollPane.widthProperty(), this.scrollPane.heightProperty()));
-
         this.boardControl.drawScene();
 
         this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
