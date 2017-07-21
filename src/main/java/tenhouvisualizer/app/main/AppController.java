@@ -136,7 +136,7 @@ public class AppController implements Initializable {
     }
 
     private void resizeBoardControl() {
-        double w = this.scrollPane.getWidth();
+        double w = this.scrollPane.getWidth() - 5;
         double h = this.scrollPane.getHeight() - 30;
 
         this.boardControl.setWidth(Math.min(w, h));
