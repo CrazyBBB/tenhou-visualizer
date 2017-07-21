@@ -6,6 +6,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tenhouvisualizer.domain.model.Naki;
 import tenhouvisualizer.domain.model.MahjongScene;
 
@@ -16,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class BoardControl extends Canvas {
+
+    private final static Logger log = LoggerFactory.getLogger(BoardControl.class);
+
     private GraphicsContext gc;
 
     private double baseSize;
@@ -128,9 +133,9 @@ public class BoardControl extends Canvas {
         fontLSize = 24 * ratio;
         fontSSize = 15 * ratio;
 
-        gc.clearRect(0, 0, baseSize, baseSize);
+        gc.clearRect(0, 0, this.getWidth(), this.getHeight());
         gc.setFill(javafx.scene.paint.Color.rgb(50, 100, 50));
-        gc.fillRect(0, 0, this.getWidth(), this.getHeight());
+        gc.fillRect(0, 0, baseSize, baseSize);
         gc.setFill(javafx.scene.paint.Color.rgb(60, 63, 65));
         gc.fillRect(200 * ratio, 200 * ratio, 200 * ratio, 200 * ratio);
     }

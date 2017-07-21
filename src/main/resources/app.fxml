@@ -59,7 +59,7 @@
                 <VBox alignment="CENTER">
                     <HBox alignment="CENTER">
                         <VBox>
-                            <BoardControl fx:id="boardControl" height="600.0" width="600.0"/>
+                            <BoardControl fx:id="boardControl"/>
                             <HBox>
                                 <Button fx:id="rotateLeftButton" onAction="#rotateLeft">
                                     <graphic>

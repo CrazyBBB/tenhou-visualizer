@@ -14,9 +14,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tenhouvisualizer.Main;
 import tenhouvisualizer.app.BindingHelper;
 import tenhouvisualizer.domain.model.InfoSchema;
+import tenhouvisualizer.domain.model.MahjongScene;
 import tenhouvisualizer.domain.service.DatabaseService;
 
 import java.io.IOException;
@@ -26,6 +29,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
+
+    private final static Logger log = LoggerFactory.getLogger(AppController.class);
+
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyMMdd");
 
     @FXML
@@ -66,6 +72,7 @@ public class AppController implements Initializable {
 
     private final DatabaseService databaseService;
 
+    private MahjongScene currentScene = null;
     private int numberOfRotation = 0;
 
     public AppController() {
@@ -96,7 +103,8 @@ public class AppController implements Initializable {
 
         this.label.textProperty().bind(BindingHelper.covertOrDefault(this.tableView.getSelectionModel().selectedItemProperty(), ""));
 
-        this.boardControl.drawScene();
+        this.scrollPane.widthProperty().addListener(obs -> resizeBoardControl());
+        this.scrollPane.heightProperty().addListener(obs -> resizeBoardControl());
 
         this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
             if (newInfo != null) {
@@ -113,16 +121,31 @@ public class AppController implements Initializable {
         this.mjlogTreeControl.getSelectionModel().selectedItemProperty().addListener((obs, oldMjlog, newMjlog) -> {
             if (newMjlog != null) {
                 if (newMjlog.isLeaf()) {
-                    this.boardControl.drawScene(newMjlog.getValue().getScene(), numberOfRotation);
+                    currentScene = newMjlog.getValue().getScene();
+                    this.boardControl.drawScene(currentScene, numberOfRotation);
                     this.label2.setText(newMjlog.getValue().getIdx() + "/" + newMjlog.getParent().getChildren().size()
                             + " " + newMjlog.getParent().toString());
                 } else {
                     this.mjlogTreeControl.getSelectionModel().getSelectedItem().setExpanded(true);
                     this.label2.setText(newMjlog.toString());
+                    currentScene = newMjlog.getChildren().get(0).getValue().getScene();
                     this.boardControl.drawScene(newMjlog.getChildren().get(0).getValue().getScene(), numberOfRotation);
                 }
             }
         });
+    }
+
+    private void resizeBoardControl() {
+        double w = this.scrollPane.getWidth();
+        double h = this.scrollPane.getHeight() - 30;
+
+        this.boardControl.setWidth(Math.min(w, h));
+        this.boardControl.setHeight(Math.min(w, h));
+        if (currentScene != null) {
+            this.boardControl.drawScene(currentScene, numberOfRotation);
+        } else {
+            this.boardControl.drawScene();
+        }
     }
 
     public void rotateLeft(ActionEvent actionEvent) {
