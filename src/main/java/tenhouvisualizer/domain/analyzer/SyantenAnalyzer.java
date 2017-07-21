@@ -131,7 +131,7 @@ public class SyantenAnalyzer implements IAnalyzer {
 
     @Override
     public void draw(int position, int tsumoHai) {
-        stehai.get(position).add(tsumoHai);
+        tsumo[position] = tsumoHai;
         tehai[position][tsumoHai / 4]++;
         prev = tsumoHai;
     }
@@ -143,7 +143,6 @@ public class SyantenAnalyzer implements IAnalyzer {
             beforeSyanten = MahjongUtils.computeSyanten(tehai[position], naki.get(position).size());
         }
 
-        stehai.get(position).remove(kiriHai);
         tehai[position][kiriHai / 4]--;
         da[position] = kiriHai;
         daTedashi = prev != kiriHai;
@@ -155,7 +154,11 @@ public class SyantenAnalyzer implements IAnalyzer {
                 used = true;
             }
         }
-
+        if (tsumo[position] != -1) {
+            stehai.get(position).add(tsumo[position]);
+            Arrays.fill(tsumo, -1);
+        }
+        stehai.get(position).remove(kiriHai);
         dahai.get(position).add(kiriHai);
         tedashi.get(position).add(prev != kiriHai);
         Arrays.fill(da, -1);
@@ -196,6 +199,8 @@ public class SyantenAnalyzer implements IAnalyzer {
 
     @Override
     public void ankan(int position, int[] selfHai) {
+        stehai.get(position).add(tsumo[position]);
+        Arrays.fill(tsumo, -1);
         naki.get(position).add(new Naki(selfHai, 2, -1));
 
         for (int i = 0; i < 3; i++) {
@@ -252,6 +257,8 @@ public class SyantenAnalyzer implements IAnalyzer {
 
     @Override
     public void kita(int position) {
+        stehai.get(position).add(tsumo[position]);
+        Arrays.fill(tsumo, -1);
         kita[position]++;
 
         tehai[position][30]--;
