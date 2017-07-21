@@ -3,6 +3,8 @@ package tenhouvisualizer.domain.task;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tenhouvisualizer.domain.analyzer.ParseHandler;
 import tenhouvisualizer.domain.model.MahjongScene;
 import tenhouvisualizer.domain.analyzer.SyantenAnalyzer;
@@ -19,6 +21,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class AnalyzeZipTask extends Task {
+
+    private final static Logger log = LoggerFactory.getLogger(AnalyzeZipTask.class);
+
     private final File selectedFile;
     private final ObservableList<MahjongScene> observableList;
 
@@ -35,9 +40,9 @@ public class AnalyzeZipTask extends Task {
         try (ZipFile zipFile = new ZipFile(this.selectedFile)) {
             int workMax = zipFile.size();
             long workDone = 0;
-            int position = zipFile.getName().charAt(zipFile.getName().length() - 7) - '0';
             for (Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements();) {
                 ZipEntry zipEntry = e.nextElement();
+                int position = zipEntry.getName().charAt(zipEntry.getName().length() - 7) - '0';
                 SyantenAnalyzer analyzer = new SyantenAnalyzer(position);
                 ParseHandler parseHandler = new ParseHandler(analyzer);
                 try (InputStream is = zipFile.getInputStream(zipEntry);
