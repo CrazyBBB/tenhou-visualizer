@@ -172,6 +172,9 @@ public class BoardControl extends Canvas {
             }
         }
         gc.drawImage(imgUra, 340 * ratio, 300 * ratio, wanpaiWidth, wanpaiHeight);
+
+        gc.setFont(javafx.scene.text.Font.font(fontSSize));
+        gc.fillText("残り " + scene.nokori, 280 * ratio, 345 * ratio);
     }
 
     private void draw(MahjongScene scene, int playerId) {

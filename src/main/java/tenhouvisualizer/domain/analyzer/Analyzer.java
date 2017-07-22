@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.TreeSet;
 
 public class Analyzer implements IAnalyzer {
-    private static String[] haiStr = {
+    private final static String[] haiStr = {
             "1m", "1m", "1m", "1m", "2m", "2m", "2m", "2m", "3m", "3m", "3m", "3m",
             "4m", "4m", "4m", "4m", "赤5m", "5m", "5m", "5m", "6m", "6m", "6m", "6m",
             "7m", "7m", "7m", "7m", "8m", "8m", "8m", "8m", "9m", "9m", "9m", "9m",
@@ -24,7 +24,7 @@ public class Analyzer implements IAnalyzer {
             "西", "西", "西", "西", "北", "北", "北", "北",
             "白", "白", "白", "白", "發", "發", "發", "發", "中", "中", "中", "中"
     };
-    private static String[] kazeStr = {"東", "南", "西", "北"};
+    private final static String[] kazeStr = {"東", "南", "西", "北"};
 
     private ArrayList<Kyoku> oriScenesList = new ArrayList<>();
     private ArrayList<MahjongScene> oriScenes;
@@ -52,6 +52,7 @@ public class Analyzer implements IAnalyzer {
     private int oya = 0;
     private int ma = 0;
     private ArrayList<Integer> doraDisplays;
+    private int nokori;
 
     private int prev = -1;
 
@@ -96,6 +97,7 @@ public class Analyzer implements IAnalyzer {
                 honba,
                 0,
                 new ArrayList<>(doraDisplays),
+                nokori,
                 str));
     }
 
@@ -110,7 +112,7 @@ public class Analyzer implements IAnalyzer {
         this.playerRates = playerRates;
         this.playerDans = playerDans;
 
-        this.ma = isSanma ? 3 : 4;
+        ma = isSanma ? 3 : 4;
     }
 
     @Override
@@ -153,6 +155,8 @@ public class Analyzer implements IAnalyzer {
                 tehai[i][hai / 4]++;
             }
         }
+
+        nokori = isSanma ? 27 * 4 - 13 * 3 - 14 : 34 * 4 - 13 * 4 - 14;
     }
 
     @Override
@@ -162,6 +166,7 @@ public class Analyzer implements IAnalyzer {
 
     @Override
     public void draw(int position, int tsumoHai) {
+        nokori--;
         tsumo[position] = tsumoHai;
         saveScene(heroPosition, kazeStr[(position - oya + ma) % ma] + "家 ツモ" + haiStr[tsumoHai]);
 

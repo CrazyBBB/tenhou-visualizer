@@ -36,6 +36,7 @@ public class SyantenAnalyzer implements IAnalyzer {
     private int kyoku = -1;
     private int honba = 0;
     private ArrayList<Integer> doraDisplays;
+    private int nokori = 0;
     private boolean used = false;
 
     private int prev = -1;
@@ -79,7 +80,9 @@ public class SyantenAnalyzer implements IAnalyzer {
                 kyoku,
                 honba,
                 0,
-                new ArrayList<>(doraDisplays)));
+                new ArrayList<>(doraDisplays),
+                nokori
+        ));
     }
 
     public ArrayList<MahjongScene> getOriScenes() {
@@ -127,10 +130,13 @@ public class SyantenAnalyzer implements IAnalyzer {
                 tehai[i][hai / 4]++;
             }
         }
+
+        nokori = isSanma ? 27 * 4 - 13 * 3 - 14 : 34 * 4 - 13 * 4 - 14;
     }
 
     @Override
     public void draw(int position, int tsumoHai) {
+        nokori--;
         tsumo[position] = tsumoHai;
         tehai[position][tsumoHai / 4]++;
         prev = tsumoHai;

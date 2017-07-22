@@ -26,13 +26,14 @@ public class MahjongScene {
     int honba;
     int kyotaku;
     public ArrayList<Integer> dora;
+    public int nokori;
 
     private String str;
 
     static final String[] bakazeStr = {"東", "南", "西", "北"};
     static final String[] maStr = {"三", "四"};
 
-    public MahjongScene(boolean isSanma, int heroPosition, String[] playerNames, String[] playerDans, int[] playerRates, int[] playerPoints, ArrayList<TreeSet<Integer>> tehaiSets, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> stehaiLists, ArrayList<ArrayList<Boolean>> tedashiLists, int[] tsumo, int[] da, boolean daTedasi, boolean daReach, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora) {
+    public MahjongScene(boolean isSanma, int heroPosition, String[] playerNames, String[] playerDans, int[] playerRates, int[] playerPoints, ArrayList<TreeSet<Integer>> tehaiSets, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> stehaiLists, ArrayList<ArrayList<Boolean>> tedashiLists, int[] tsumo, int[] da, boolean daTedasi, boolean daReach, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora, int nokori) {
         this.isSanma = isSanma;
         this.heroPosition = heroPosition;
         this.playerNames = playerNames;
@@ -54,9 +55,10 @@ public class MahjongScene {
         this.honba = honba;
         this.kyotaku = kyotaku;
         this.dora = dora;
+        this.nokori = nokori;
     }
 
-    public MahjongScene(boolean isSanma, int heroPosition, String[] playerNames, String[] playerDans, int[] playerRates, int[] playerPoints, ArrayList<TreeSet<Integer>> tehaiSets, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> stehaiLists, ArrayList<ArrayList<Boolean>> tedashiLists, int[] tsumo, int[] da, boolean daTedasi, boolean daReach, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora, String str) {
+    public MahjongScene(boolean isSanma, int heroPosition, String[] playerNames, String[] playerDans, int[] playerRates, int[] playerPoints, ArrayList<TreeSet<Integer>> tehaiSets, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> stehaiLists, ArrayList<ArrayList<Boolean>> tedashiLists, int[] tsumo, int[] da, boolean daTedasi, boolean daReach, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora, int nokori, String str) {
 
         this.isSanma = isSanma;
         this.heroPosition = heroPosition;
@@ -79,6 +81,7 @@ public class MahjongScene {
         this.honba = honba;
         this.kyotaku = kyotaku;
         this.dora = dora;
+        this.nokori = nokori;
         this.str = str;
     }
 
