@@ -50,9 +50,6 @@ public class ParseHandler extends DefaultHandler {
     private int[] playerRates = new int[4];
     private String[] playerDans = new String[4];
 
-    private int kyoku = -1;
-    private int honba = 0;
-
     private IAnalyzer analyzer;
 
     public ParseHandler(IAnalyzer analyzer) {
@@ -164,13 +161,10 @@ public class ParseHandler extends DefaultHandler {
         String seedCsv = attributes.getValue("seed");
         String[] splitedSeedCsv = seedCsv.split(",");
         int seedElementFirst = Integer.valueOf(splitedSeedCsv[0]);
-        if (seedElementFirst % 4 + 1 == kyoku) {
-            honba++;
-        } else {
-            honba = 0;
-        }
         int bakaze = seedElementFirst / 4;
-        kyoku = seedElementFirst % 4 + 1;
+        int kyoku = seedElementFirst % 4 + 1;
+        int honba = Integer.valueOf(splitedSeedCsv[1]);
+        int kyotaku = Integer.valueOf(splitedSeedCsv[2]);
         int firstDoraDisplay = Integer.valueOf(splitedSeedCsv[5]);
 
         ArrayList<ArrayList<Integer>> playerHaipais = new ArrayList<>();
@@ -187,7 +181,7 @@ public class ParseHandler extends DefaultHandler {
             }
         }
 
-        analyzer.startKyoku(playerPoints, playerHaipais, oya, bakaze, kyoku, honba, firstDoraDisplay);
+        analyzer.startKyoku(playerPoints, playerHaipais, oya, bakaze, kyoku, honba, kyotaku, firstDoraDisplay);
     }
 
     private void visitTUVW(String tagName) {

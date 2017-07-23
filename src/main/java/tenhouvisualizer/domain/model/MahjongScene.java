@@ -23,8 +23,8 @@ public class MahjongScene {
     public int[] kita;
     int bakaze;
     int kyoku;
-    int honba;
-    int kyotaku;
+    public int honba;
+    public int kyotaku;
     public ArrayList<Integer> dora;
     public int nokori;
 
@@ -104,7 +104,6 @@ public class MahjongScene {
 
 
     public String getBaStr() {
-        return bakazeStr[bakaze] + kyoku + "局" +
-                honba + "本場";
+        return bakazeStr[bakaze] + kyoku + "局";
     }
 }

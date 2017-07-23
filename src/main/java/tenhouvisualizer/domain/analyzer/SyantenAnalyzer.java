@@ -35,6 +35,7 @@ public class SyantenAnalyzer implements IAnalyzer {
     private int bakaze = 0;
     private int kyoku = -1;
     private int honba = 0;
+    private int kyotaku = 0;
     private ArrayList<Integer> doraDisplays;
     private int nokori = 0;
     private boolean used = false;
@@ -79,7 +80,7 @@ public class SyantenAnalyzer implements IAnalyzer {
                 bakaze,
                 kyoku,
                 honba,
-                0,
+                kyotaku,
                 new ArrayList<>(doraDisplays),
                 nokori
         ));
@@ -98,7 +99,7 @@ public class SyantenAnalyzer implements IAnalyzer {
     }
 
     @Override
-    public void startKyoku(int[] playerPoints, ArrayList<ArrayList<Integer>> playerHaipais, int oya, int bakaze, int kyoku, int honba, int firstDoraDisplay) {
+    public void startKyoku(int[] playerPoints, ArrayList<ArrayList<Integer>> playerHaipais, int oya, int bakaze, int kyoku, int honba, int kyotaku, int firstDoraDisplay) {
         this.playerPoints = playerPoints;
         this.bakaze = bakaze;
         this.kyoku = kyoku;
@@ -282,6 +283,7 @@ public class SyantenAnalyzer implements IAnalyzer {
         if (step == 1) {
             reach[position] = dahai.get(position).size();
         } else {
+            kyotaku++;
             playerPoints[position] -= 1000;
         }
     }

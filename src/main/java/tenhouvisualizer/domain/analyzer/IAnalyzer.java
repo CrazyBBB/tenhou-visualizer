@@ -49,8 +49,7 @@ public interface IAnalyzer {
      * @param firstDoraDisplay 最初の表示牌
      *                         todo 供託追加
      */
-    default void startKyoku(int[] playerPoints, ArrayList<ArrayList<Integer>> playerHaipais, int oya, int bakaze,
-                            int kyoku, int honba, int firstDoraDisplay) {
+    default void startKyoku(int[] playerPoints, ArrayList<ArrayList<Integer>> playerHaipais, int oya, int bakaze, int kyoku, int honba, int kyotaku, int firstDoraDisplay) {
     }
 
     /**

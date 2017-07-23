@@ -162,6 +162,7 @@ public class BoardControl extends Canvas {
         gc.setFill(javafx.scene.paint.Color.valueOf("#bbbbbb"));
         gc.setFont(javafx.scene.text.Font.font(fontLSize));
         gc.fillText(scene.getBaStr(), 240 * ratio, 290 * ratio);
+        drawTenbou(scene);
 
         gc.drawImage(imgUra, 240 * ratio, 300 * ratio, wanpaiWidth, wanpaiHeight);
         for (int i = 0; i < 4; i++) {
@@ -173,8 +174,28 @@ public class BoardControl extends Canvas {
         }
         gc.drawImage(imgUra, 340 * ratio, 300 * ratio, wanpaiWidth, wanpaiHeight);
 
-        gc.setFont(javafx.scene.text.Font.font(fontSSize));
+        gc.setFill(Color.valueOf("#bbbbbb"));
+        gc.setFont(javafx.scene.text.Font.font(14 * ratio));
         gc.fillText("残り " + scene.nokori, 280 * ratio, 345 * ratio);
+    }
+
+    private void drawTenbou(MahjongScene scene) {
+        gc.setFill(Color.valueOf("#dddddd"));
+        gc.fillRect(315 * ratio, 275 * ratio, 35 * ratio, 5 * ratio);
+        gc.fillRect(315 * ratio, 285 * ratio, 35 * ratio, 5 * ratio);
+        gc.setFill(Color.BLACK);
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 4; j++) {
+                gc.fillOval((330 + 2 * j) * ratio, (276 + 2 * i) * ratio, 1 * ratio, 1 * ratio);
+            }
+        }
+        gc.setFill(Color.RED);
+        gc.fillOval(332 * ratio, 286 * ratio, 3 * ratio, 3 * ratio);
+
+        gc.setFill(Color.valueOf("#bbbbbb"));
+        gc.setFont(javafx.scene.text.Font.font(9 * ratio));
+        gc.fillText(String.valueOf(scene.honba), 355 * ratio, 280 * ratio);
+        gc.fillText(String.valueOf(scene.kyotaku), 355 * ratio, 290 * ratio);
     }
 
     private void draw(MahjongScene scene, int playerId) {
@@ -238,7 +259,7 @@ public class BoardControl extends Canvas {
             x -= haiWidth;
 
             gc.drawImage(img_nt[30], x, y, haiWidth, haiHeight);
-            gc.setFill(javafx.scene.paint.Color.WHITE);
+            gc.setFill(Color.valueOf("#bbbbbb"));
             gc.setFont(javafx.scene.text.Font.font(fontSSize));
             gc.fillText("×" + nOfKita, 577 * ratio, 553 * ratio);
         }

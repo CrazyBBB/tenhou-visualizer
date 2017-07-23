@@ -49,6 +49,7 @@ public class Analyzer implements IAnalyzer {
     private int bakaze = 0;
     private int kyoku = -1;
     private int honba = 0;
+    private int kyotaku = 0;
     private int oya = 0;
     private int ma = 0;
     private ArrayList<Integer> doraDisplays;
@@ -95,7 +96,7 @@ public class Analyzer implements IAnalyzer {
                 bakaze,
                 kyoku,
                 honba,
-                0,
+                kyotaku,
                 new ArrayList<>(doraDisplays),
                 nokori,
                 str));
@@ -121,11 +122,12 @@ public class Analyzer implements IAnalyzer {
     }
 
     @Override
-    public void startKyoku(int[] playerPoints, ArrayList<ArrayList<Integer>> playerHaipais, int oya, int bakaze, int kyoku, int honba, int firstDoraDisplay) {
+    public void startKyoku(int[] playerPoints, ArrayList<ArrayList<Integer>> playerHaipais, int oya, int bakaze, int kyoku, int honba, int kyotaku, int firstDoraDisplay) {
         this.playerPoints = playerPoints;
         this.bakaze = bakaze;
         this.kyoku = kyoku;
         this.honba = honba;
+        this.kyotaku = kyotaku;
         this.oya = oya;
 
         oriScenes = new ArrayList<>();
@@ -315,6 +317,7 @@ public class Analyzer implements IAnalyzer {
             reach[position] = dahai.get(position).size();
             daReach = true;
         } else {
+            kyotaku++;
             playerPoints[position] -= 1000;
         }
     }
