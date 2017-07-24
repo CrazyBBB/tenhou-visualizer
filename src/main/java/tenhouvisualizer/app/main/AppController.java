@@ -5,28 +5,39 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tenhouvisualizer.Main;
 import tenhouvisualizer.app.BindingHelper;
+import tenhouvisualizer.domain.AnimationGifWriter;
 import tenhouvisualizer.domain.model.InfoSchema;
 import tenhouvisualizer.domain.model.MahjongScene;
+import tenhouvisualizer.domain.model.Mjlog;
 import tenhouvisualizer.domain.service.DatabaseService;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static java.awt.image.BufferedImage.TYPE_INT_ARGB_PRE;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 public class AppController implements Initializable {
 
@@ -210,5 +221,66 @@ public class AppController implements Initializable {
         stage.setScene(scene);
         stage.setTitle("解析");
         stage.show();
+    }
+
+    public void saveAsImage(ActionEvent actionEvent) throws IOException {
+        if (this.tableView.getSelectionModel().getSelectedItem() == null) {
+            // TableViewのアイテムが選択されてなければ、何もしない
+            return;
+        }
+        TreeItem<Mjlog> mjlogTreeItem = this.mjlogTreeControl.getSelectionModel().getSelectedItem();
+        if (mjlogTreeItem == null) {
+            // TreeViewのアイテムが選択されてなければ、何もしない
+            return;
+        }
+        if (mjlogTreeItem.isLeaf()) {
+            // sceneツリービューで、シーンを選択していれば、静止画として保存
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("選択中のシーンを画像として保存");
+            fileChooser.setInitialDirectory(new File("."));
+            FileChooser.ExtensionFilter jpgFilter = new FileChooser.ExtensionFilter("JPEG", "*.jpg");
+            FileChooser.ExtensionFilter pngFilter = new FileChooser.ExtensionFilter("PNG", "*.png");
+            FileChooser.ExtensionFilter gifFilter = new FileChooser.ExtensionFilter("GIF", "*.gif");
+            fileChooser.getExtensionFilters().addAll(jpgFilter, pngFilter, gifFilter);
+            File file = fileChooser.showSaveDialog(this.root.getScene().getWindow());
+            if (file != null) {
+                int width = 600;
+                int height = 600;
+                BoardControl bc = new BoardControl();
+                bc.setWidth(width);
+                bc.setHeight(height);
+                WritableImage writableImage = new WritableImage(width, height);
+                bc.drawScene(mjlogTreeItem.getValue().getScene());
+                bc.snapshot(null, writableImage);
+                FileChooser.ExtensionFilter selectedExtensionFilter = fileChooser.getSelectedExtensionFilter();
+                String formatName = selectedExtensionFilter.getDescription();
+                ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), formatName, file);
+            }
+        } else {
+            // sceneツリービューで、ゲームを選択していれば、アニメーションGIFとして保存
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("選択中の局をアニメーション画像として保存");
+            fileChooser.setInitialDirectory(new File("."));
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("Animation GIF", "*.gif"));
+            File file = fileChooser.showSaveDialog(this.root.getScene().getWindow());
+            if (file != null) {
+                int width = 600;
+                int height = 600;
+                BoardControl bc = new BoardControl();
+                bc.setWidth(width);
+                bc.setHeight(height);
+                try (AnimationGifWriter writer = new AnimationGifWriter(file, width, height)) {
+                    WritableImage writableImage = new WritableImage(width, height);
+                    BufferedImage bufferedImage = new BufferedImage(width, height, TYPE_INT_ARGB_PRE);
+                    for (TreeItem<Mjlog> i : mjlogTreeItem.getChildren()) {
+                        bc.drawScene(i.getValue().getScene());
+                        bc.snapshot(null, writableImage);
+                        SwingFXUtils.fromFXImage(writableImage, bufferedImage);
+                        writer.writeImage(bufferedImage);
+                    }
+                }
+            }
+        }
     }
 }
