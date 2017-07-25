@@ -12,8 +12,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -28,9 +35,13 @@ import tenhouvisualizer.domain.model.Mjlog;
 import tenhouvisualizer.domain.service.DatabaseService;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -282,5 +293,26 @@ public class AppController implements Initializable {
                 }
             }
         }
+    }
+
+    public void showAbout(ActionEvent actionEvent) throws URISyntaxException {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Tenhou Visualizer について");
+        dialog.initOwner(this.root.getScene().getWindow());
+        dialog.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+        dialog.getDialogPane().setGraphic(new ImageView(new Image("/logo.png")));
+        dialog.getDialogPane().setHeaderText("TenhouVisualizer v0.3");
+        final Hyperlink oss = new Hyperlink("open-source software");
+        final URI uri = new URI("https://crazybbb.github.io/tenhou-visualizer/thirdparty");
+        oss.setOnAction(e -> {
+            try {
+                Desktop.getDesktop().browse(uri);
+            } catch (IOException e1) {
+                throw new UncheckedIOException(e1);
+            }
+        });
+        dialog.getDialogPane().setContent(new TextFlow(new Label("Powered by "), oss));
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
     }
 }

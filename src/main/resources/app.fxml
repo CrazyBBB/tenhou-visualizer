@@ -37,6 +37,9 @@
                     </graphic>
                 </MenuItem>
             </Menu>
+            <Menu text="ヘルプ">
+                <MenuItem text="Tenhou Visualizer について" onAction="#showAbout" />
+            </Menu>
         </MenuBar>
     </top>
     <center>
