@@ -4,8 +4,8 @@ import javafx.scene.control.TreeView;
 import tenhouvisualizer.domain.analyzer.Analyzer;
 import tenhouvisualizer.domain.analyzer.ParseHandler;
 import tenhouvisualizer.domain.model.Kyoku;
-import tenhouvisualizer.domain.model.Mjlog;
 import tenhouvisualizer.domain.model.MahjongScene;
+import tenhouvisualizer.domain.model.Mjlog;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;

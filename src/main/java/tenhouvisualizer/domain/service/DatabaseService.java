@@ -140,9 +140,10 @@ public class DatabaseService implements Closeable {
     public String findMjlogById(@NotNull String id) {
         try {
             findMjlogByIdStatement.setString(1, id);
-            ResultSet rs = this.findMjlogByIdStatement.executeQuery();
-            if (rs.next()) {
-                return rs.getString(1);
+            try (ResultSet rs = this.findMjlogByIdStatement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString(1);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException();
@@ -252,18 +253,19 @@ public class DatabaseService implements Closeable {
                 preparedStatement.setString(3, playerName);
                 preparedStatement.setString(4, playerName);
             }
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                result.add(new InfoSchema(
-                        rs.getString("id"),
-                        rs.getString("ma"),
-                        rs.getString("sou"),
-                        rs.getString("first"),
-                        rs.getString("second"),
-                        rs.getString("third"),
-                        rs.getString("fourth"),
-                        LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(rs.getString("date_time")))
-                ));
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                while (rs.next()) {
+                    result.add(new InfoSchema(
+                            rs.getString("id"),
+                            rs.getString("ma"),
+                            rs.getString("sou"),
+                            rs.getString("first"),
+                            rs.getString("second"),
+                            rs.getString("third"),
+                            rs.getString("fourth"),
+                            LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(rs.getString("date_time")))
+                    ));
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
