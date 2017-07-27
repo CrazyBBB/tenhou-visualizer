@@ -31,7 +31,7 @@ public class DownloadService {
     public final ObservableList<InfoSchema> infoSchemas = FXCollections.observableArrayList();
     private final Set<String> storedInfoSchemaIds = new HashSet<>();
     private final static Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
-    private final static Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
+    private final static Pattern playerPattern = Pattern.compile("(.+)\\(([+\\-\\d.]+)\\)");
 
     private final DatabaseService databaseService;
 
@@ -80,18 +80,36 @@ public class DownloadService {
             String id = matcher.group(1);
             if (this.databaseService.existsIdInINFO(id)) return;
 
-            String ma = columns[2].substring(0, 1);
-            String sou = columns[2].substring(2, 3);
+            boolean isSanma = columns[2].substring(0, 1).equals("三");
+            boolean isTonnan = columns[2].substring(2, 3).equals("南");
+            int minute = Integer.parseInt(columns[1]);
             String[] playerAndScore = columns[4].split(" ");
             String[] players = new String[4];
+            int[] scores = new int[4];
             for (int i = 0; i < playerAndScore.length; i++) {
                 Matcher playerMatcher = playerPattern.matcher(playerAndScore[i]);
-                if (playerMatcher.find()) players[i] = playerMatcher.group(1);
+                if (playerMatcher.find()) {
+                    players[i] = playerMatcher.group(1);
+                    scores[i] = (int) Float.parseFloat(playerMatcher.group(2));
+                }
             }
             LocalTime localTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(columns[0]));
             LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-            InfoSchema infoSchema = new InfoSchema(id, ma, sou, players[0], players[1], players[2], players[3], localDateTime);
-            databaseService.saveInfo(infoSchema);
+            databaseService.saveInfo(
+                    id,
+                    isSanma,
+                    isTonnan,
+                    localDateTime,
+                    minute,
+                    players[0],
+                    players[1],
+                    players[2],
+                    players[3],
+                    scores[0],
+                    scores[1],
+                    scores[2],
+                    scores[3]
+            );
         }
     }
 
@@ -111,7 +129,7 @@ public class DownloadService {
     public void downloadMjlogToDatabase(InfoSchema schema) throws IOException, SQLException {
         URL url = new URL("http://tenhou.net/0/log/?" + schema.id);
         try (InputStream is = url.openStream();
-        InputStreamReader isr = new InputStreamReader(is)) {
+             InputStreamReader isr = new InputStreamReader(is)) {
             String content = consumeReader(isr);
             databaseService.saveMjlog(schema.id, content);
             this.storedInfoSchemaIds.add(schema.id);

@@ -40,7 +40,7 @@ public class InfoSchemaTableRow extends TableRow<InfoSchema> {
             MenuItem filterWithThird = new MenuItem("「 " + item.third + "」で検索");
             filterWithThird.setOnAction(e -> updateFilter(item.third));
             contextMenu.getItems().addAll(filterWithFirst, filterWithSecond, filterWithThird);
-            if (!"".equals(item.fourth)) {
+            if (item.fourth != null) {
                 MenuItem filterWithFourth = new MenuItem("「 " + item.fourth + "」で検索");
                 filterWithFourth.setOnAction(e -> updateFilter(item.fourth));
                 contextMenu.getItems().add(filterWithFourth);

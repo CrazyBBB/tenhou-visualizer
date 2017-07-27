@@ -38,12 +38,12 @@ public class DatabaseService implements Closeable {
         Class.forName("org.sqlite.JDBC");
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + (file == null ? "" : file));
         initialize();
-        this.insertMjlogStatement = connection.prepareStatement("INSERT INTO MJLOG VALUES(?, ?);");
+        this.insertMjlogStatement = connection.prepareStatement("INSERT INTO MJLOG VALUES(?, ?);", Statement.RETURN_GENERATED_KEYS);
         this.findAllMjlogStatement = connection.prepareStatement("SELECT id FROM MJLOG;");
         this.findAllMjlogContent = connection.prepareStatement("SELECT content FROM MJLOG;");
         this.findMjlogByIdStatement = connection.prepareStatement("SELECT content FROM MJLOG WHERE id = ?;");
         this.removeMjlogByIdStatement = connection.prepareStatement("DELETE FROM MJLOG WHERE id = ?;");
-        this.insertInfoStatement = connection.prepareStatement("INSERT INTO INFO VALUES(?, ?, ?, ?, ?, ?, ?, ?);");
+        this.insertInfoStatement = connection.prepareStatement("INSERT INTO INFO VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
         this.findAllInfoStatement = connection.prepareStatement("SELECT * FROM INFO;");
         this.findAllExistsInfoStatement = connection.prepareStatement("SELECT * FROM INFO WHERE id in (SELECT id FROM MJLOG);");
         this.insertMjlogIndexStatement = connection.prepareStatement("INSERT INTO MJLOGINDEX VALUES(?);");
@@ -58,8 +58,9 @@ public class DatabaseService implements Closeable {
         Statement statement = this.connection.createStatement();
         statement.execute(sql);
 
-        sql = "CREATE TABLE IF NOT EXISTS INFO(id TEXT PRIMARY KEY, ma TEXT, sou TEXT," +
-                " first TEXT, second TEXT, third TEXT, fourth TEXT, date_time TEXT);";
+        sql = "CREATE TABLE IF NOT EXISTS INFO(id TEXT PRIMARY KEY, is_sanma BOOLEAN, is_tonnan BOOLEAN," +
+                " date_time DATETIME, minute INT, first TEXT, second TEXT, third TEXT, fourth TEXT," +
+                " first_score INT, second_score INT, third_score INT, fourth_score INT);";
         statement = this.connection.createStatement();
         statement.execute(sql);
 
@@ -72,18 +73,30 @@ public class DatabaseService implements Closeable {
         this.insertMjlogStatement.setString(1, id);
         this.insertMjlogStatement.setString(2, content);
         this.insertMjlogStatement.executeUpdate();
+        try (ResultSet generatedKeys = this.insertMjlogStatement.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                log.debug("" + generatedKeys.getLong(1));
+            }
+        }
     }
 
-    public void saveInfo(InfoSchema infoSchema) {
+    public void saveInfo(String id, boolean isSanma, boolean isTonnan, LocalDateTime dateTime, int minute,
+                         String first, String second, String third, String fourth,
+                         int firstScore, int secondScore, int thirdScore, int fourthScore) {
         try {
-            this.insertInfoStatement.setString(1, infoSchema.id);
-            this.insertInfoStatement.setString(2, infoSchema.ma);
-            this.insertInfoStatement.setString(3, infoSchema.sou);
-            this.insertInfoStatement.setString(4, infoSchema.first);
-            this.insertInfoStatement.setString(5, infoSchema.second);
-            this.insertInfoStatement.setString(6, infoSchema.third);
-            this.insertInfoStatement.setString(7, infoSchema.fourth);
-            this.insertInfoStatement.setString(8, infoSchema.dateTime.toString());
+            this.insertInfoStatement.setString(1, id);
+            this.insertInfoStatement.setInt(2, isSanma ? 1 : 0);
+            this.insertInfoStatement.setInt(3, isTonnan ? 1 : 0);
+            this.insertInfoStatement.setString(4, dateTime.toString());
+            this.insertInfoStatement.setInt(5, minute);
+            this.insertInfoStatement.setString(6, first);
+            this.insertInfoStatement.setString(7, second);
+            this.insertInfoStatement.setString(8, third);
+            this.insertInfoStatement.setString(9, fourth);
+            this.insertInfoStatement.setInt(10, firstScore);
+            this.insertInfoStatement.setInt(11, secondScore);
+            this.insertInfoStatement.setInt(12, thirdScore);
+            this.insertInfoStatement.setInt(13, fourthScore);
             this.insertInfoStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException();
@@ -140,10 +153,9 @@ public class DatabaseService implements Closeable {
     public String findMjlogById(@NotNull String id) {
         try {
             findMjlogByIdStatement.setString(1, id);
-            try (ResultSet rs = this.findMjlogByIdStatement.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString(1);
-                }
+            ResultSet rs = this.findMjlogByIdStatement.executeQuery();
+            if (rs.next()) {
+                return rs.getString(1);
             }
         } catch (SQLException e) {
             throw new RuntimeException();
@@ -167,8 +179,8 @@ public class DatabaseService implements Closeable {
             while (rs.next()) {
                 list.add(new InfoSchema(
                         rs.getString("id"),
-                        rs.getString("ma"),
-                        rs.getString("sou"),
+                        rs.getInt("is_sanma") == 1 ? "三" : "四",
+                        rs.getInt("is_tonnan") == 1 ? "南" : "東",
                         rs.getString("first"),
                         rs.getString("second"),
                         rs.getString("third"),
@@ -189,8 +201,8 @@ public class DatabaseService implements Closeable {
             while (rs.next()) {
                 list.add(new InfoSchema(
                         rs.getString("id"),
-                        rs.getString("ma"),
-                        rs.getString("sou"),
+                        rs.getInt("is_sanma") == 1 ? "三" : "四",
+                        rs.getInt("is_tonnan") == 1 ? "南" : "東",
                         rs.getString("first"),
                         rs.getString("second"),
                         rs.getString("third"),
@@ -212,11 +224,11 @@ public class DatabaseService implements Closeable {
             if (isContentYonma) {
                 maCriterionString = "1 = 1";
             } else {
-                maCriterionString = "ma = '三'";
+                maCriterionString = "is_sanma = 1";
             }
         } else {
             if (isContentYonma) {
-                maCriterionString = "ma = '四'";
+                maCriterionString = "is_sanma = 0";
             } else {
                 return result;
             }
@@ -227,11 +239,11 @@ public class DatabaseService implements Closeable {
             if (isContentTonnan) {
                 souCriterionString = "1 = 1";
             } else {
-                souCriterionString = "sou = '東'";
+                souCriterionString = "is_tonnan = 0";
             }
         } else {
             if (isContentTonnan) {
-                souCriterionString = "sou = '南'";
+                souCriterionString = "is_tonnan = 1";
             } else {
                 return result;
             }
@@ -257,8 +269,8 @@ public class DatabaseService implements Closeable {
                 while (rs.next()) {
                     result.add(new InfoSchema(
                             rs.getString("id"),
-                            rs.getString("ma"),
-                            rs.getString("sou"),
+                            rs.getInt("is_sanma") == 1 ? "三" : "四",
+                            rs.getInt("is_tonnan") == 1 ? "南" : "東",
                             rs.getString("first"),
                             rs.getString("second"),
                             rs.getString("third"),
@@ -305,11 +317,11 @@ public class DatabaseService implements Closeable {
             if (isContentYonma) {
                 maCriterionString = "1 = 1";
             } else {
-                maCriterionString = "ma = '三'";
+                maCriterionString = "is_sanma = 1";
             }
         } else {
             if (isContentYonma) {
-                maCriterionString = "ma = '四'";
+                maCriterionString = "is_sanma = 0";
             } else {
                 return 0;
             }
@@ -320,11 +332,11 @@ public class DatabaseService implements Closeable {
             if (isContentTonnan) {
                 souCriterionString = "1 = 1";
             } else {
-                souCriterionString = "sou = '東'";
+                souCriterionString = "is_tonnan = 0";
             }
         } else {
             if (isContentTonnan) {
-                souCriterionString = "sou = '南'";
+                souCriterionString = "is_tonnan = 1";
             } else {
                 return 0;
             }
