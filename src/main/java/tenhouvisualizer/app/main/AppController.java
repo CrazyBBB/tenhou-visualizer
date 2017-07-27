@@ -29,7 +29,6 @@ import tenhouvisualizer.Main;
 import tenhouvisualizer.app.BindingHelper;
 import tenhouvisualizer.domain.AnimationGifWriter;
 import tenhouvisualizer.domain.model.InfoSchema;
-import tenhouvisualizer.domain.model.MahjongScene;
 import tenhouvisualizer.domain.model.Mjlog;
 import tenhouvisualizer.domain.service.DatabaseService;
 
@@ -92,9 +91,6 @@ public class AppController implements Initializable {
 
     private final DatabaseService databaseService;
 
-    private MahjongScene currentScene = null;
-    private int numberOfRotation = 0;
-
     public AppController() {
         this.databaseService = Main.databaseService;
     }
@@ -128,7 +124,7 @@ public class AppController implements Initializable {
 
         this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldInfo, newInfo) -> {
             if (newInfo != null) {
-                numberOfRotation = 0;
+                this.boardControl.initViewpoint();
                 String xmlStr = this.databaseService.findMjlogById(newInfo.getId());
                 if (xmlStr != null) {
                     byte[] xml = xmlStr.getBytes();
@@ -141,15 +137,13 @@ public class AppController implements Initializable {
         this.mjlogTreeControl.getSelectionModel().selectedItemProperty().addListener((obs, oldMjlog, newMjlog) -> {
             if (newMjlog != null) {
                 if (newMjlog.isLeaf()) {
-                    currentScene = newMjlog.getValue().getScene();
-                    this.boardControl.drawScene(currentScene, numberOfRotation);
+                    this.boardControl.drawScene(newMjlog.getValue().getScene());
                     this.label2.setText(newMjlog.getValue().getIdx() + "/" + newMjlog.getParent().getChildren().size()
                             + " " + newMjlog.getParent().toString());
                 } else {
                     this.mjlogTreeControl.getSelectionModel().getSelectedItem().setExpanded(true);
                     this.label2.setText(newMjlog.toString());
-                    currentScene = newMjlog.getChildren().get(0).getValue().getScene();
-                    this.boardControl.drawScene(newMjlog.getChildren().get(0).getValue().getScene(), numberOfRotation);
+                    this.boardControl.drawScene(newMjlog.getChildren().get(0).getValue().getScene());
                 }
             }
         });
@@ -161,37 +155,17 @@ public class AppController implements Initializable {
 
         this.boardControl.setWidth(Math.min(w, h));
         this.boardControl.setHeight(Math.min(w, h));
-        if (currentScene != null) {
-            this.boardControl.drawScene(currentScene, numberOfRotation);
-        } else {
-            this.boardControl.drawScene();
-        }
+        this.boardControl.redrawScene();
     }
 
-    public void rotateLeft(ActionEvent actionEvent) {
-        if (this.mjlogTreeControl.getSelectionModel().getSelectedItem() != null) {
-            numberOfRotation += 3;
-            MjlogTreeItem item = (MjlogTreeItem) this.mjlogTreeControl.getSelectionModel().getSelectedItem();
-            if (item.isLeaf()) {
-                this.boardControl.drawScene(item.getValue().getScene(), numberOfRotation);
-            } else {
-                this.boardControl.drawScene(item.getChildren().get(0).getValue().getScene(), numberOfRotation);
-            }
-            this.mjlogTreeControl.requestFocus();
-        }
+    public void moveViewpointLeft(ActionEvent actionEvent) {
+        this.boardControl.moveViewpointLeft();
+        this.mjlogTreeControl.requestFocus();
     }
 
-    public void rotateRight(ActionEvent actionEvent) {
-        if (this.mjlogTreeControl.getSelectionModel().getSelectedItem() != null) {
-            numberOfRotation += 1;
-            MjlogTreeItem item = (MjlogTreeItem) this.mjlogTreeControl.getSelectionModel().getSelectedItem();
-            if (item.isLeaf()) {
-                this.boardControl.drawScene(item.getValue().getScene(), numberOfRotation);
-            } else {
-                this.boardControl.drawScene(item.getChildren().get(0).getValue().getScene(), numberOfRotation);
-            }
-            this.mjlogTreeControl.requestFocus();
-        }
+    public void moveViewpointRight(ActionEvent actionEvent) {
+        this.boardControl.moveViewpointRight();
+        this.mjlogTreeControl.requestFocus();
     }
 
     @FXML

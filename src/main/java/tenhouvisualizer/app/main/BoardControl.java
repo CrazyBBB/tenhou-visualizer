@@ -38,6 +38,9 @@ public class BoardControl extends Canvas {
     private Image[] img_dy = new Image[37];
     private Image imgUra;
 
+    private MahjongScene currentScene = null;
+    private int numberOfRotation = 0;
+
     private static Image[] manipulateHaiImage(InputStream is) {
         BufferedImage image = null;
         try {
@@ -102,12 +105,30 @@ public class BoardControl extends Canvas {
     }
 
     public void drawScene(MahjongScene scene) {
-        drawScene(scene, 0);
+        this.currentScene = scene;
+        init();
+        initInfoAndHai(scene);
     }
 
-    public void drawScene(MahjongScene scene, int numberOfRotation) {
+    public void redrawScene() {
         init();
-        initInfoAndHai(scene, numberOfRotation);
+        if (this.currentScene != null) {
+            initInfoAndHai(this.currentScene);
+        }
+    }
+
+    public void initViewpoint() {
+        this.numberOfRotation = 0;
+    }
+
+    public void moveViewpointLeft() {
+        this.numberOfRotation += 3;
+        redrawScene();
+    }
+
+    public void moveViewpointRight() {
+        this.numberOfRotation += 1;
+        redrawScene();
     }
 
     public BoardControl() {
@@ -140,7 +161,7 @@ public class BoardControl extends Canvas {
         gc.fillRect(200 * ratio, 200 * ratio, 200 * ratio, 200 * ratio);
     }
 
-    private void initInfoAndHai(MahjongScene scene, int numberOfRotation) {
+    private void initInfoAndHai(MahjongScene scene) {
         for (int i = 0; i < 4; i++) {
             int drawnPlayerId = (i + scene.heroPosition + numberOfRotation) % 4;
 
