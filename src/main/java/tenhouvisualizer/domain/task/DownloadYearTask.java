@@ -28,7 +28,7 @@ public class DownloadYearTask extends Task {
     private URLConnection connection;
 
     private static final Pattern mjlogPattern = Pattern.compile("log=([^\"]+)");
-    private static final Pattern playerPattern = Pattern.compile("(.+)\\([+\\-\\d.]+\\)");
+    private static final Pattern playerPattern = Pattern.compile("(.+)\\(([+\\-\\d.]+)\\)");
 
     private final DatabaseService databaseService;
 
@@ -79,7 +79,7 @@ public class DownloadYearTask extends Task {
         addIndices(tmpFile);
     }
 
-    private void addIndices(File tmpFile) {
+    public void addIndices(File tmpFile) {
         try (ZipFile zipFile = new ZipFile(tmpFile)) {
             long workDone = 0;
             long workMax = 0;
@@ -113,7 +113,10 @@ public class DownloadYearTask extends Task {
                             String line;
                             while ((line = br.readLine()) != null) {
                                 if (!line.isEmpty()) {
-                                    parseLineToInfo(line, localDate);
+                                    InfoSchema info = parseLineToInfo(line, localDate);
+                                    if (info != null) {
+                                        infos.add(info);
+                                    }
                                 }
                             }
                         }
@@ -168,7 +171,6 @@ public class DownloadYearTask extends Task {
                     scores[i] = (int) Float.parseFloat(playerMatcher.group(2));
                 }
             }
-            if (players[3] == null) players[3] = "";
             LocalTime localTime = LocalTime.parse(columns[0]);
             LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
             return new InfoSchema(
