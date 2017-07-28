@@ -3,7 +3,6 @@ package tenhouvisualizer.domain.service;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.scene.control.Alert;
 import tenhouvisualizer.domain.task.DownloadYearTask;
 import tenhouvisualizer.Main;
 import tenhouvisualizer.domain.model.InfoSchema;
@@ -64,21 +63,27 @@ public class DownloadService {
              GZIPInputStream gzis = new GZIPInputStream(is);
              InputStreamReader isr = new InputStreamReader(gzis);
              BufferedReader br = new BufferedReader(isr)) {
+            List<InfoSchema> infos = new ArrayList<>();
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.isEmpty()) {
-                    addIndex(line, localDate);
+                    InfoSchema info = parseLineToInfo(line, localDate);
+                    if (info != null) {
+                        infos.add(info);
+                    }
                 }
             }
+
+            this.databaseService.saveInfos(infos);
         }
     }
 
-    private void addIndex(String line, LocalDate localDate) {
+    private InfoSchema parseLineToInfo(String line, LocalDate localDate) {
         String[] columns = line.split(" \\| ");
         Matcher matcher = mjlogPattern.matcher(columns[3]);
         if (matcher.find()) {
             String id = matcher.group(1);
-            if (this.databaseService.existsIdInINFO(id)) return;
+            if (this.databaseService.existsIdInINFO(id)) return null;
 
             boolean isSanma = columns[2].substring(0, 1).equals("三");
             boolean isTonnan = columns[2].substring(2, 3).equals("南");
@@ -95,12 +100,12 @@ public class DownloadService {
             }
             LocalTime localTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(columns[0]));
             LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-            databaseService.saveInfo(
+            return new InfoSchema(
                     id,
                     isSanma,
                     isTonnan,
-                    localDateTime,
                     minute,
+                    localDateTime,
                     players[0],
                     players[1],
                     players[2],
@@ -111,6 +116,8 @@ public class DownloadService {
                     scores[3]
             );
         }
+
+        return null;
     }
 
     public void downloadMjlog(InfoSchema schema) {

@@ -119,8 +119,8 @@ public class DownloaderController implements Initializable {
                 new SimpleStringProperty(this.service.isDownloaded(e.getValue()) ? "✓" : "")
         );
         this.dateTimeColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().dateTime.format(minuteFormatter)));
-        this.maColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().ma));
-        this.souColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().sou));
+        this.maColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().isSanma ? "三" : "四"));
+        this.souColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().isTonnan ? "南" : "東"));
         this.firstColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().first));
         this.secondColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().second));
         this.thirdColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().third));

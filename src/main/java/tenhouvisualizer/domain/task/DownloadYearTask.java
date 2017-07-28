@@ -13,7 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -88,6 +90,8 @@ public class DownloadYearTask extends Task {
                 if (htmlFileName.startsWith("scc")) workMax++;
             }
 
+            List<InfoSchema> infos = new ArrayList<>();
+
             for (Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements(); ){
                 ZipEntry zipEntry = e.nextElement();
                 String htmlFileName = getFileNameWithExtension(zipEntry.getName());
@@ -109,7 +113,7 @@ public class DownloadYearTask extends Task {
                             String line;
                             while ((line = br.readLine()) != null) {
                                 if (!line.isEmpty()) {
-                                    addIndex(line, localDate);
+                                    parseLineToInfo(line, localDate);
                                 }
                             }
                         }
@@ -120,13 +124,18 @@ public class DownloadYearTask extends Task {
                             String line;
                             while ((line = br.readLine()) != null) {
                                 if (!line.isEmpty()) {
-                                    addIndex(line, localDate);
+                                    InfoSchema info = parseLineToInfo(line, localDate);
+                                    if (info != null) {
+                                        infos.add(info);
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+
+            this.databaseService.saveInfos(infos);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         } finally {
@@ -139,12 +148,12 @@ public class DownloadYearTask extends Task {
         return path.substring(path.lastIndexOf('/') + 1);
     }
 
-    private void addIndex(String line, LocalDate localDate) {
+    private InfoSchema parseLineToInfo(String line, LocalDate localDate) {
         String[] columns = line.split(" \\| ");
         Matcher matcher = mjlogPattern.matcher(columns[3]);
         if (matcher.find()) {
             String id = matcher.group(1);
-            if (databaseService.existsIdInINFO(id)) return;
+            if (databaseService.existsIdInINFO(id)) return null;
 
             boolean isSanma = columns[2].substring(0, 1).equals("三");
             boolean isTonnan = columns[2].substring(2, 3).equals("南");
@@ -162,12 +171,12 @@ public class DownloadYearTask extends Task {
             if (players[3] == null) players[3] = "";
             LocalTime localTime = LocalTime.parse(columns[0]);
             LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-            databaseService.saveInfo(
+            return new InfoSchema(
                     id,
                     isSanma,
                     isTonnan,
-                    localDateTime,
                     minute,
+                    localDateTime,
                     players[0],
                     players[1],
                     players[2],
@@ -178,5 +187,7 @@ public class DownloadYearTask extends Task {
                     scores[3]
             );
         }
+
+        return null;
     }
 }

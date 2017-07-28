@@ -21,6 +21,8 @@ public class DatabaseService implements Closeable {
 
     private final static Logger log = LoggerFactory.getLogger(DatabaseService.class);
 
+    private final static int MAX_BATCH_SIZE = 100;
+
     private final Connection connection;
     private final PreparedStatement insertMjlogStatement;
     private final PreparedStatement findAllMjlogStatement;
@@ -38,7 +40,7 @@ public class DatabaseService implements Closeable {
         Class.forName("org.sqlite.JDBC");
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + (file == null ? "" : file));
         initialize();
-        this.insertMjlogStatement = connection.prepareStatement("INSERT INTO MJLOG VALUES(?, ?);", Statement.RETURN_GENERATED_KEYS);
+        this.insertMjlogStatement = connection.prepareStatement("INSERT INTO MJLOG VALUES(?, ?);");
         this.findAllMjlogStatement = connection.prepareStatement("SELECT id FROM MJLOG;");
         this.findAllMjlogContent = connection.prepareStatement("SELECT content FROM MJLOG;");
         this.findMjlogByIdStatement = connection.prepareStatement("SELECT content FROM MJLOG WHERE id = ?;");
@@ -73,31 +75,34 @@ public class DatabaseService implements Closeable {
         this.insertMjlogStatement.setString(1, id);
         this.insertMjlogStatement.setString(2, content);
         this.insertMjlogStatement.executeUpdate();
-        try (ResultSet generatedKeys = this.insertMjlogStatement.getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                log.debug("" + generatedKeys.getLong(1));
-            }
-        }
     }
 
-    public void saveInfo(String id, boolean isSanma, boolean isTonnan, LocalDateTime dateTime, int minute,
-                         String first, String second, String third, String fourth,
-                         int firstScore, int secondScore, int thirdScore, int fourthScore) {
+    public void saveInfos(List<InfoSchema> infos) {
         try {
-            this.insertInfoStatement.setString(1, id);
-            this.insertInfoStatement.setInt(2, isSanma ? 1 : 0);
-            this.insertInfoStatement.setInt(3, isTonnan ? 1 : 0);
-            this.insertInfoStatement.setString(4, dateTime.toString());
-            this.insertInfoStatement.setInt(5, minute);
-            this.insertInfoStatement.setString(6, first);
-            this.insertInfoStatement.setString(7, second);
-            this.insertInfoStatement.setString(8, third);
-            this.insertInfoStatement.setString(9, fourth);
-            this.insertInfoStatement.setInt(10, firstScore);
-            this.insertInfoStatement.setInt(11, secondScore);
-            this.insertInfoStatement.setInt(12, thirdScore);
-            this.insertInfoStatement.setInt(13, fourthScore);
-            this.insertInfoStatement.executeUpdate();
+            this.connection.setAutoCommit(false);
+            for (int i = 0; i < infos.size(); i++) {
+                this.insertInfoStatement.setString(1, infos.get(i).id);
+                this.insertInfoStatement.setInt(2, infos.get(i).isSanma ? 1 : 0);
+                this.insertInfoStatement.setInt(3, infos.get(i).isTonnan ? 1 : 0);
+                this.insertInfoStatement.setString(4, infos.get(i).dateTime.toString());
+                this.insertInfoStatement.setInt(5, infos.get(i).minute);
+                this.insertInfoStatement.setString(6, infos.get(i).first);
+                this.insertInfoStatement.setString(7, infos.get(i).second);
+                this.insertInfoStatement.setString(8, infos.get(i).third);
+                this.insertInfoStatement.setString(9, infos.get(i).fourth);
+                this.insertInfoStatement.setInt(10, infos.get(i).firstScore);
+                this.insertInfoStatement.setInt(11, infos.get(i).secondScore);
+                this.insertInfoStatement.setInt(12, infos.get(i).thirdScore);
+                this.insertInfoStatement.setInt(13, infos.get(i).fourthScore);
+                this.insertInfoStatement.addBatch();
+
+                // MAX_BATCH_SIZE 件ごとにバッチ処理
+                if (i % MAX_BATCH_SIZE == MAX_BATCH_SIZE - 1 || i == infos.size() - 1) {
+                    this.insertInfoStatement.executeBatch();
+                }
+            }
+            this.connection.commit();
+            this.connection.setAutoCommit(true);
         } catch (SQLException e) {
             throw new RuntimeException();
         }
@@ -179,13 +184,13 @@ public class DatabaseService implements Closeable {
             while (rs.next()) {
                 list.add(new InfoSchema(
                         rs.getString("id"),
-                        rs.getInt("is_sanma") == 1 ? "三" : "四",
-                        rs.getInt("is_tonnan") == 1 ? "南" : "東",
+                        rs.getInt("is_sanma") == 1,
+                        rs.getInt("is_tonnan") == 1,
+                        LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(rs.getString("date_time"))),
                         rs.getString("first"),
                         rs.getString("second"),
                         rs.getString("third"),
-                        rs.getString("fourth"),
-                        LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(rs.getString("date_time")))
+                        rs.getString("fourth")
                 ));
             }
             return list;
@@ -201,13 +206,13 @@ public class DatabaseService implements Closeable {
             while (rs.next()) {
                 list.add(new InfoSchema(
                         rs.getString("id"),
-                        rs.getInt("is_sanma") == 1 ? "三" : "四",
-                        rs.getInt("is_tonnan") == 1 ? "南" : "東",
+                        rs.getInt("is_sanma") == 1,
+                        rs.getInt("is_tonnan") == 1,
+                        LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(rs.getString("date_time"))),
                         rs.getString("first"),
                         rs.getString("second"),
                         rs.getString("third"),
-                        rs.getString("fourth"),
-                        LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(rs.getString("date_time")))
+                        rs.getString("fourth")
                 ));
             }
             return list;
@@ -269,13 +274,13 @@ public class DatabaseService implements Closeable {
                 while (rs.next()) {
                     result.add(new InfoSchema(
                             rs.getString("id"),
-                            rs.getInt("is_sanma") == 1 ? "三" : "四",
-                            rs.getInt("is_tonnan") == 1 ? "南" : "東",
+                            rs.getInt("is_sanma") == 1,
+                            rs.getInt("is_tonnan") == 1,
+                            LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(rs.getString("date_time"))),
                             rs.getString("first"),
                             rs.getString("second"),
                             rs.getString("third"),
-                            rs.getString("fourth"),
-                            LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(rs.getString("date_time")))
+                            rs.getString("fourth")
                     ));
                 }
             }
