@@ -8,12 +8,14 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tenhouvisualizer.Main;
 import tenhouvisualizer.domain.model.Naki;
 import tenhouvisualizer.domain.model.MahjongScene;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -40,6 +42,8 @@ public class BoardControl extends Canvas {
 
     private MahjongScene currentScene = null;
     private int numberOfRotation = 0;
+
+    Image backgroundImage;
 
     private static Image[] manipulateHaiImage(InputStream is) {
         BufferedImage image = null;
@@ -132,6 +136,11 @@ public class BoardControl extends Canvas {
     }
 
     public BoardControl() {
+        if (Main.properties != null && Main.properties.containsKey("background")) {
+            String backgroundFileName = Main.properties.getProperty("background");
+            backgroundImage = new Image(new File(backgroundFileName).toURI().toString());
+        }
+
         for (int i = 0; i < 37; i++) {
             Image[] images = manipulateHaiImage(BoardControl.class.getResourceAsStream("/img_s/" + i + ".png"));
             img_nt[i] = images[0];
@@ -156,7 +165,11 @@ public class BoardControl extends Canvas {
 
         gc.clearRect(0, 0, this.getWidth(), this.getHeight());
         gc.setFill(javafx.scene.paint.Color.rgb(50, 100, 50));
-        gc.fillRect(0, 0, baseSize, baseSize);
+        if (backgroundImage != null) {
+            gc.drawImage(backgroundImage, 0, 0, baseSize, baseSize);
+        } else {
+            gc.fillRect(0, 0, baseSize, baseSize);
+        }
         gc.setFill(javafx.scene.paint.Color.rgb(60, 63, 65));
         gc.fillRect(200 * ratio, 200 * ratio, 200 * ratio, 200 * ratio);
     }
