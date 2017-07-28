@@ -66,6 +66,10 @@ public class DatabaseService implements Closeable {
         statement = this.connection.createStatement();
         statement.execute(sql);
 
+        sql = "CREATE INDEX IF NOT EXISTS INDEXDATE ON INFO (date_time)";
+        statement = this.connection.createStatement();
+        statement.execute(sql);
+
         sql = "CREATE TABLE IF NOT EXISTS MJLOGINDEX(id TEXT PRIMARY KEY);";
         statement = this.connection.createStatement();
         statement.execute(sql);

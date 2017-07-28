@@ -7,6 +7,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -40,6 +41,7 @@ public class DownloaderController implements Initializable {
     private static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
     private static final DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日HH時台");
     private static final DateTimeFormatter minuteFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+    public BorderPane root;
 
     private DatabaseService databaseService;
     public TabPane tabPane;
@@ -141,6 +143,7 @@ public class DownloaderController implements Initializable {
                 if (year != null) {
                     if (this.databaseService.existsIdInMJLOGINDEX(year.toString())) return;
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.initOwner(root.getScene().getWindow());
                     alert.setHeaderText("ダウンロードの確認");
                     alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
                     String str = "昨年以前のインデックスは年単位でダウンロードするので" +
@@ -183,6 +186,7 @@ public class DownloaderController implements Initializable {
         } catch (IOException e) {
             log.error("インデックスのダウンロード中にエラーが発生したっぽい", e);
             Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(root.getScene().getWindow());
             alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
             alert.getDialogPane().setHeaderText("インデックス追加の失敗");
             alert.getDialogPane().setContentText("インデックスを追加することができませんでした");
@@ -199,6 +203,7 @@ public class DownloaderController implements Initializable {
                 } catch (IOException | SQLException e) {
                     log.error("ログのダウンロード中にエラーが発生したっぽい", e);
                     Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.initOwner(root.getScene().getWindow());
                     alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
                     alert.getDialogPane().setHeaderText("牌譜追加の失敗");
                     alert.getDialogPane().setContentText("牌譜を追加することができませんでした");
