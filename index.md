@@ -7,7 +7,7 @@ layout: default
 Webから鳳凰卓の牌譜をインポートして閲覧・解析ができます
 
 ## ダウンロード
-- [jarファイル](https://github.com/CrazyBBB/tenhou-visualizer/releases/download/v0.2/tenhouvisualizer.jar)
+- [jarファイル](https://github.com/CrazyBBB/tenhou-visualizer/releases/download/v0.3/tenhouvisualizer.jar)
 
 ## 牌譜のインポート
 

@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# Third-Party Software Used by v0.2
+# Third-Party Software Used by v0.3
 
 | Software | Version | License |
 |---|---|---|
