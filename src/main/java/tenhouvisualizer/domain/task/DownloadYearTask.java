@@ -9,6 +9,7 @@ import tenhouvisualizer.domain.service.DatabaseService;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -108,7 +109,7 @@ public class DownloadYearTask extends Task {
                     if (htmlFileName.endsWith(".gz")) {
                         try (InputStream is = zipFile.getInputStream(zipEntry);
                              GZIPInputStream gzis = new GZIPInputStream(is);
-                             InputStreamReader sr = new InputStreamReader(gzis);
+                             InputStreamReader sr = new InputStreamReader(gzis, StandardCharsets.UTF_8);
                              BufferedReader br = new BufferedReader(sr)) {
                             String line;
                             while ((line = br.readLine()) != null) {
@@ -122,7 +123,7 @@ public class DownloadYearTask extends Task {
                         }
                     } else {
                         try (InputStream is = zipFile.getInputStream(zipEntry);
-                             InputStreamReader sr = new InputStreamReader(is);
+                             InputStreamReader sr = new InputStreamReader(is, StandardCharsets.UTF_8);
                              BufferedReader br = new BufferedReader(sr)) {
                             String line;
                             while ((line = br.readLine()) != null) {

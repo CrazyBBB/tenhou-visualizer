@@ -9,6 +9,7 @@ import tenhouvisualizer.domain.model.InfoSchema;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -61,7 +62,7 @@ public class DownloadService {
         URL url = new URL(urlString);
         try (InputStream is = url.openStream();
              GZIPInputStream gzis = new GZIPInputStream(is);
-             InputStreamReader isr = new InputStreamReader(gzis);
+             InputStreamReader isr = new InputStreamReader(gzis, StandardCharsets.UTF_8);
              BufferedReader br = new BufferedReader(isr)) {
             List<InfoSchema> infos = new ArrayList<>();
             String line;
@@ -136,7 +137,7 @@ public class DownloadService {
     public void downloadMjlogToDatabase(InfoSchema schema) throws IOException, SQLException {
         URL url = new URL("http://tenhou.net/0/log/?" + schema.id);
         try (InputStream is = url.openStream();
-             InputStreamReader isr = new InputStreamReader(is)) {
+             InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             String content = consumeReader(isr);
             databaseService.saveMjlog(schema.id, content);
             this.storedInfoSchemaIds.add(schema.id);
