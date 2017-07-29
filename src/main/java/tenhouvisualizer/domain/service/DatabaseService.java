@@ -34,6 +34,7 @@ public class DatabaseService implements Closeable {
     private final PreparedStatement findAllExistsInfoStatement;
     private final PreparedStatement insertMjlogIndexStatement;
     private final PreparedStatement findAllMjlogIndexStatement;
+    private final PreparedStatement findSanmaWinnerAndLoserStatement;
     public DatabaseService(@Nullable File file) throws ClassNotFoundException, SQLException {
         long start = System.currentTimeMillis();
 
@@ -50,6 +51,7 @@ public class DatabaseService implements Closeable {
         this.findAllExistsInfoStatement = connection.prepareStatement("SELECT * FROM INFO WHERE id in (SELECT id FROM MJLOG);");
         this.insertMjlogIndexStatement = connection.prepareStatement("INSERT INTO MJLOGINDEX VALUES(?);");
         this.findAllMjlogIndexStatement = connection.prepareStatement("SELECT id FROM MJLOGINDEX;");
+        this.findSanmaWinnerAndLoserStatement = connection.prepareStatement("SELECT first, third FROM INFO WHERE is_sanma = 1");
 
         long end = System.currentTimeMillis();
         log.info("time to initialize db: {}", end - start);
@@ -222,6 +224,21 @@ public class DatabaseService implements Closeable {
             return list;
         } catch (SQLException e) {
             throw new RuntimeException();
+        }
+    }
+
+    public List<List<String>> findSanmaWinnerAndLoser() {
+        try (ResultSet rs = this.findSanmaWinnerAndLoserStatement.executeQuery()) {
+            List<List<String>> list = new ArrayList<>();
+            while (rs.next()) {
+                List<String> winnerAndLoser = new ArrayList<>();
+                winnerAndLoser.add(rs.getString(1));
+                winnerAndLoser.add(rs.getString(2));
+                list.add(winnerAndLoser);
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

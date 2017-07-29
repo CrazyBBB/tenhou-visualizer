@@ -10,7 +10,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+import tenhouvisualizer.Main;
 import tenhouvisualizer.domain.task.AnalyzeDBTask;
 import tenhouvisualizer.domain.task.AnalyzeZipTask;
 import tenhouvisualizer.app.main.BoardControl;
@@ -20,9 +24,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class SyantenAnalyzerController implements Initializable {
+
+    private final static Logger log = LoggerFactory.getLogger(SyantenAnalyzerController.class);
+
     public ProgressBar progressBar;
     public MenuItem openMenuItem;
     @FXML
@@ -51,6 +58,8 @@ public class SyantenAnalyzerController implements Initializable {
                 this.label.setText(newScene.toString());
             }
         });
+
+        showWinnerAndLoser();
     }
 
 //    @FXML
@@ -82,5 +91,40 @@ public class SyantenAnalyzerController implements Initializable {
         this.progressLabel.textProperty().bind(task.messageProperty());
         this.openMenuItem.disableProperty().bind(task.runningProperty());
         new Thread(task).start();
+    }
+
+    void showWinnerAndLoser() {
+        List<List<String>> list = Main.databaseService.findSanmaWinnerAndLoser();
+        Map<String, Integer> map = new HashMap<>();
+        for (List<String> winnerAndLoser : list) {
+            String winnerAndLoserString = winnerAndLoser.get(1) + " -> " + winnerAndLoser.get(0);
+            map.put(winnerAndLoserString, map.getOrDefault(winnerAndLoserString, 0) + 1);
+        }
+
+        List<WinnerAndLoserCount> counts = new ArrayList<>();
+        Set<String> keys = map.keySet();
+        for (String key : keys) {
+            counts.add(new WinnerAndLoserCount(key, map.get(key)));
+        }
+
+        Collections.sort(counts);
+        for (int i = 0; i < 10; i++) {
+            log.debug(counts.get(i).count + "回 \t" + counts.get(i).winnerAndLoserString);
+        }
+    }
+
+    class WinnerAndLoserCount implements Comparable<WinnerAndLoserCount> {
+        String winnerAndLoserString;
+        int count;
+
+        public WinnerAndLoserCount(String winnerAndLoserString, int count) {
+            this.winnerAndLoserString = winnerAndLoserString;
+            this.count = count;
+        }
+
+        @Override
+        public int compareTo(@NotNull SyantenAnalyzerController.WinnerAndLoserCount o) {
+            return -(count - o.count);
+        }
     }
 }
