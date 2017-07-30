@@ -94,11 +94,11 @@ public class SyantenAnalyzerController implements Initializable {
     }
 
     void showWinnerAndLoser() {
-        List<List<String>> list = Main.databaseService.findSanmaWinnerAndLoser();
+        List<String[]> list = Main.databaseService.findSanmaWinnerAndLoser();
         Map<String, Integer> map = new HashMap<>();
-        for (List<String> winnerAndLoser : list) {
-            String winnerAndLoserString = winnerAndLoser.get(1) + " -> " + winnerAndLoser.get(0);
-            map.put(winnerAndLoserString, map.getOrDefault(winnerAndLoserString, 0) + 1);
+        for (String[] winnerAndLoser : list) {
+            String winnerAndLoserString = winnerAndLoser[1] + " -> " + winnerAndLoser[0];
+            map.merge(winnerAndLoserString, 1, (a, b) -> a + b);
         }
 
         List<WinnerAndLoserCount> counts = new ArrayList<>();
@@ -109,7 +109,7 @@ public class SyantenAnalyzerController implements Initializable {
 
         Collections.sort(counts);
         for (int i = 0; i < 10; i++) {
-            log.debug(counts.get(i).count + "回 \t" + counts.get(i).winnerAndLoserString);
+            log.debug("{}回\t{}", counts.get(i).count, counts.get(i).winnerAndLoserString);
         }
     }
 

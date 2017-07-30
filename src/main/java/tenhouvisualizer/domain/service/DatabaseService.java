@@ -227,13 +227,11 @@ public class DatabaseService implements Closeable {
         }
     }
 
-    public List<List<String>> findSanmaWinnerAndLoser() {
+    public List<String[]> findSanmaWinnerAndLoser() {
         try (ResultSet rs = this.findSanmaWinnerAndLoserStatement.executeQuery()) {
-            List<List<String>> list = new ArrayList<>();
+            List<String[]> list = new ArrayList<>();
             while (rs.next()) {
-                List<String> winnerAndLoser = new ArrayList<>();
-                winnerAndLoser.add(rs.getString(1));
-                winnerAndLoser.add(rs.getString(2));
+                String[] winnerAndLoser = new String[] {rs.getString(1), rs.getString(2)};
                 list.add(winnerAndLoser);
             }
             return list;
