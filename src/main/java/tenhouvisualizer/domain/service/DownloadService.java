@@ -40,7 +40,7 @@ public class DownloadService {
         this.storedInfoSchemaIds.addAll(databaseService.findAllMjlogIds());
     }
 
-    public Task createDownloadYearTask(int year) {
+    public DownloadYearTask createDownloadYearTask(int year) {
         return new DownloadYearTask(year);
     }
 

@@ -23,7 +23,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class DownloadYearTask extends Task {
+public class DownloadYearTask extends Task<Void> {
     private int year;
 
     private URLConnection connection;
@@ -39,7 +39,12 @@ public class DownloadYearTask extends Task {
     }
 
     @Override
-    protected Object call() {
+    protected void cancelled() {
+        super.cancelled();
+    }
+
+    @Override
+    protected Void call() {
         try {
             URL url = new URL("http://tenhou.net/sc/raw/scraw" + year + ".zip");
             connection = url.openConnection();

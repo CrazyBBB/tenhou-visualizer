@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import tenhouvisualizer.domain.model.InfoSchema;
 import tenhouvisualizer.domain.service.DatabaseService;
 import tenhouvisualizer.domain.service.DownloadService;
 import tenhouvisualizer.Main;
+import tenhouvisualizer.domain.task.DownloadYearTask;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -151,16 +153,34 @@ public class DownloaderController implements Initializable {
                     alert.setContentText(str);
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.isPresent() && result.get() == ButtonType.OK) {
-                        Task task = this.service.createDownloadYearTask(year);
-                        this.progressBar.progressProperty().bind(task.progressProperty());
-                        this.progressLabel.textProperty().bind(task.messageProperty());
-                        this.indexButton.disableProperty().bind(task.runningProperty());
+                        Dialog<Void> progressDialog = new Dialog<>();
+                        DownloadYearTask task = this.service.createDownloadYearTask(year);
                         task.setOnSucceeded(a -> {
                             this.changeResult();
                             this.databaseService.saveMjlogIndex(year.toString());
                             this.yearListView.getItems().remove(year);
+                            progressDialog.close();
                         });
-                        new Thread(task).start();
+                        Label downladLabel = new Label("ダウンロード中");
+                        downladLabel.textProperty().bind(task.messageProperty());
+                        ProgressBar downloadProgressBar = new ProgressBar();
+                        downloadProgressBar.progressProperty().bind(task.progressProperty());
+                        downloadProgressBar.setMinWidth(300);
+                        downloadProgressBar.setMinHeight(20);
+                        VBox vBox = new VBox();
+                        vBox.getChildren().addAll(downladLabel, downloadProgressBar);
+                        progressDialog.getDialogPane().setContent(vBox);
+
+                        progressDialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+                        progressDialog.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+                        progressDialog.initOwner(root.getScene().getWindow());
+                        progressDialog.setTitle("インデックス追加");
+                        progressDialog.setOnShown(event -> new Thread(task).start());
+
+                        Optional<Void> downloadResult = progressDialog.showAndWait();
+                        if (downloadResult.isPresent()) {
+                            task.cancel();
+                        }
                     }
                 }
             } else if (this.tabPane.getSelectionModel().getSelectedItem() == this.currentYearTab) {
