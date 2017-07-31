@@ -1,10 +1,11 @@
 *~
-.gradle
-build
+.gradle/
+build/
+out/
 *.classpath
 *.project
 *.settings
-bin
+bin/
 .nb-gradle
 .idea
 .DS_Store
