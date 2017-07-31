@@ -59,7 +59,7 @@ public class SyantenAnalyzerController implements Initializable {
             }
         });
 
-        showWinnerAndLoser();
+        showWinnerAndLoser(false, 10, 10);
     }
 
 //    @FXML
@@ -93,38 +93,63 @@ public class SyantenAnalyzerController implements Initializable {
         new Thread(task).start();
     }
 
-    void showWinnerAndLoser() {
-        List<String[]> list = Main.databaseService.findSanmaWinnerAndLoser();
-        Map<String, Integer> map = new HashMap<>();
+    void showWinnerAndLoser(boolean isSanma, int matchMin, int showMax) {
+        List<String[]> list = Main.databaseService.findWinnerAndLoser(isSanma);
+
+        Map<String, Integer> sumMap = new HashMap<>();
+        Map<String, Integer> countMap = new HashMap<>();
         for (String[] winnerAndLoser : list) {
-            String winnerAndLoserString = winnerAndLoser[1] + " -> " + winnerAndLoser[0];
-            map.merge(winnerAndLoserString, 1, (a, b) -> a + b);
+            String loserAndWinnerString = winnerAndLoser[1] + " -> " + winnerAndLoser[0];
+            String winnerAndLoserString = winnerAndLoser[0] + " -> " + winnerAndLoser[1];
+            if (sumMap.containsKey(winnerAndLoserString)) {
+                sumMap.merge(winnerAndLoserString, 1, Integer::sum);
+            } else {
+                sumMap.merge(loserAndWinnerString, 1, Integer::sum);
+                countMap.merge(loserAndWinnerString, 1, Integer::sum);
+            }
         }
 
-        List<WinnerAndLoserCount> counts = new ArrayList<>();
-        Set<String> keys = map.keySet();
+        List<WinnerAndLoserPercent> candidates = new ArrayList<>();
+        Set<String> keys = sumMap.keySet();
         for (String key : keys) {
-            counts.add(new WinnerAndLoserCount(key, map.get(key)));
+            int sum = sumMap.get(key);
+            if (sum < matchMin) continue;
+
+            int count = countMap.get(key);
+            if (count == sum - count) continue;
+
+            String tmpKey;
+            double percent;
+            if (count > sum - count) {
+                tmpKey = key + " " + count + "/" + sum;
+                percent = (double) count / sum;
+            } else {
+                String[] split = key.split(" -> ");
+                tmpKey = split[1] + " -> " + split[0] + " " + (sum - count) + "/" + sum;
+                percent = (double) (sum - count) / sum;
+            }
+            candidates.add(new WinnerAndLoserPercent(tmpKey, percent));
         }
 
-        Collections.sort(counts);
-        for (int i = 0; i < 10; i++) {
-            log.debug("{}回\t{}", counts.get(i).count, counts.get(i).winnerAndLoserString);
+        Collections.sort(candidates);
+
+        for (int i = 0; i < showMax; i++) {
+            log.debug("{}", candidates.get(i).winnerAndLoserString);
         }
     }
 
-    class WinnerAndLoserCount implements Comparable<WinnerAndLoserCount> {
+    class WinnerAndLoserPercent implements Comparable<WinnerAndLoserPercent> {
         String winnerAndLoserString;
-        int count;
+        double percent;
 
-        public WinnerAndLoserCount(String winnerAndLoserString, int count) {
+        public WinnerAndLoserPercent(String winnerAndLoserString, double percent) {
             this.winnerAndLoserString = winnerAndLoserString;
-            this.count = count;
+            this.percent = percent;
         }
 
         @Override
-        public int compareTo(@NotNull SyantenAnalyzerController.WinnerAndLoserCount o) {
-            return -(count - o.count);
+        public int compareTo(@NotNull SyantenAnalyzerController.WinnerAndLoserPercent w) {
+            return Double.compare(w.percent, percent);
         }
     }
 }
