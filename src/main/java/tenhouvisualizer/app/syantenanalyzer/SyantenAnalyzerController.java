@@ -10,7 +10,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
-import org.jetbrains.annotations.NotNull;
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -109,7 +109,7 @@ public class SyantenAnalyzerController implements Initializable {
             }
         }
 
-        List<WinnerAndLoserPercent> candidates = new ArrayList<>();
+        List<Pair<String, Double>> candidates = new ArrayList<>();
         Set<String> keys = sumMap.keySet();
         for (String key : keys) {
             int sum = sumMap.get(key);
@@ -128,28 +128,13 @@ public class SyantenAnalyzerController implements Initializable {
                 tmpKey = split[1] + " -> " + split[0] + " " + (sum - count) + "/" + sum;
                 percent = (double) (sum - count) / sum;
             }
-            candidates.add(new WinnerAndLoserPercent(tmpKey, percent));
+            candidates.add(new Pair<>(tmpKey, percent));
         }
 
-        Collections.sort(candidates);
+        candidates.sort((c1, c2) -> Double.compare(c2.getValue(), c1.getValue()));
 
         for (int i = 0; i < showMax; i++) {
-            log.debug("{}", candidates.get(i).winnerAndLoserString);
-        }
-    }
-
-    class WinnerAndLoserPercent implements Comparable<WinnerAndLoserPercent> {
-        String winnerAndLoserString;
-        double percent;
-
-        public WinnerAndLoserPercent(String winnerAndLoserString, double percent) {
-            this.winnerAndLoserString = winnerAndLoserString;
-            this.percent = percent;
-        }
-
-        @Override
-        public int compareTo(@NotNull SyantenAnalyzerController.WinnerAndLoserPercent w) {
-            return Double.compare(w.percent, percent);
+            log.debug("{}", candidates.get(i).getKey());
         }
     }
 }
