@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
 
-public class Analyzer implements IAnalyzer {
+public class Analyzer implements IAnalyzer, SceneContainer {
     private final static String[] haiStr = {
             "1m", "1m", "1m", "1m", "2m", "2m", "2m", "2m", "3m", "3m", "3m", "3m",
             "4m", "4m", "4m", "4m", "赤5m", "5m", "5m", "5m", "6m", "6m", "6m", "6m",
@@ -102,7 +102,8 @@ public class Analyzer implements IAnalyzer {
                 str));
     }
 
-    public ArrayList<Kyoku> getOriScenesList() {
+    @Override
+    public ArrayList<Kyoku> getKyokusList() {
         return oriScenesList;
     }
 

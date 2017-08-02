@@ -27,7 +27,7 @@ public class MjlogTreeControl extends TreeView<Mjlog> {
             Analyzer analyzer = new Analyzer(position);
             ParseHandler parseHandler = new ParseHandler(analyzer);
             saxParser.parse(new ByteArrayInputStream(xml), parseHandler);
-            scenesList = analyzer.getOriScenesList();
+            scenesList = analyzer.getKyokusList();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
