@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="tenhouvisualizer.app.donatationranker.DonationRankerController"
+          prefHeight="600.0" prefWidth="800.0">
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="ALWAYS"/>
+    </rowConstraints>
+    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+        <HBox spacing="7">
+            <padding>
+                <Insets left="5" right="5"/>
+            </padding>
+            <RadioButton fx:id="sanmaRadioButton" prefHeight="32.0" prefWidth="0.0" text="三" selected="true">
+                <toggleGroup>
+                    <ToggleGroup fx:id="maToggle"/>
+                </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="yonmaRadioButton" prefHeight="32.0" prefWidth="0.0" text="四" toggleGroup="$maToggle"/>
+        </HBox>
+        <HBox spacing="7">
+            <padding>
+                <Insets left="5" right="5"/>
+            </padding>
+            <RadioButton fx:id="tonpuRadioButton" prefHeight="32.0" prefWidth="50.0" text="東風" selected="true">
+                <toggleGroup>
+                    <ToggleGroup fx:id="souToggle"/>
+                </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="tonnanRadioButton" prefHeight="32.0" prefWidth="50.0" text="東南" toggleGroup="$souToggle"/>
+        </HBox>
+        <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"
+                    HBox.hgrow="ALWAYS">
+            <TextField fx:id="filterField" onAction="#search" promptText="天鳳IDを入力" AnchorPane.bottomAnchor="0.0"
+                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+            <Button fx:id="clearButton" onAction="#clearFilterField" AnchorPane.bottomAnchor="2.0"
+                    AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
+                <graphic>
+                    <FontAwesomeIconView glyphName="TIMES_CIRCLE" styleClass="gryph-icon"/>
+                </graphic>
+            </Button>
+        </AnchorPane>
+        <HBox>
+            <Button prefHeight="32.0" onAction="#search" text="検索"/>
+            <Button prefHeight="32.0" onAction="#clear" text="クリア"/>
+        </HBox>
+    </VBox>
+    <TableView GridPane.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="rankingTableView">
+        <columns>
+            <TableColumn fx:id="fromCol" editable="false" text="from" sortable="false"/>
+            <TableColumn fx:id="toCol" editable="false" text="to" sortable="false"/>
+            <TableColumn fx:id="valueCol" editable="false" text="value" sortable="false"/>
+        </columns>
+    </TableView>
+</GridPane>

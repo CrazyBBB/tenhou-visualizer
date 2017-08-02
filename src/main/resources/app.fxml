@@ -28,7 +28,12 @@
             <Menu text="ツール">
                 <MenuItem text="解析" onAction="#openSyantenBackAnalyzer">
                     <graphic>
-                            <FontAwesomeIconView styleClass="gryph-icon" glyphName="LINE_CHART"/>
+                        <FontAwesomeIconView styleClass="gryph-icon" glyphName="LINE_CHART"/>
+                    </graphic>
+                </MenuItem>
+                <MenuItem text="貢ぎランク" onAction="#openDonationRanker">
+                    <graphic>
+                        <FontAwesomeIconView styleClass="gryph-icon" glyphName="GIFT"/>
                     </graphic>
                 </MenuItem>
                 <MenuItem text="画像として出力..." onAction="#saveAsImage">

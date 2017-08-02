@@ -58,8 +58,6 @@ public class SyantenAnalyzerController implements Initializable {
                 this.label.setText(newScene.toString());
             }
         });
-
-        showWinnerAndLoser(false, 10, 10);
     }
 
 //    @FXML
@@ -91,50 +89,5 @@ public class SyantenAnalyzerController implements Initializable {
         this.progressLabel.textProperty().bind(task.messageProperty());
         this.openMenuItem.disableProperty().bind(task.runningProperty());
         new Thread(task).start();
-    }
-
-    void showWinnerAndLoser(boolean isSanma, int matchMin, int showMax) {
-        List<String[]> list = Main.databaseService.findWinnerAndLoser(isSanma);
-
-        Map<String, Integer> sumMap = new HashMap<>();
-        Map<String, Integer> countMap = new HashMap<>();
-        for (String[] winnerAndLoser : list) {
-            String loserAndWinnerString = winnerAndLoser[1] + " -> " + winnerAndLoser[0];
-            String winnerAndLoserString = winnerAndLoser[0] + " -> " + winnerAndLoser[1];
-            if (sumMap.containsKey(winnerAndLoserString)) {
-                sumMap.merge(winnerAndLoserString, 1, Integer::sum);
-            } else {
-                sumMap.merge(loserAndWinnerString, 1, Integer::sum);
-                countMap.merge(loserAndWinnerString, 1, Integer::sum);
-            }
-        }
-
-        List<Pair<String, Double>> candidates = new ArrayList<>();
-        Set<String> keys = sumMap.keySet();
-        for (String key : keys) {
-            int sum = sumMap.get(key);
-            if (sum < matchMin) continue;
-
-            int count = countMap.get(key);
-            if (count == sum - count) continue;
-
-            String tmpKey;
-            double percent;
-            if (count > sum - count) {
-                tmpKey = key + " " + count + "/" + sum;
-                percent = (double) count / sum;
-            } else {
-                String[] split = key.split(" -> ");
-                tmpKey = split[1] + " -> " + split[0] + " " + (sum - count) + "/" + sum;
-                percent = (double) (sum - count) / sum;
-            }
-            candidates.add(new Pair<>(tmpKey, percent));
-        }
-
-        candidates.sort((c1, c2) -> Double.compare(c2.getValue(), c1.getValue()));
-
-        for (int i = 0; i < showMax; i++) {
-            log.debug("{}", candidates.get(i).getKey());
-        }
     }
 }

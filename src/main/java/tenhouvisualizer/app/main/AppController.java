@@ -206,6 +206,19 @@ public class AppController implements Initializable {
         stage.show();
     }
 
+    public void openDonationRanker(ActionEvent actionEvent) throws IOException {
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(this.tableView.getScene().getWindow());
+
+        Parent root = FXMLLoader.load(getClass().getResource("/DonationRanker.fxml"));
+        root.getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+        javafx.scene.Scene scene = new javafx.scene.Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("貢ぎランク");
+        stage.show();
+    }
+
     public void saveAsImage(ActionEvent actionEvent) throws IOException {
         if (this.tableView.getSelectionModel().getSelectedItem() == null) {
             // TableViewのアイテムが選択されてなければ、何もしない
