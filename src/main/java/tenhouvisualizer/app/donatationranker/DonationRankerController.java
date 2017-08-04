@@ -56,8 +56,8 @@ public class DonationRankerController implements Initializable {
             showMaxField.setText(String.valueOf(DEFAULT_SHOW_MAX));
         }
 
-        boolean isSanma = ((RadioButton) maToggle.getSelectedToggle()).getText().equals("三");
-        boolean isTonnan = ((RadioButton) souToggle.getSelectedToggle()).getText().equals("東南");
+        boolean isSanma = sanmaRadioButton.isSelected();
+        boolean isTonnan = tonnanRadioButton.isSelected();
         String playerName = filterField.getText();
         int matchMin = Integer.parseInt(matchMinField.getText());
         int showMax = Integer.parseInt(showMaxField.getText());
@@ -131,7 +131,7 @@ public class DonationRankerController implements Initializable {
     private boolean isNotSmallNumberString(String s) {
         if (s.length() > 5) return true;
 
-        Pattern pattern = Pattern.compile("\\d+");
+        Pattern pattern = Pattern.compile("^\\d+$");
         return !pattern.matcher(s).find();
     }
 

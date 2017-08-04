@@ -25,22 +25,20 @@
             <padding>
                 <Insets left="5" right="5"/>
             </padding>
-            <RadioButton fx:id="sanmaRadioButton" prefHeight="32.0" prefWidth="0.0" text="三" selected="true">
-                <toggleGroup>
-                    <ToggleGroup fx:id="maToggle"/>
-                </toggleGroup>
-            </RadioButton>
+            <fx:define>
+                <ToggleGroup fx:id="maToggle"/>
+            </fx:define>
+            <RadioButton fx:id="sanmaRadioButton" prefHeight="32.0" prefWidth="0.0" text="三" selected="true" toggleGroup="$maToggle"/>
             <RadioButton fx:id="yonmaRadioButton" prefHeight="32.0" prefWidth="0.0" text="四" toggleGroup="$maToggle"/>
         </HBox>
         <HBox spacing="7">
             <padding>
                 <Insets left="5" right="5"/>
             </padding>
-            <RadioButton fx:id="tonnanRadioButton" prefHeight="32.0" prefWidth="50.0" text="東南" selected="true">
-                <toggleGroup>
-                    <ToggleGroup fx:id="souToggle"/>
-                </toggleGroup>
-            </RadioButton>
+            <fx:define>
+                <ToggleGroup fx:id="souToggle"/>
+            </fx:define>
+            <RadioButton fx:id="tonnanRadioButton" prefHeight="32.0" prefWidth="50.0" text="東南" selected="true" toggleGroup="$souToggle"/>
             <RadioButton fx:id="tonpuRadioButton" prefHeight="32.0" prefWidth="50.0" text="東風" toggleGroup="$souToggle"/>
         </HBox>
         <HBox spacing="7">
@@ -70,9 +68,9 @@
     </VBox>
     <TableView GridPane.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="rankingTableView">
         <columns>
-            <TableColumn fx:id="fromCol" editable="false" text="from" sortable="false"/>
-            <TableColumn fx:id="toCol" editable="false" text="to" sortable="false"/>
-            <TableColumn fx:id="valueCol" editable="false" text="value" sortable="false"/>
+            <TableColumn fx:id="fromCol" editable="false" text="ラス" sortable="false"/>
+            <TableColumn fx:id="toCol" editable="false" text="トップ" sortable="false"/>
+            <TableColumn fx:id="valueCol" editable="false" text="回数" sortable="false"/>
         </columns>
     </TableView>
 </GridPane>
