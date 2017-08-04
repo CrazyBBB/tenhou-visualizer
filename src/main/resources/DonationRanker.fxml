@@ -36,12 +36,21 @@
             <padding>
                 <Insets left="5" right="5"/>
             </padding>
-            <RadioButton fx:id="tonpuRadioButton" prefHeight="32.0" prefWidth="50.0" text="東風" selected="true">
+            <RadioButton fx:id="tonnanRadioButton" prefHeight="32.0" prefWidth="50.0" text="東南" selected="true">
                 <toggleGroup>
                     <ToggleGroup fx:id="souToggle"/>
                 </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="tonnanRadioButton" prefHeight="32.0" prefWidth="50.0" text="東南" toggleGroup="$souToggle"/>
+            <RadioButton fx:id="tonpuRadioButton" prefHeight="32.0" prefWidth="50.0" text="東風" toggleGroup="$souToggle"/>
+        </HBox>
+        <HBox spacing="7">
+            <padding>
+                <Insets left="5" right="5"/>
+            </padding>
+            <TextField fx:id="matchMinField" prefWidth="50"/>
+            <Label text="戦以上"/>
+            <TextField fx:id="showMaxField" prefWidth="50"/>
+            <Label text="件表示"/>
         </HBox>
         <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"
                     HBox.hgrow="ALWAYS">

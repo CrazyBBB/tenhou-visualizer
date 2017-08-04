@@ -34,8 +34,6 @@ public class DatabaseService implements Closeable {
     private final PreparedStatement findAllExistsInfoStatement;
     private final PreparedStatement insertMjlogIndexStatement;
     private final PreparedStatement findAllMjlogIndexStatement;
-    private final PreparedStatement findSanmaWinnerAndLoserStatement;
-    private final PreparedStatement findYonmaWinnerAndLoserStatement;
     public DatabaseService(@Nullable File file) throws ClassNotFoundException, SQLException {
         long start = System.currentTimeMillis();
 
@@ -52,8 +50,6 @@ public class DatabaseService implements Closeable {
         this.findAllExistsInfoStatement = connection.prepareStatement("SELECT * FROM INFO WHERE id in (SELECT id FROM MJLOG);");
         this.insertMjlogIndexStatement = connection.prepareStatement("INSERT INTO MJLOGINDEX VALUES(?);");
         this.findAllMjlogIndexStatement = connection.prepareStatement("SELECT id FROM MJLOGINDEX;");
-        this.findSanmaWinnerAndLoserStatement = connection.prepareStatement("SELECT first, third FROM INFO WHERE is_sanma = 1");
-        this.findYonmaWinnerAndLoserStatement = connection.prepareStatement("SELECT first, fourth FROM INFO WHERE is_sanma = 0");
 
         long end = System.currentTimeMillis();
         log.info("time to initialize db: {}", end - start);
@@ -229,18 +225,31 @@ public class DatabaseService implements Closeable {
         }
     }
 
-    public List<String[]> findWinnerAndLoser(boolean isSanma) {
-        try (ResultSet rs = isSanma ? this.findSanmaWinnerAndLoserStatement.executeQuery()
-                                        : this.findYonmaWinnerAndLoserStatement.executeQuery()) {
-            List<String[]> list = new ArrayList<>();
-            while (rs.next()) {
-                String[] winnerAndLoser = new String[] {rs.getString(1), rs.getString(2)};
-                list.add(winnerAndLoser);
+    public List<String[]> findWinnerAndLoser(boolean isSanma, boolean isTonnan, String playerName) {
+            String sqlStr = "SELECT first, " + (isSanma ? "third" : "fourth")
+                + " FROM info WHERE is_sanma = " + (isSanma ? 1 : 0)
+                + " AND is_tonnan = " + (isTonnan ? 1 : 0);
+            if (!"".equals(playerName)) {
+                sqlStr += " AND (first = ? OR ";
+                sqlStr += (isSanma ? "third" : "fourth") + " = ?)";
             }
-            return list;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
+            try (PreparedStatement preparedStatement = this.connection.prepareStatement(sqlStr)) {
+                if (!"".equals(playerName)) {
+                    preparedStatement.setString(1, playerName);
+                    preparedStatement.setString(2, playerName);
+                }
+                try (ResultSet rs = preparedStatement.executeQuery()) {
+                    List<String[]> list = new ArrayList<>();
+                    while (rs.next()) {
+                        String[] winnerAndLoser = new String[]{rs.getString(1), rs.getString(2)};
+                        list.add(winnerAndLoser);
+                    }
+                    return list;
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
     }
 
     public List<InfoSchema> findInfosByCriteria(String playerName, boolean isContentSanma, boolean isContentYonma,

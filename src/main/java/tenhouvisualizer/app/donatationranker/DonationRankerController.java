@@ -7,12 +7,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tenhouvisualizer.Main;
 
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class DonationRankerController implements Initializable {
+
+    private final static Logger log = LoggerFactory.getLogger(DonationRankerController.class);
+
     public RadioButton sanmaRadioButton;
     public RadioButton yonmaRadioButton;
     public RadioButton tonpuRadioButton;
@@ -27,26 +33,54 @@ public class DonationRankerController implements Initializable {
     public TableColumn<Donation, String> toCol;
     public TableColumn<Donation, String> valueCol;
 
+    private final static int DEFAULT_MATCH_MIN = 10;
+    private final static int DEFAULT_SHOW_MAX = 100;
+    public TextField matchMinField;
+    public TextField showMaxField;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         fromCol.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().from));
         toCol.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().to));
         valueCol.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().value));
+
+        matchMinField.setText(String.valueOf(DEFAULT_MATCH_MIN));
+        showMaxField.setText(String.valueOf(DEFAULT_SHOW_MAX));
     }
 
     public void search(ActionEvent actionEvent) {
-        // todo 本来はラジオボタンから取得
-        rankingTableView.setItems(rankWinnerAndLoser(false, 10, 100));
+        if (isNotSmallNumberString(matchMinField.getText())) {
+            matchMinField.setText(String.valueOf(DEFAULT_MATCH_MIN));
+        }
+        if (isNotSmallNumberString(showMaxField.getText())) {
+            showMaxField.setText(String.valueOf(DEFAULT_SHOW_MAX));
+        }
+
+        boolean isSanma = ((RadioButton) maToggle.getSelectedToggle()).getText().equals("三");
+        boolean isTonnan = ((RadioButton) souToggle.getSelectedToggle()).getText().equals("東南");
+        String playerName = filterField.getText();
+        int matchMin = Integer.parseInt(matchMinField.getText());
+        int showMax = Integer.parseInt(showMaxField.getText());
+
+        rankingTableView.setItems(rankWinnerAndLoser(isSanma, isTonnan, playerName, matchMin, showMax));
     }
 
     public void clear(ActionEvent actionEvent) {
+        sanmaRadioButton.setSelected(true);
+        tonnanRadioButton.setSelected(true);
+        filterField.clear();
+        matchMinField.setText(String.valueOf(DEFAULT_MATCH_MIN));
+        showMaxField.setText(String.valueOf(DEFAULT_SHOW_MAX));
     }
 
     public void clearFilterField(ActionEvent actionEvent) {
+        filterField.clear();
+        filterField.requestFocus();
     }
 
-    private ObservableList<Donation> rankWinnerAndLoser(boolean isSanma, int matchMin, int showMax) {
-        List<String[]> list = Main.databaseService.findWinnerAndLoser(isSanma);
+    private ObservableList<Donation> rankWinnerAndLoser(boolean isSanma, boolean isTonnan, String playerName,
+                                                        int matchMin, int showMax) {
+        List<String[]> list = Main.databaseService.findWinnerAndLoser(isSanma, isTonnan, playerName);
 
         Map<String, Integer> sumMap = new HashMap<>();
         Map<String, Integer> countMap = new HashMap<>();
@@ -86,12 +120,19 @@ public class DonationRankerController implements Initializable {
         candidates.sort((c1, c2) -> Double.compare(c2.getValue(), c1.getValue()));
 
         ObservableList<Donation> donations = FXCollections.observableArrayList();
-        for (int i = 0; i < showMax; i++) {
+        for (int i = 0; i < showMax && i < candidates.size(); i++) {
             String[] splits = candidates.get(i).getKey().split(" ");
             donations.add(new Donation(splits[0], splits[1], splits[2]));
         }
 
         return donations;
+    }
+
+    private boolean isNotSmallNumberString(String s) {
+        if (s.length() > 5) return true;
+
+        Pattern pattern = Pattern.compile("\\d+");
+        return !pattern.matcher(s).find();
     }
 
     class Donation {
