@@ -46,6 +46,7 @@ public interface IAnalyzer {
      * @param bakaze           場風(例: 東)
      * @param kyoku            局
      * @param honba            本場
+     * @param kyotaku          供託
      * @param firstDoraDisplay 最初の表示牌
      *                         todo 供託追加
      */
@@ -156,6 +157,17 @@ public interface IAnalyzer {
     default void addDora(int newDoraDisplay) {
     }
 
+    /**
+     * アガったときに呼び出されるメソッド
+     * @param position              アガったプレーヤーの座席
+     * @param from                  ロンの場合振り込んだプレーヤーの座席
+     *                              ツモの場合アガったプレーヤーの座席
+     * @param yaku                  アガリの役
+     * @param han                   翻
+     * @param hu                    符
+     * @param score                 点数
+     * @param increaseAndDecrease   各プレーヤーの増減後の点数
+     */
     default void agari(int position, int from, ArrayList<String> yaku, int han, int hu, int score, int[] increaseAndDecrease) {
     }
 
