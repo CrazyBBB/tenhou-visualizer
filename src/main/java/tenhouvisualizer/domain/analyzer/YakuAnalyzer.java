@@ -19,8 +19,8 @@ public class YakuAnalyzer implements IAnalyzer, ComputationContainer {
     }
 
     @Override
-    public List<Pair> getComputationList() {
-        List<Pair> computationList = new ArrayList<>();
+    public List<Pair<String, Integer>> getComputationList() {
+        List<Pair<String, Integer>> computationList = new ArrayList<>();
         Set<String> set = yakuCountMap.keySet();
         for (String yakuString : set) {
             computationList.add(new Pair<>(yakuString, yakuCountMap.get(yakuString)));

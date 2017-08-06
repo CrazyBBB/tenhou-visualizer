@@ -5,12 +5,12 @@ import org.junit.Test;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class YakuAnalyzerTest {
     @Test
@@ -23,11 +23,9 @@ public class YakuAnalyzerTest {
         FileInputStream fileInputStream = new FileInputStream(new File(YakuAnalyzerTest.class.getResource("/mjlog/test.mjlog").toURI()));
         saxParser.parse(fileInputStream, parseHandler);
 
-        List<Pair> list = analyzer.getComputationList();
-        assertEquals("立直=1", list.get(0).toString());
-        assertEquals("裏ドラ=1", list.get(1).toString());
-        assertEquals("ドラ4=1", list.get(2).toString());
-        assertEquals("赤ドラ=1", list.get(3).toString());
+        List<Pair<String, Integer>> actual = analyzer.getComputationList();
+        List<Pair<String, Integer>> expected = Arrays.asList(new Pair<String, Integer>("立直", 1), new Pair<String, Integer>("裏ドラ", 1), new Pair<String, Integer>("ドラ4", 1), new Pair<String, Integer>("赤ドラ", 1));
+        assertEquals(expected, actual);
     }
 
 }

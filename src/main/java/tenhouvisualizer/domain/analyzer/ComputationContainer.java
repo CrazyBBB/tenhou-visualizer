@@ -5,5 +5,5 @@ import javafx.util.Pair;
 import java.util.List;
 
 public interface ComputationContainer {
-    List<Pair> getComputationList();
+    List<Pair<String, Integer>> getComputationList();
 }
