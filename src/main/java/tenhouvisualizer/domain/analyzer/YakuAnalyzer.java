@@ -2,11 +2,10 @@ package tenhouvisualizer.domain.analyzer;
 
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class YakuAnalyzer implements IAnalyzer, ComputationContainer {
-    private List<Pair> computationList = new ArrayList<>();
+    private HashMap<String, Integer> yakuCountMap = new HashMap<>();
 
     private String playerName;
     private int position = -1;
@@ -21,6 +20,11 @@ public class YakuAnalyzer implements IAnalyzer, ComputationContainer {
 
     @Override
     public List<Pair> getComputationList() {
+        List<Pair> computationList = new ArrayList<>();
+        Set<String> set = yakuCountMap.keySet();
+        for (String yakuString : set) {
+            computationList.add(new Pair<>(yakuString, yakuCountMap.get(yakuString)));
+        }
         return computationList;
     }
 
@@ -31,12 +35,11 @@ public class YakuAnalyzer implements IAnalyzer, ComputationContainer {
             if (playerNames[i].equals(playerName)) position = i;
         }
     }
-
     @Override
     public void agari(int position, int from, ArrayList<String> yaku, int han, int hu, int score, int[] increaseAndDecrease) {
         if (this.position == position) {
             for (String y : yaku) {
-                computationList.add(new Pair<>(y, 1));
+                yakuCountMap.merge(y, 1, Integer::sum);
             }
         }
     }
