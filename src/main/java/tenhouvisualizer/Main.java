@@ -31,14 +31,16 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         log.info("start!");
+
+        properties = new Properties();
         File configationFile = new File("./tenhouvisualizer.properties");
         if (configationFile.isFile()) {
             try (InputStream is = new FileInputStream(configationFile)) {
-                properties = new Properties();
                 properties.load(is);
             }
-        } else {
-            properties = null;
+        }
+        if (!properties.containsKey("css")) {
+            properties.setProperty("css", "/darcula.css");
         }
 
         try {
@@ -48,7 +50,7 @@ public class Main extends Application {
         }
 
         Parent root = FXMLLoader.load(getClass().getResource("/app.fxml"));
-        root.getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+        root.getStylesheets().add(this.getClass().getResource(Main.properties.getProperty("css")).toExternalForm());
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Tenhou Visualizer");

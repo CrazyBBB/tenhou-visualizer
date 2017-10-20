@@ -147,7 +147,7 @@ public class DownloaderController implements Initializable {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.initOwner(root.getScene().getWindow());
                     alert.setHeaderText("ダウンロードの確認");
-                    alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+                    alert.getDialogPane().getStylesheets().add(this.getClass().getResource(Main.properties.getProperty("css")).toExternalForm());
                     String str = "昨年以前のインデックスは年単位でダウンロードするので" +
                             "時間がかかります。よろしいですか？";
                     alert.setContentText(str);
@@ -172,7 +172,7 @@ public class DownloaderController implements Initializable {
                         progressDialog.getDialogPane().setContent(vBox);
 
                         progressDialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-                        progressDialog.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+                        progressDialog.getDialogPane().getStylesheets().add(this.getClass().getResource(Main.properties.getProperty("css")).toExternalForm());
                         progressDialog.initOwner(root.getScene().getWindow());
                         progressDialog.setTitle("インデックス追加");
                         progressDialog.setOnShown(event -> new Thread(task).start());
@@ -207,7 +207,7 @@ public class DownloaderController implements Initializable {
             log.error("インデックスのダウンロード中にエラーが発生したっぽい", e);
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initOwner(root.getScene().getWindow());
-            alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+            alert.getDialogPane().getStylesheets().add(this.getClass().getResource(Main.properties.getProperty("css")).toExternalForm());
             alert.getDialogPane().setHeaderText("インデックス追加の失敗");
             alert.getDialogPane().setContentText("インデックスを追加することができませんでした");
             alert.show();
@@ -224,7 +224,7 @@ public class DownloaderController implements Initializable {
                     log.error("ログのダウンロード中にエラーが発生したっぽい", e);
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.initOwner(root.getScene().getWindow());
-                    alert.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+                    alert.getDialogPane().getStylesheets().add(this.getClass().getResource(Main.properties.getProperty("css")).toExternalForm());
                     alert.getDialogPane().setHeaderText("牌譜追加の失敗");
                     alert.getDialogPane().setContentText("牌譜を追加することができませんでした");
                     alert.show();

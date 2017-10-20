@@ -182,7 +182,7 @@ public class AppController implements Initializable {
         stage.initOwner(this.tableView.getScene().getWindow());
 
         Parent root = FXMLLoader.load(getClass().getResource("/Downloader.fxml"));
-        root.getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+        root.getStylesheets().add(this.getClass().getResource(Main.properties.getProperty("css")).toExternalForm());
         javafx.scene.Scene scene = new javafx.scene.Scene(root);
         stage.setScene(scene);
         stage.setTitle("鳳凰卓牌譜ダウンロード");
@@ -201,7 +201,7 @@ public class AppController implements Initializable {
         stage.initOwner(this.tableView.getScene().getWindow());
 
         Parent root = FXMLLoader.load(getClass().getResource("/SyantenBackAnalyzer.fxml"));
-        root.getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+        root.getStylesheets().add(this.getClass().getResource(Main.properties.getProperty("css")).toExternalForm());
         javafx.scene.Scene scene = new javafx.scene.Scene(root);
         stage.setScene(scene);
         stage.setTitle("解析");
@@ -214,7 +214,7 @@ public class AppController implements Initializable {
         stage.initOwner(this.tableView.getScene().getWindow());
 
         Parent root = FXMLLoader.load(getClass().getResource("/DonationRanker.fxml"));
-        root.getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+        root.getStylesheets().add(this.getClass().getResource(Main.properties.getProperty("css")).toExternalForm());
         javafx.scene.Scene scene = new javafx.scene.Scene(root);
         stage.setScene(scene);
         stage.setTitle("貢ぎランク");
@@ -286,7 +286,7 @@ public class AppController implements Initializable {
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Tenhou Visualizer について");
         dialog.initOwner(this.root.getScene().getWindow());
-        dialog.getDialogPane().getStylesheets().add(this.getClass().getResource("/darcula.css").toExternalForm());
+        dialog.getDialogPane().getStylesheets().add(this.getClass().getResource(Main.properties.getProperty("css")).toExternalForm());
         dialog.getDialogPane().setGraphic(new ImageView(new Image("/logo.png")));
         dialog.getDialogPane().setHeaderText("TenhouVisualizer v0.3");
         final Hyperlink oss = new Hyperlink("open-source software");
