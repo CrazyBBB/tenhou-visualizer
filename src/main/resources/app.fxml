@@ -90,7 +90,10 @@
                     </HBox>
                 </VBox>
             </ScrollPane>
-            <MjlogTreeControl fx:id="mjlogTreeControl" GridPane.columnIndex="2"/>
+            <VBox GridPane.columnIndex="2">
+                <TableView fx:id="ukeireTable"/>
+                <MjlogTreeControl fx:id="mjlogTreeControl"/>
+            </VBox>
         </GridPane>
     </center>
     <bottom>

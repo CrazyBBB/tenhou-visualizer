@@ -66,6 +66,8 @@ public class AppController implements Initializable {
     @FXML
     private BoardControl boardControl;
     @FXML
+    private TableView ukeireTable;
+    @FXML
     private MjlogTreeControl mjlogTreeControl;
 
     @FXML
