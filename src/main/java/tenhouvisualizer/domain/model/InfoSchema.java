@@ -61,7 +61,7 @@ public class InfoSchema {
     public String toString() {
         return (isSanma ? "三" : "四") + "鳳" + (isTonnan ? "南" : "東")
                 + " 1位:" + first + " 2位:" + second + " 3位:" + third
-                + ("".equals(fourth) ? "" : " 4位:" + fourth) + " " + dateTime.format(dateFormatter);
+                + (isSanma ? "" : " 4位:" + fourth) + " " + dateTime.format(dateFormatter);
     }
 
     public String getId() {
