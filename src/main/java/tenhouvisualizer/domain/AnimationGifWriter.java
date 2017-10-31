@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.Iterator;
 
 public class AnimationGifWriter implements Closeable {
-    private final BufferedImage bufferedImage;
     private final ImageWriter imageWriter;
     private final IIOMetadata metadata;
     public AnimationGifWriter(File file, int width, int height) throws IOException {
@@ -24,14 +23,14 @@ public class AnimationGifWriter implements Closeable {
             throw new RuntimeException("ImageWriter for gif was not found");
         }
 
-        bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         metadata = imageWriter.getDefaultImageMetadata(ImageTypeSpecifier.createFromRenderedImage(bufferedImage), null);
         String format = metadata.getNativeMetadataFormatName();
         IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(format);
         int count = 0;
         byte[] data = {
                 0x01,
-                (byte) ((count >> 0) & 0xFF),
+                (byte) (count & 0xFF),
                 (byte) ((count >> 8) & 0xFF)
         };
         IIOMetadataNode list = new IIOMetadataNode("ApplicationExtensions");

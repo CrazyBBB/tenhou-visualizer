@@ -2,7 +2,6 @@ package tenhouvisualizer.domain.service;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import tenhouvisualizer.domain.task.DownloadYearTask;
 import tenhouvisualizer.Main;
 import tenhouvisualizer.domain.model.InfoSchema;

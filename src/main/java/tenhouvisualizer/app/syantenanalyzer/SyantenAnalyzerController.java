@@ -10,11 +10,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
-import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-import tenhouvisualizer.Main;
 import tenhouvisualizer.domain.task.AnalyzeDBTask;
 import tenhouvisualizer.domain.task.AnalyzeZipTask;
 import tenhouvisualizer.app.main.BoardControl;
@@ -66,7 +64,7 @@ public class SyantenAnalyzerController implements Initializable {
 //    }
 
     @FXML
-    public void analyzeZIP(ActionEvent actionEvent) throws IOException, ParserConfigurationException, SAXException {
+    public void analyzeZIP(ActionEvent actionEvent) {
         FileChooser fc = new FileChooser();
         fc.setInitialDirectory(lastSelectedFile == null ? new File(".") : lastSelectedFile);
         File selectedFile = fc.showOpenDialog(root.getScene().getWindow());

@@ -20,18 +20,16 @@
                     <graphic>
                         <FontAwesomeIconView styleClass="gryph-icon" glyphName="LINE_CHART"/>
                     </graphic>
-                    <items>
-                        <MenuItem fx:id="openMenuItem" text="ZIPを解析..." onAction="#analyzeZIP">
-                            <graphic>
-                                <FontAwesomeIconView styleClass="gryph-icon" glyphName="FILE_ARCHIVE_ALT"/>
-                            </graphic>
-                        </MenuItem>
-                        <MenuItem text="データベースを解析" onAction="#analyzeDB">
-                            <graphic>
-                                <FontAwesomeIconView styleClass="gryph-icon" glyphName="DATABASE"/>
-                            </graphic>
-                        </MenuItem>
-                    </items>
+                    <MenuItem fx:id="openMenuItem" text="ZIPを解析..." onAction="#analyzeZIP">
+                        <graphic>
+                            <FontAwesomeIconView styleClass="gryph-icon" glyphName="FILE_ARCHIVE_ALT"/>
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem text="データベースを解析" onAction="#analyzeDB">
+                        <graphic>
+                            <FontAwesomeIconView styleClass="gryph-icon" glyphName="DATABASE"/>
+                        </graphic>
+                    </MenuItem>
                 </Menu>
             </Menu>
         </MenuBar>

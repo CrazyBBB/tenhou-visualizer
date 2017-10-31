@@ -60,7 +60,7 @@ public class DownloadYearTask extends Task<Void> {
         return null;
     }
 
-    private void downloadZipAndAddIndices(URL url, File tmpFile) throws IOException {
+    private void downloadZipAndAddIndices(URL url, File tmpFile) {
         try (InputStream is = url.openStream();
              BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
              FileOutputStream fileOutputStream = new FileOutputStream(tmpFile)) {

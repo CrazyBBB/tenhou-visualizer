@@ -3,7 +3,6 @@ package tenhouvisualizer.app.downloader;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -27,13 +26,10 @@ import java.nio.file.Files;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 public class DownloaderController implements Initializable {
 
@@ -178,9 +174,7 @@ public class DownloaderController implements Initializable {
                         progressDialog.setOnShown(event -> new Thread(task).start());
 
                         Optional<Void> downloadResult = progressDialog.showAndWait();
-                        if (downloadResult.isPresent()) {
-                            task.cancel();
-                        }
+                        downloadResult.ifPresent(aVoid -> task.cancel());
                     }
                 }
             } else if (this.tabPane.getSelectionModel().getSelectedItem() == this.currentYearTab) {
