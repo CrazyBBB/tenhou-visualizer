@@ -100,21 +100,14 @@ public class DownloadService {
             }
             LocalTime localTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(columns[0]));
             LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-            return new InfoSchema(
-                    id,
-                    isSanma,
-                    isTonnan,
-                    minute,
-                    localDateTime,
-                    players[0],
-                    players[1],
-                    players[2],
-                    players[3],
-                    scores[0],
-                    scores[1],
-                    scores[2],
-                    scores[3]
-            );
+            return new InfoSchema.Builder(id, isSanma, isTonnan, localDateTime,
+                    players[0], players[1], players[2], players[3])
+                    .minute(minute)
+                    .firstScore(scores[0])
+                    .secondScore(scores[1])
+                    .thirdScore(scores[2])
+                    .fourthScore(scores[3])
+                    .build();
         }
 
         return null;
@@ -122,9 +115,9 @@ public class DownloadService {
 
     public void downloadMjlog(InfoSchema schema) {
         try {
-            URL url = new URL("http://tenhou.net/0/log/?" + schema.id);
+            URL url = new URL("http://tenhou.net/0/log/?" + schema.getId());
             try (InputStream is = url.openStream()) {
-                Path path = Paths.get(schema.id);
+                Path path = Paths.get(schema.getId());
                 Files.copy(is, path);
             }
         } catch (IOException e) {
@@ -134,12 +127,12 @@ public class DownloadService {
 
 
     public void downloadMjlogToDatabase(InfoSchema schema) throws IOException, SQLException {
-        URL url = new URL("http://tenhou.net/0/log/?" + schema.id);
+        URL url = new URL("http://tenhou.net/0/log/?" + schema.getId());
         try (InputStream is = url.openStream();
              InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             String content = consumeReader(isr);
-            databaseService.saveMjlog(schema.id, content);
-            this.storedInfoSchemaIds.add(schema.id);
+            databaseService.saveMjlog(schema.getId(), content);
+            this.storedInfoSchemaIds.add(schema.getId());
         }
     }
 
@@ -154,11 +147,11 @@ public class DownloadService {
     }
 
     public boolean isDownloaded(InfoSchema infoSchema) {
-        return this.storedInfoSchemaIds.contains(infoSchema.id);
+        return this.storedInfoSchemaIds.contains(infoSchema.getId());
     }
 
     public void removeInfoSchema(InfoSchema infoSchema) {
-        this.storedInfoSchemaIds.remove(infoSchema.id);
+        this.storedInfoSchemaIds.remove(infoSchema.getId());
     }
 
     public List<Integer> createDownloadableYearList() {

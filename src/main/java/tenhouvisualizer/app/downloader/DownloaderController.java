@@ -118,13 +118,13 @@ public class DownloaderController implements Initializable {
         this.downloadColumn.setCellValueFactory(e ->
                 new SimpleStringProperty(this.service.isDownloaded(e.getValue()) ? "✓" : "")
         );
-        this.dateTimeColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().dateTime.format(minuteFormatter)));
-        this.maColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().isSanma ? "三" : "四"));
-        this.souColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().isTonnan ? "南" : "東"));
-        this.firstColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().first));
-        this.secondColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().second));
-        this.thirdColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().third));
-        this.fourthColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().fourth));
+        this.dateTimeColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getDateTime().format(minuteFormatter)));
+        this.maColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().isSanma() ? "三" : "四"));
+        this.souColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().isTonnan() ? "南" : "東"));
+        this.firstColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getFirst()));
+        this.secondColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getSecond()));
+        this.thirdColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getThird()));
+        this.fourthColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getFourth()));
 
         this.tableView.setRowFactory(e -> new InfoSchemaTableRow(this, this.service));
 
@@ -211,7 +211,7 @@ public class DownloaderController implements Initializable {
     public void downloadMjlog(ActionEvent actionEvent) {
         if (this.tableView.getSelectionModel().getSelectedItem() != null) {
             InfoSchema infoSchema = this.tableView.getSelectionModel().getSelectedItem();
-            if (!this.databaseService.existsIdInMJLOG(infoSchema.id)) {
+            if (!this.databaseService.existsIdInMJLOG(infoSchema.getId())) {
                 try {
                     this.service.downloadMjlogToDatabase(infoSchema);
                 } catch (IOException | SQLException e) {
@@ -246,7 +246,7 @@ public class DownloaderController implements Initializable {
             String content = this.databaseService.findMjlogById(infoSchema.getId());
             if (content != null) {
                 FileChooser fileChooser = new FileChooser();
-                fileChooser.setInitialFileName(infoSchema.id);
+                fileChooser.setInitialFileName(infoSchema.getId());
                 fileChooser.setTitle("Save mjlog File");
                 fileChooser.getExtensionFilters().add(
                         new FileChooser.ExtensionFilter("mjlog Files", "*.mjlog"));
@@ -261,8 +261,8 @@ public class DownloaderController implements Initializable {
     public void removeMjlog(ActionEvent actionEvent) {
         if (this.tableView.getSelectionModel().getSelectedItem() != null) {
             InfoSchema infoSchema = this.tableView.getSelectionModel().getSelectedItem();
-            if (this.databaseService.existsIdInMJLOG(infoSchema.id)) {
-                this.databaseService.removeMjlogById(infoSchema.id);
+            if (this.databaseService.existsIdInMJLOG(infoSchema.getId())) {
+                this.databaseService.removeMjlogById(infoSchema.getId());
                 this.service.removeInfoSchema(infoSchema);
                 this.tableView.getItems().set(this.tableView.getSelectionModel().getFocusedIndex(), infoSchema);
             }

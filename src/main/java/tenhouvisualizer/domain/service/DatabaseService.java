@@ -85,19 +85,19 @@ public class DatabaseService implements Closeable {
         try {
             this.connection.setAutoCommit(false);
             for (int i = 0; i < infos.size(); i++) {
-                this.insertInfoStatement.setString(1, infos.get(i).id);
-                this.insertInfoStatement.setInt(2, infos.get(i).isSanma ? 1 : 0);
-                this.insertInfoStatement.setInt(3, infos.get(i).isTonnan ? 1 : 0);
-                this.insertInfoStatement.setString(4, infos.get(i).dateTime.toString());
-                this.insertInfoStatement.setInt(5, infos.get(i).minute);
-                this.insertInfoStatement.setString(6, infos.get(i).first);
-                this.insertInfoStatement.setString(7, infos.get(i).second);
-                this.insertInfoStatement.setString(8, infos.get(i).third);
-                this.insertInfoStatement.setString(9, infos.get(i).fourth);
-                this.insertInfoStatement.setInt(10, infos.get(i).firstScore);
-                this.insertInfoStatement.setInt(11, infos.get(i).secondScore);
-                this.insertInfoStatement.setInt(12, infos.get(i).thirdScore);
-                this.insertInfoStatement.setInt(13, infos.get(i).fourthScore);
+                this.insertInfoStatement.setString(1, infos.get(i).getId());
+                this.insertInfoStatement.setInt(2, infos.get(i).isSanma() ? 1 : 0);
+                this.insertInfoStatement.setInt(3, infos.get(i).isTonnan() ? 1 : 0);
+                this.insertInfoStatement.setString(4, infos.get(i).getDateTime().toString());
+                this.insertInfoStatement.setInt(5, infos.get(i).getMinute());
+                this.insertInfoStatement.setString(6, infos.get(i).getFirst());
+                this.insertInfoStatement.setString(7, infos.get(i).getSecond());
+                this.insertInfoStatement.setString(8, infos.get(i).getThird());
+                this.insertInfoStatement.setString(9, infos.get(i).getFourth());
+                this.insertInfoStatement.setInt(10, infos.get(i).getFirstScore());
+                this.insertInfoStatement.setInt(11, infos.get(i).getSecondScore());
+                this.insertInfoStatement.setInt(12, infos.get(i).getThirdScore());
+                this.insertInfoStatement.setInt(13, infos.get(i).getFourthScore());
                 this.insertInfoStatement.addBatch();
 
                 // MAX_BATCH_SIZE 件ごとにバッチ処理
@@ -186,7 +186,7 @@ public class DatabaseService implements Closeable {
         try (ResultSet rs = this.findAllInfoStatement.executeQuery()) {
             List<InfoSchema> list = new ArrayList<>();
             while (rs.next()) {
-                list.add(new InfoSchema(
+                list.add(new InfoSchema.Builder(
                         rs.getString("id"),
                         rs.getInt("is_sanma") == 1,
                         rs.getInt("is_tonnan") == 1,
@@ -195,7 +195,7 @@ public class DatabaseService implements Closeable {
                         rs.getString("second"),
                         rs.getString("third"),
                         rs.getString("fourth")
-                ));
+                ).build());
             }
             return list;
         } catch (SQLException e) {
@@ -208,7 +208,7 @@ public class DatabaseService implements Closeable {
         try (ResultSet rs = this.findAllExistsInfoStatement.executeQuery()) {
             List<InfoSchema> list = new ArrayList<>();
             while (rs.next()) {
-                list.add(new InfoSchema(
+                list.add(new InfoSchema.Builder(
                         rs.getString("id"),
                         rs.getInt("is_sanma") == 1,
                         rs.getInt("is_tonnan") == 1,
@@ -217,7 +217,7 @@ public class DatabaseService implements Closeable {
                         rs.getString("second"),
                         rs.getString("third"),
                         rs.getString("fourth")
-                ));
+                ).build());
             }
             return list;
         } catch (SQLException e) {
@@ -303,7 +303,7 @@ public class DatabaseService implements Closeable {
             }
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {
-                    result.add(new InfoSchema(
+                    result.add(new InfoSchema.Builder(
                             rs.getString("id"),
                             rs.getInt("is_sanma") == 1,
                             rs.getInt("is_tonnan") == 1,
@@ -312,7 +312,7 @@ public class DatabaseService implements Closeable {
                             rs.getString("second"),
                             rs.getString("third"),
                             rs.getString("fourth")
-                    ));
+                    ).build());
                 }
             }
         } catch (SQLException e) {

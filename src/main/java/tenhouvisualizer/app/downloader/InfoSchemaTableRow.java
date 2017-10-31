@@ -33,16 +33,16 @@ public class InfoSchemaTableRow extends TableRow<InfoSchema> {
                 contextMenu.getItems().add(removeMjlog);
             }
             contextMenu.getItems().add(new SeparatorMenuItem());
-            MenuItem filterWithFirst = new MenuItem("「" + item.first + "」で検索");
-            filterWithFirst.setOnAction(e -> updateFilter(item.first));
-            MenuItem filterWithSecond = new MenuItem("「 " + item.second + "」で検索");
-            filterWithSecond.setOnAction(e -> updateFilter(item.second));
-            MenuItem filterWithThird = new MenuItem("「 " + item.third + "」で検索");
-            filterWithThird.setOnAction(e -> updateFilter(item.third));
+            MenuItem filterWithFirst = new MenuItem("「" + item.getFirst() + "」で検索");
+            filterWithFirst.setOnAction(e -> updateFilter(item.getFirst()));
+            MenuItem filterWithSecond = new MenuItem("「 " + item.getSecond() + "」で検索");
+            filterWithSecond.setOnAction(e -> updateFilter(item.getSecond()));
+            MenuItem filterWithThird = new MenuItem("「 " + item.getThird() + "」で検索");
+            filterWithThird.setOnAction(e -> updateFilter(item.getThird()));
             contextMenu.getItems().addAll(filterWithFirst, filterWithSecond, filterWithThird);
-            if (item.fourth != null) {
-                MenuItem filterWithFourth = new MenuItem("「 " + item.fourth + "」で検索");
-                filterWithFourth.setOnAction(e -> updateFilter(item.fourth));
+            if (item.getFourth() != null) {
+                MenuItem filterWithFourth = new MenuItem("「 " + item.getFourth() + "」で検索");
+                filterWithFourth.setOnAction(e -> updateFilter(item.getFourth()));
                 contextMenu.getItems().add(filterWithFourth);
             }
             this.setContextMenu(contextMenu);

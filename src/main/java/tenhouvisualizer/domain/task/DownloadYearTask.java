@@ -179,21 +179,14 @@ public class DownloadYearTask extends Task<Void> {
             }
             LocalTime localTime = LocalTime.parse(columns[0]);
             LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-            return new InfoSchema(
-                    id,
-                    isSanma,
-                    isTonnan,
-                    minute,
-                    localDateTime,
-                    players[0],
-                    players[1],
-                    players[2],
-                    players[3],
-                    scores[0],
-                    scores[1],
-                    scores[2],
-                    scores[3]
-            );
+            return new InfoSchema.Builder(id, isSanma, isTonnan, localDateTime,
+                    players[0], players[1], players[2], players[3])
+                    .minute(minute)
+                    .firstScore(scores[0])
+                    .secondScore(scores[1])
+                    .thirdScore(scores[2])
+                    .fourthScore(scores[3])
+                    .build();
         }
 
         return null;

@@ -103,13 +103,13 @@ public class AppController implements Initializable {
         this.infoSchemas.addAll(list);
         this.tableView.setItems(this.infoSchemas);
 
-        this.dataTimeColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().dateTime.format(dateFormatter)));
-        this.maColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().isSanma ? "三" : "四"));
-        this.souColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().isTonnan ? "南" : "東"));
-        this.firstColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().first));
-        this.secondColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().second));
-        this.thirdColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().third));
-        this.fourthColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().fourth));
+        this.dataTimeColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getDateTime().format(dateFormatter)));
+        this.maColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().isSanma() ? "三" : "四"));
+        this.souColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().isTonnan() ? "南" : "東"));
+        this.firstColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getFirst()));
+        this.secondColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getSecond()));
+        this.thirdColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getThird()));
+        this.fourthColumn.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getFourth()));
 
         this.maColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.2));
         this.maColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.1));
