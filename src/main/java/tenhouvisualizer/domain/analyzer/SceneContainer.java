@@ -2,8 +2,8 @@ package tenhouvisualizer.domain.analyzer;
 
 import tenhouvisualizer.domain.model.Kyoku;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface SceneContainer {
-    ArrayList<Kyoku> getKyokusList();
+    List<Kyoku> getKyokusList();
 }

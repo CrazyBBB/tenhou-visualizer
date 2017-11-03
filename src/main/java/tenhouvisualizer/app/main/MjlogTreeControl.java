@@ -10,7 +10,7 @@ import tenhouvisualizer.domain.model.Mjlog;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
+import java.util.List;
 
 public class MjlogTreeControl extends TreeView<Mjlog> {
     public MjlogTreeControl() {
@@ -18,7 +18,7 @@ public class MjlogTreeControl extends TreeView<Mjlog> {
     }
 
     public void showMjlogContent(byte[] xml, int position)  {
-        ArrayList<Kyoku> scenesList;
+        List<Kyoku> scenesList;
 
         try {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
@@ -34,9 +34,9 @@ public class MjlogTreeControl extends TreeView<Mjlog> {
 
         MjlogTreeItem root = new MjlogTreeItem();
         for (Kyoku kyoku : scenesList) {
-            MjlogTreeItem child = new MjlogTreeItem(new Mjlog(kyoku.summary));
-            for (int i = 0; i < kyoku.scenes.size(); i++) {
-                MahjongScene scene = kyoku.scenes.get(i);
+            MjlogTreeItem child = new MjlogTreeItem(new Mjlog(kyoku.getSummary()));
+            for (int i = 0; i < kyoku.getMahjongScenes().size(); i++) {
+                MahjongScene scene = kyoku.getMahjongScenes().get(i);
                 MjlogTreeItem grandchild = new MjlogTreeItem(new Mjlog(scene.toString(), scene, i + 1));
                 child.getChildren().add(grandchild);
             }

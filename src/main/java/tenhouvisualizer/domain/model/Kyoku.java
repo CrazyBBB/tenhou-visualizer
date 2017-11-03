@@ -1,13 +1,21 @@
 package tenhouvisualizer.domain.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Kyoku {
-    public String summary;
-    public ArrayList<MahjongScene> scenes;
+    private String summary;
+    private List<MahjongScene> mahjongScenes;
 
-    public Kyoku(String summary, ArrayList<MahjongScene> scenes) {
+    public Kyoku(String summary, List<MahjongScene> mahjongScenes) {
         this.summary = summary;
-        this.scenes = scenes;
+        this.mahjongScenes = mahjongScenes;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public List<MahjongScene> getMahjongScenes() {
+        return mahjongScenes;
     }
 }

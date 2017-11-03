@@ -7,6 +7,7 @@ import tenhouvisualizer.domain.MahjongUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.TreeSet;
 
 public class Analyzer implements IAnalyzer, SceneContainer {
@@ -26,8 +27,8 @@ public class Analyzer implements IAnalyzer, SceneContainer {
     };
     private final static String[] kazeStr = {"東", "南", "西", "北"};
 
-    private ArrayList<Kyoku> oriScenesList = new ArrayList<>();
-    private ArrayList<MahjongScene> oriScenes;
+    private List<Kyoku> kyokuList = new ArrayList<>();
+    private List<MahjongScene> mahjongScenes;
 
     private boolean isSanma = false;
     private String[] playerNames = new String[4];
@@ -76,7 +77,7 @@ public class Analyzer implements IAnalyzer, SceneContainer {
             tmpNaki.add(new ArrayList<>(naki.get(i)));
         }
 
-        oriScenes.add(new MahjongScene(
+        mahjongScenes.add(new MahjongScene(
                 isSanma,
                 playerId,
                 playerNames.clone(),
@@ -103,8 +104,8 @@ public class Analyzer implements IAnalyzer, SceneContainer {
     }
 
     @Override
-    public ArrayList<Kyoku> getKyokusList() {
-        return oriScenesList;
+    public List<Kyoku> getKyokusList() {
+        return kyokuList;
     }
 
     @Override
@@ -131,7 +132,7 @@ public class Analyzer implements IAnalyzer, SceneContainer {
         this.kyotaku = kyotaku;
         this.oya = oya;
 
-        oriScenes = new ArrayList<>();
+        mahjongScenes = new ArrayList<>();
 
         stehai.clear();
         dahai.clear();
@@ -330,22 +331,22 @@ public class Analyzer implements IAnalyzer, SceneContainer {
 
     @Override
     public void agari(int position, int from, ArrayList<String> yaku, int han, int hu, int score, int[] increaseAndDecrease) {
-        if (!oriScenes.isEmpty()) {
+        if (!mahjongScenes.isEmpty()) {
             String summary = kazeStr[bakaze] + kyoku + "局" + honba + "本場 " + playerNames[position];
             if (position == from) {
                 summary += " ツモ " + String.join("", yaku) + " " + score + "点";
             } else {
                 summary += " ロン " + String.join("", yaku) + " " + score + "点 " + playerNames[from];
             }
-            oriScenesList.add(new Kyoku(summary, new ArrayList<>(oriScenes)));
+            kyokuList.add(new Kyoku(summary, new ArrayList<>(mahjongScenes)));
         }
     }
 
     @Override
     public void ryuukyoku() {
-        if (!oriScenes.isEmpty()) {
+        if (!mahjongScenes.isEmpty()) {
             String summary = kazeStr[bakaze] + kyoku + "局" + honba + "本場 流局";
-            oriScenesList.add(new Kyoku(summary, new ArrayList<>(oriScenes)));
+            kyokuList.add(new Kyoku(summary, new ArrayList<>(mahjongScenes)));
         }
     }
 }
