@@ -66,7 +66,7 @@ public class AppController implements Initializable {
     @FXML
     private BoardControl boardControl;
     @FXML
-    private TableView ukeireTable;
+    private UkeireTableView ukeireTableView;
     @FXML
     private MjlogTreeControl mjlogTreeControl;
 
@@ -140,12 +140,14 @@ public class AppController implements Initializable {
             if (newMjlog != null) {
                 if (newMjlog.isLeaf()) {
                     this.boardControl.drawScene(newMjlog.getValue().getScene());
+                    this.ukeireTableView.showUkeire(newMjlog.getValue().getScene());
                     this.label2.setText(newMjlog.getValue().getIdx() + "/" + newMjlog.getParent().getChildren().size()
                             + " " + newMjlog.getParent().toString());
                 } else {
                     this.mjlogTreeControl.getSelectionModel().getSelectedItem().setExpanded(true);
                     this.label2.setText(newMjlog.toString());
                     this.boardControl.drawScene(newMjlog.getChildren().get(0).getValue().getScene());
+                    this.ukeireTableView.init();
                 }
             }
         });
