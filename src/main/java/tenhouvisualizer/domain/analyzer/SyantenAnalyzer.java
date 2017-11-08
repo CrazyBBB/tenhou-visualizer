@@ -82,7 +82,8 @@ public class SyantenAnalyzer implements IAnalyzer {
                 honba,
                 kyotaku,
                 new ArrayList<>(doraDisplays),
-                nokori
+                nokori,
+                ""
         ));
     }
 

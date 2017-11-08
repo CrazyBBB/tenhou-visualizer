@@ -21,8 +21,8 @@ public class MahjongScene {
     public boolean daReach;
     public int[] reach;
     public int[] kita;
-    int bakaze;
-    int kyoku;
+    private int bakaze;
+    private int kyoku;
     public int honba;
     public int kyotaku;
     public ArrayList<Integer> dora;
@@ -30,33 +30,8 @@ public class MahjongScene {
 
     private String str;
 
-    static final String[] bakazeStr = {"東", "南", "西", "北"};
-    static final String[] maStr = {"三", "四"};
-
-    public MahjongScene(boolean isSanma, int heroPosition, String[] playerNames, String[] playerDans, int[] playerRates, int[] playerPoints, ArrayList<TreeSet<Integer>> tehaiSets, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> stehaiLists, ArrayList<ArrayList<Boolean>> tedashiLists, int[] tsumo, int[] da, boolean daTedasi, boolean daReach, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora, int nokori) {
-        this.isSanma = isSanma;
-        this.heroPosition = heroPosition;
-        this.playerNames = playerNames;
-        this.playerDans = playerDans;
-        this.playerRates = playerRates;
-        this.playerPoints = playerPoints;
-        this.tehaiSets = tehaiSets;
-        this.naki = naki;
-        this.stehaiLists = stehaiLists;
-        this.tedashiLists = tedashiLists;
-        this.tsumo = tsumo;
-        this.da = da;
-        this.daTedasi = daTedasi;
-        this.daReach = daReach;
-        this.reach = reach;
-        this.kita = kita;
-        this.bakaze = bakaze;
-        this.kyoku = kyoku;
-        this.honba = honba;
-        this.kyotaku = kyotaku;
-        this.dora = dora;
-        this.nokori = nokori;
-    }
+    private static final String[] bakazeStr = {"東", "南", "西", "北"};
+    private static final String[] maStr = {"三", "四"};
 
     public MahjongScene(boolean isSanma, int heroPosition, String[] playerNames, String[] playerDans, int[] playerRates, int[] playerPoints, ArrayList<TreeSet<Integer>> tehaiSets, ArrayList<ArrayList<Naki>> naki, ArrayList<ArrayList<Integer>> stehaiLists, ArrayList<ArrayList<Boolean>> tedashiLists, int[] tsumo, int[] da, boolean daTedasi, boolean daReach, int[] reach, int[] kita, int bakaze, int kyoku, int honba, int kyotaku, ArrayList<Integer> dora, int nokori, String str) {
 
